@@ -8,7 +8,7 @@ from skimage.io import imread
 from skimage.transform import resize
 
 from dataset import ANCHORS
-from models import YoloV4Model
+from models import YoloV5Model
 from cccode.math import sigmoid
 from cccode.image import Value, Check
 
@@ -212,8 +212,8 @@ class PredHandle:
 def specific_image_recognition():
     """Testing the trained network models."""
 
-    def load_model(plan_name="plan_5.3", model_name="yolov2_0506-195652.pth"):
-        model = YoloV4Model()
+    def load_model(plan_name="plan_6.0", model_name="yoloV2_0823-153552.pth"):
+        model = YoloV5Model()
         cur_model_fname = join(MODEL_PATH, plan_name, model_name)
         model.load_state_dict(torch.load(cur_model_fname))
         return model
@@ -234,7 +234,7 @@ def specific_image_recognition():
         for coord in pred_coords:
             x, y, w, h = [elm * scale for elm in coord]
             rect = plt.Circle((x, y), radius=np.maximum(w, h)/2, lw=1.6, fill=False, color="red", alpha=.8)
-            ax.add_patch(rect)
+            ax.ch(rect)
         if image_fname:
             plt.savefig(image_fname)
         else:

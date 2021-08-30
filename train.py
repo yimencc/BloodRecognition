@@ -7,9 +7,9 @@ import torch
 import numpy as np
 
 import losses
-import models
 import dataset
 from dataset import TRAIN_DS_CONSTRUCTOR, VALID_DS_CONSTRUCTOR
+from models import YoloV5Model
 
 print("Torch Version: ", torch.__version__)
 print("Cuda Available: ", torch.cuda.is_available())
@@ -230,6 +230,8 @@ class TrainingPlan:
         print(f"Model weights saved in {os.path.abspath(model_fp)}\n")
 
     def execute(self, learning_rates, decay_rates, patience):
+        """ Execute the given plans """
+
         self.logs = {"epochs": self.epochs,
                      "batch_size": self.batch_size,
                      "learning_rates": learning_rates,
@@ -243,7 +245,7 @@ class TrainingPlan:
                 cur_stage = i * len(decay_rates) + k + 1
                 print("stage {:d} lr: {:.5f} dc_rate: {:.4f}, patience: {:d}\n{:s}"
                       .format(cur_stage, lr, decay_rate, patience, "="*50))
-                self.model = models.YoloV4Model()
+                self.model = YoloV5Model(attention_layer=7)
                 self.model = self.model.to(device)
                 # self.model.initialize_weights()
                 if self.model_fname:
@@ -281,7 +283,7 @@ def main():
                  "callbacks": "early_stopping",
                  "cb_params": {"patience": 7}}
 
-    train_plan = TrainingPlan(name="plan_5.3", **PLAN_DICT)
+    train_plan = TrainingPlan(name="plan_6.1", **PLAN_DICT)
     train_plan.execute(learning_rates=[3e-4], decay_rates=[0.03], patience=7)
 
 

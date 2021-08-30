@@ -16,21 +16,27 @@ GRIDSZ = 40
 F32 = torch.float32
 IMG_PLUGIN = "simpleitk"
 ANCHORS = [1., 1., 1.125, 1.125, 1.25, 1.25, 1.375, 1.375]
-PATH = {"root": abspath(".."),
-        "data": abspath("..\\data"),
-        "code": abspath("..\\deeplearning"),
-        "dataset": abspath("..\\data\\dataset"),
-        "patches": abspath("..\\data\\2021-01-05"),
-        "train_ann": abspath("..\\data\\train\\ann"),
-        "train_img": abspath("..\\data\\train\\img"),
-        "valid_ann": abspath("..\\data\\valid\\ann"),
-        "valid_img": abspath("..\\data\\valid\\img")}
+PATH = {"root":         abspath(".."),
+        "data":         abspath("..\\data"),
+        "code":         abspath("..\\deeplearning"),
+        "dataset":      abspath("..\\data\\dataset"),
+        "patches":      abspath("..\\data\\2021-01-05"),
+        "train_ann":    abspath("..\\data\\dataset\\train\\ann"),
+        "train_img":    abspath("..\\data\\dataset\\train\\img"),
+        "valid_ann":    abspath("..\\data\\dataset\\valid\\ann"),
+        "valid_img":    abspath("..\\data\\dataset\\valid\\img")}
 
 IMG_PATCHES = join(PATH["patches"], "phase_patches")
 LBL_PATCHES = join(PATH["patches"], "annotations\\manual_labeled_results")
 
 
-def dataset_separate(src_path, dst_path):
+# TODO: using an whole image as the model input.
+# TODO: change the dataset to whole image data.
+
+
+def dataset_separate(src_path, dst_path, train_ratio=0.8):
+    """ The data have been manually labeled, and it should be divided into
+    training, validating and testing part, and further assembling for model training"""
     ann_dir = join(src_path, "annotations")
     img_dir = join(src_path, "images")
     train_path = join(dst_path, "train")
@@ -42,12 +48,10 @@ def dataset_separate(src_path, dst_path):
             os.mkdir(join(folder, "img"))
     t = 0
     f = 0
-    for i, (ann_name, img_name) in enumerate(zip(os.listdir(ann_dir),
-                                                 os.listdir(img_dir))):
+    to_train = np.random.choice([True, False], p=[train_ratio, 1-train_ratio])
+    for i, (ann_name, img_name) in enumerate(zip(os.listdir(ann_dir), os.listdir(img_dir))):
         ann_fullname = join(ann_dir, ann_name)
         img_fullname = join(img_dir, img_name)
-        p = [0.8, 0.2]
-        to_train = np.random.choice([True, False], p=p)
         if to_train:
             # copy img -> dst/train/img_dir
             dst_fullname = join(train_path, "ann\\ann_%04d.txt" % t)
@@ -100,8 +104,7 @@ class DataTransform:
                 best_anchor = 0
                 best_iou = 0
                 for j in range(4):
-                    interct = np.minimum(
-                        w, anchors[j, 0])*np.minimum(h, anchors[j, 1])
+                    interct = np.minimum(w, anchors[j, 0])*np.minimum(h, anchors[j, 1])
                     union = w * h + (anchors[j, 0] * anchors[j, 1]) - interct
                     iou = interct / union
 
@@ -115,8 +118,7 @@ class DataTransform:
                     # [b,h,w,4,1]
                     detector_mask[y_coord, x_coord, best_anchor] = 1
                     # [b,h,w,4,x-y-w-h-l]
-                    matching_gt_box[y_coord, x_coord, best_anchor] = \
-                        np.array([x, y, w, h, box[4]])
+                    matching_gt_box[y_coord, x_coord, best_anchor] = np.array([x, y, w, h, box[4]])
 
         # [296,5] => [32,32,4,5]
         # [32,32,4,5]
@@ -182,15 +184,13 @@ class DataTransform:
 
 
 class RbcDataset(Dataset):
-    def __init__(self, ann_dir, img_dir, transform=None,
-                 target_transform=None, aug_transform=None):
-        self.img_labels = self._load_annotations(ann_dir)
+    def __init__(self, ann_dir, img_dir, transform=None, target_transform=None, aug_transform=None):
         self.img_dir = img_dir
-        self.img_fullnames = [join(self.img_dir, fname) for
-                              fname in os.listdir(self.img_dir)]
         self.transform = transform
-        self.target_transform = target_transform
         self.aug_transform = aug_transform
+        self.target_transform = target_transform
+        self.img_labels = self._load_annotations(ann_dir)
+        self.img_fullnames = [join(self.img_dir, fname) for fname in os.listdir(self.img_dir)]
 
     def _load_annotations(self, ann_dir):
         self.max_boxes = 0
@@ -236,6 +236,17 @@ class RbcDataset(Dataset):
         return sample
 
 
+TRAIN_DS_CONSTRUCTOR = {"ann_dir": PATH["train_ann"],
+                        "img_dir": PATH["train_img"],
+                        "transform": DataTransform.img_transform,
+                        "target_transform": DataTransform.tgt_transform}
+
+VALID_DS_CONSTRUCTOR = {"ann_dir": PATH["valid_ann"],
+                        "img_dir": PATH["valid_img"],
+                        "transform": DataTransform.img_transform,
+                        "target_transform": DataTransform.tgt_transform}
+
+
 def main():
     rbcDataset = RbcDataset(**TRAIN_DS_CONSTRUCTOR)
     dataloader = DataLoader(rbcDataset, 3, True)
@@ -244,21 +255,6 @@ def main():
     for lb in label[3][0]:
         if any(lb):
             print(lb[2:4])
-
-
-TRAIN_DS_CONSTRUCTOR = {
-    "ann_dir": PATH["train_ann"],
-    "img_dir": PATH["train_img"],
-    "transform": DataTransform.img_transform,
-    "target_transform": DataTransform.tgt_transform
-}
-
-VALID_DS_CONSTRUCTOR = {
-    "ann_dir": PATH["valid_ann"],
-    "img_dir": PATH["valid_img"],
-    "transform": DataTransform.img_transform,
-    "target_transform": DataTransform.tgt_transform
-}
 
 
 if __name__ == '__main__':
