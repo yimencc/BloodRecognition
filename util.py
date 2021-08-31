@@ -1,20 +1,21 @@
 import os
 import sys
-from os.path import join as oj
+from os.path import join
 from functools import reduce, partial
 
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
+from torch.utils.data import DataLoader
 
 from cccode import image
 from evaluate import PredHandle
-from models import YoloV4Model, load_model
-from dataset import RbcDataset, DataLoader, ANCHORS, VALID_DS_CONSTRUCTOR
+from models import YoloV5Model
+from dataset import RBCXmlDataset, ANCHORS, VALID_DS_CONSTRUCTOR
 
-nx = np.newaxis
-ck = image.Check()
-MODEL_PATH = "..\\data\\models"
+nx          =   np.newaxis
+ck          =   image.Check()
+MODEL_PATH  =   "..\\data\\models"
 
 
 def sample_analyse(sample, model, thresh):
@@ -40,9 +41,8 @@ def sample_analyse(sample, model, thresh):
 
 def yolo_evaluate():
     thresh = .7
-    yolo_model = load_model()
-
-    rbcDataset = RbcDataset(**VALID_DS_CONSTRUCTOR)
+    yolo_model = None
+    rbcDataset = RBCXmlDataset(**VALID_DS_CONSTRUCTOR)
     valid_dataloader = DataLoader(rbcDataset, batch_size=8, shuffle=False)
 
     sample_results_gen = (sample_analyse(sp, yolo_model, thresh) for sp in valid_dataloader)
@@ -164,11 +164,11 @@ class PaperFigure3:
         plan_name = "plan_5.3"
         model_name = "yolov2_0506-195652.pth"
 
-        self.model = YoloV4Model()
-        cur_model_fname = oj(MODEL_PATH, plan_name, model_name)
+        self.model = YoloV5Model()
+        cur_model_fname = join(MODEL_PATH, plan_name, model_name)
         self.model.load_state_dict(torch.load(cur_model_fname))
 
-        rbcDataset = RbcDataset(**VALID_DS_CONSTRUCTOR)
+        rbcDataset = RBCXmlDataset(**VALID_DS_CONSTRUCTOR)
         self.valid_dataloader = DataLoader(rbcDataset,
                                            batch_size=batch_size,
                                            shuffle=False)

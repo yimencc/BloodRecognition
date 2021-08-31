@@ -1,25 +1,25 @@
 import os
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 import time
-from os.path import join as oj
+from os.path import join
 
 import torch
 import numpy as np
+from torch.utils.data import DataLoader
 
 import losses
-import dataset
-from dataset import TRAIN_DS_CONSTRUCTOR, VALID_DS_CONSTRUCTOR
 from models import YoloV5Model
+from dataset import RBCXmlDataset, TRAIN_DS_CONSTRUCTOR, VALID_DS_CONSTRUCTOR
 
-print("Torch Version: ", torch.__version__)
-print("Cuda Available: ", torch.cuda.is_available())
+print("Torch Version: ",    torch.__version__)
+print("Cuda Available: ",   torch.cuda.is_available())
 
-IMGSZ = 320
-IMG_PLUGIN = "simpleitk"
-MODEL_PATH = "..\\data\\models"
-device = "cuda" if torch.cuda.is_available() else "cpu"
+IMGSZ       =   320
+IMG_PLUGIN  =   "simpleitk"
+MODEL_PATH  =   "..\\data\\models"
+device      =   "cuda" if torch.cuda.is_available() else "cpu"
+seed        =   123456
 
-seed = 123456
 torch.manual_seed(seed)
 torch.cuda.manual_seed(seed)
 
@@ -98,7 +98,7 @@ def train_loop(dataloader, model, loss_fn, optimizer, decay_rate=.01):
     train_loss = []
     for batch, db_train in enumerate(dataloader):
         # Compute prediction and loss
-        X, y = db_train["image"].to(device), db_train["label"]
+        X, y = db_train["modality"].to(device), db_train["label"]
         y = [item.to(device) for item in y]
         pred = model(X)
         regula_loss = 0
@@ -128,7 +128,7 @@ def valid_loop(dataloader, model, loss_fn):
     print("\nTest:")
     with torch.no_grad():
         for batch, db_valid in enumerate(dataloader):
-            X, y = db_valid["image"].to(device), db_valid["label"]
+            X, y = db_valid["modality"].to(device), db_valid["label"]
             y = [item.to(device) for item in y]
             pred = model(X)
             cur_loos = loss_fn(pred, y).item()
@@ -161,8 +161,8 @@ class TrainingPlan:
         self.batch_size = batch_size
         self.model_fname = model_fname
         self.storage_mode = storage_mode
-        self.train_loader = dataset.DataLoader(train_set, batch_size, True)
-        self.valid_loader = dataset.DataLoader(valid_set, batch_size, True)
+        self.train_loader = DataLoader(train_set, batch_size, True)
+        self.valid_loader = DataLoader(valid_set, batch_size, True)
 
         self.accuracy = _Loss("acc")
         self.train_losses = _Loss("train")
@@ -207,13 +207,13 @@ class TrainingPlan:
         if not os.path.exists(self.model_path):
             os.mkdir(self.model_path)
 
-        model_fp = oj(self.model_path, "yoloV2_%s.pth" % t_stamp)
+        model_fp = join(self.model_path, "yoloV2_%s.pth" % t_stamp)
         if self.storage_mode == "dict":
             torch.save(self.model.state_dict(), model_fp)
         elif self.storage_mode == "pickle":
             torch.save(self.model, model_fp)
 
-        losses_fp = oj(self.model_path, "losses_%s.txt" % t_stamp)
+        losses_fp = join(self.model_path, "losses_%s.txt" % t_stamp)
         with open(losses_fp, "w") as loss_f:
             loss_f.write(f"Initial lr:{learning_rate}\n"
                          f"Decay_rate:{decay_rate}\n"
@@ -278,12 +278,12 @@ def main():
     PLAN_DICT = {"epochs": 100,
                  "batch_size": 8,
                  "storage_mode": "dict",
-                 "train_set": dataset.RbcDataset(**TRAIN_DS_CONSTRUCTOR),
-                 "valid_set": dataset.RbcDataset(**VALID_DS_CONSTRUCTOR),
+                 "train_set": RBCXmlDataset(**TRAIN_DS_CONSTRUCTOR),
+                 "valid_set": RBCXmlDataset(**VALID_DS_CONSTRUCTOR),
                  "callbacks": "early_stopping",
                  "cb_params": {"patience": 7}}
 
-    train_plan = TrainingPlan(name="plan_6.1", **PLAN_DICT)
+    train_plan = TrainingPlan(name="plan_7.0", **PLAN_DICT)
     train_plan.execute(learning_rates=[3e-4], decay_rates=[0.03], patience=7)
 
 
