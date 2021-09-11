@@ -1,17 +1,19 @@
 import os
 import sys
-from os.path import join
-from functools import reduce, partial
+from os.path    import join
+from functools  import reduce, partial
 
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
-from torch.utils.data import DataLoader
+from torch.utils.data       import DataLoader
 
-from cccode import image
-from evaluate import PredHandle
-from models import YoloV5Model
-from dataset import RBCXmlDataset, ANCHORS, VALID_DS_CONSTRUCTOR
+from cccode                 import image
+from evaluate               import PredHandle
+from models                 import YoloV5Model
+from dataset                import (RBCXmlDataset, dataset_xml_from_annotations, ANCHORS,
+                                    VALID_DS_CONSTRUCTOR, StandardXMLContainer)
+
 
 nx          =   np.newaxis
 ck          =   image.Check()
@@ -222,7 +224,30 @@ def figure_plot():
     fig3.network_output_conf_map()
 
 
+def dataset_construct():
+    """
+    Date: 2021-09-09
+    Constructing dataset from generated modalities and automatic labeled annotations,
+    for subsequent manual data annotating and network training.
+    """
+    sources_root    =   "D:\\Database\\prism_dual-tie_dataset\\20210902 RBC Detection"
+    targets_root    =   "D:\\Workspace\\RBC Recognition\\datasets\\20210902 BloodSmear01"
+
+    minus_path      =   join(sources_root, "blood smear 01\\minus")
+    plus_path       =   join(sources_root, "blood smear 01\\plus")
+    focus_path      =   join(sources_root, "blood smear 01\\focus")
+    phase_path      =   join(sources_root, "blood smear 01\\phase")
+    ann_path        =   join(sources_root, "blood smear 01\\annotation")
+
+    dstXML_filename =   join(targets_root, "BloodSmear20210902_01.xml")
+    container       =   dataset_xml_from_annotations(minus_path, plus_path, focus_path,
+                                                     phase_path, ann_path, dstXML_filename)
+
+    yolo_path       =   join(targets_root, "yolo")
+    container.toyolo(yolo_path)
+
+
 if __name__ == "__main__":
     """Run Entrance"""
     print(sys.version_info, "\n", sys.version)
-    figure_plot()
+    dataset_construct()

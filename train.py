@@ -7,9 +7,8 @@ import torch
 import numpy as np
 from torch.utils.data import DataLoader
 
-import losses
-from models import YoloV5Model
-from dataset import RBCXmlDataset, TRAIN_DS_CONSTRUCTOR, VALID_DS_CONSTRUCTOR
+from models     import YoloV5Model
+from dataset    import RBCXmlDataset, TRAIN_DS_CONSTRUCTOR, VALID_DS_CONSTRUCTOR
 
 print("Torch Version: ",    torch.__version__)
 print("Cuda Available: ",   torch.cuda.is_available())

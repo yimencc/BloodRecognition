@@ -7,10 +7,11 @@ from numpy import ndarray
 from skimage.io import imread
 from skimage.transform import resize
 
-from dataset import ANCHORS
-from models import YoloV5Model
-from cccode.math import sigmoid
-from cccode.image import Value, Check
+from cccode.math    import sigmoid
+from cccode.image   import Value, Check
+
+from dataset        import ANCHORS
+from models         import YoloV5Model
 
 ck = Check()
 vl = Value()
