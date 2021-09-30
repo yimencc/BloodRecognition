@@ -1,6 +1,6 @@
 import os
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
-from typing                 import List
+from pprint                 import pformat
 from os.path                import join
 from xml.etree              import ElementTree as ET
 from xml.dom.minidom        import parseString
@@ -10,7 +10,8 @@ import numpy                as np
 import matplotlib           as mpl
 import matplotlib.pyplot    as plt
 from matplotlib             import figure
-from skimage.io             import imread
+from skimage.io             import imread, imsave
+from skimage.util           import dtype_limits, img_as_ubyte
 from torch.utils.data       import Dataset
 
 from cccode.image           import Check
@@ -24,13 +25,205 @@ ANCHORS     =   [1., 1., 1.125, 1.125, 1.25, 1.25, 1.375, 1.375]
 FFOV_XML    =   "D:\\Workspace\\RBC Recognition\\data\\2021-01-05\\fov_annotations.xml"
 
 
-class StandardXMLContainer:
+class MultimodalSample:
     def __init__(self):
-        self.root   =   ET.Element("FFoV_Annotation")
+        self.sample_idx = None
+        self.phase      = None
+        self.amplitude  = None
+        self.overfocus  = None
+        self.underfocus = None
+        self.labels     = []
+        self.source_msg = {}
 
-    def fromXML(self, filename):
-        etree       =   ET.parse(filename)
-        self.root   =   etree.getroot()
+    def __repr__(self):
+        output      =   ""
+        output      +=  f"<Ojb MultimodalSample>\n"
+        if self.sample_idx is not None:
+            output  +=  f"\timage_index:    {self.sample_idx:<4d}\n"
+        h, w        =   self.phase.shape
+        output      +=  f"\tphase:          {type(self.phase)}, ({h}, {w}), " \
+                        f"vrange: {dtype_limits(self.phase)}\n"
+        h, w        =   self.amplitude.shape
+        output      +=  f"\tamplitude:      {type(self.amplitude)}, ({h}, {w}), " \
+                        f"vrange: {dtype_limits(self.amplitude)}\n"
+        h, w        =   self.overfocus.shape
+        output      +=  f"\tover-focus:     {type(self.overfocus)}, ({h}, {w}), " \
+                        f"vrange: {dtype_limits(self.overfocus)}\n"
+        h, w        =   self.underfocus.shape
+        output      +=  f"\tunder-focus:    {type(self.underfocus)}, ({h}, {w}), " \
+                        f"vrange: {dtype_limits(self.underfocus)}\n"
+        output      +=  f"\tlabel numbers:  {len(self.labels)}\n"
+
+        output      +=  f"\tsource_messages:\n"
+        output      +=  pformat(self.source_msg, indent=8)
+        return output
+
+    @property
+    def modalities(self):
+        return self.amplitude, self.phase, self.underfocus, self.overfocus
+
+    def set_modalities(self, amp, pha, under, over):
+        self.amplitude  = amp
+        self.phase      = pha
+        self.overfocus  = over
+        self.underfocus = under
+
+    @classmethod
+    def from_element(cls, sample: ET.Element):
+        mm_sample       =   cls()
+        amp_fullname    =   sample.find("amp_fullname").text
+        pha_fullname    =   sample.find("pha_fullname").text
+        over_fullname   =   sample.find("over_fullname").text
+        under_fullname  =   sample.find("under_fullname").text
+
+        mm_sample.source_msg.update({
+            "amp_fullname": amp_fullname,
+            "pha_fullname": pha_fullname,
+            "over_fullname": over_fullname,
+            "under_fullname": under_fullname
+        })
+
+        mm_sample.amplitude  =   imread(amp_fullname,    True, "simpleitk")
+        mm_sample.phase      =   imread(pha_fullname,    True, "simpleitk")
+        mm_sample.overfocus  =   imread(over_fullname,   True, "simpleitk")
+        mm_sample.underfocus =   imread(under_fullname,  True, "simpleitk")
+
+        mm_sample.sample_idx =   int(sample.find("image_idx").text)
+        img_shape_elm   =   sample.find("image_shape")
+        height, width   =   [int(img_shape_elm.find(tag).text) for tag in ["height", "width"]]
+        assert mm_sample.phase.shape == (height, width)
+
+        labels_elm      =   sample.find("labels")
+        for lbl_elm in labels_elm.findall("label"):
+            bbox_elm    =   lbl_elm.find("bbox")
+            x, y, w, h  =   [int(bbox_elm.find(tag).text) for tag in ("x", "y", "w", "h")]
+            lbl_cls     =   int(lbl_elm.find("class").text)
+            mm_sample.labels.append((lbl_cls, x, y, w, h))
+        return mm_sample
+
+    @staticmethod
+    def split(sample, n_split=3, target_size=(320, 320)):
+        assert (sample.phase.shape == sample.amplitude.shape ==
+                sample.underfocus.shape == sample.overfocus.shape)
+
+        height,     width           =   sample.phase.shape
+        tgt_height, tgt_width       =   target_size
+        centroid_arrange_width      =   width-tgt_width
+        centroid_arrange_height     =   height-tgt_height
+
+        centroid_interval_width     =   centroid_arrange_width  // (n_split-1)
+        centroid_interval_height    =   centroid_arrange_height // (n_split-1)
+
+        subview_multimodal_samples  =   []
+        for i in range(n_split):        # ROW split
+            for k in range(n_split):    # COLUMN split
+                x_centroid = tgt_width//2  + k*centroid_interval_width
+                y_centroid = tgt_height//2 + i*centroid_interval_height
+
+                x0 = x_centroid - tgt_width//2
+                x1 = x_centroid + tgt_width//2
+                y0 = y_centroid - tgt_height//2
+                y1 = y_centroid + tgt_height//2
+
+                subview_modalities = [image[y0:y1, x0:x1] for image in sample.modalities]
+
+                subview_labels  = []
+                for cls, x, y, w, h in sample.labels:
+                    if x0 <= x < x1 and y0 <= y < y1:
+                        subview_labels.append((cls, x-x0, y-y0, w, h))
+
+                subview_mltSample = MultimodalSample()
+                subview_mltSample.labels  = subview_labels
+                subview_mltSample.source_msg.update({"parent_msg": sample.source_msg})
+                subview_mltSample.set_modalities(*subview_modalities)
+                subview_multimodal_samples.append(subview_mltSample)
+        return subview_multimodal_samples
+
+    def save(self, save_root):
+        amp_path, pha_path, minus_path, plus_path, anno_path = [join(save_root, pth) for pth in
+                                                                ("amp", "pha", "minus", "plus", "anno")]
+        for pth in (amp_path, pha_path, minus_path, plus_path, anno_path):
+            if not os.path.exists(pth):
+                os.mkdir(pth)
+
+        amp_fullname        =   join(amp_path,      f"amp_{self.sample_idx:04d}.jpg")
+        pha_fullname        =   join(pha_path,      f"pha_{self.sample_idx:04d}.jpg")
+        minus_fullname      =   join(minus_path,    f"minus_{self.sample_idx:04d}.jpg")
+        plus_fullname       =   join(plus_path,     f"plus_{self.sample_idx:04d}.jpg")
+        anno_fullname       =   join(anno_path,     f"pha_{self.sample_idx:04d}.txt")
+
+        # save images
+        for modality, fname in zip(self.modalities, (amp_fullname, pha_fullname, minus_fullname, plus_fullname)):
+            # amplitude, phase, underfocus, overfocus
+            imsave(fname, img_as_ubyte(modality), "simpleitk")
+
+        # save labels
+        yolo_string     =   ""
+        height, width   =   self.amplitude.shape
+        for cell_class, x, y, w, h in self.labels:
+            # Coordinate transform from absolute coordination to yolo
+            x1, y1 = x / width, y / height
+            w1, h1 = w / width, h / height
+            coord_str = " ".join([f"{coord:1.6f}" for coord in (x1, y1, w1, h1)])
+            yolo_string += str(cell_class) + " " + coord_str + "\n"
+
+        # save single sample yolo file
+        with open(anno_fullname, "w") as f:
+            f.write(yolo_string)
+
+    def label_reshape(self):
+        labels_array = []
+        for cls, bbox in self.labels:
+            labels_array.append([*bbox, cls])
+        return np.array(labels_array)
+
+    labels_array = property(label_reshape)
+
+    def annotate_axes(self, ax: mpl.figure.Axes):
+        for _, x, y, w, h in self.labels:
+            rect = plt.Rectangle((x-w//2-1, y-h//2-1), w, h, fill=False, color="blue")
+            ax.add_patch(rect)
+        return ax
+
+
+class StandardXMLContainer:
+    """
+    For each child sample, there are six SubElements:
+        'image_shape', "image_idx', 'amp_fullname', 'pha_fullname', 'under_fullname',
+        'over_fullname', and 'labels'
+    The 'labels' stored all automatic annotated labels inside this sample,
+    as the child element of 'labels'.
+    """
+
+    def __init__(self):
+        self.root       =   ET.Element("FFoV_Annotation")
+        self.samples    =   None
+
+    @classmethod
+    def fromXML(cls, filename):
+        container           =   cls()
+        etree               =   ET.parse(filename)
+        container.root      =   etree.getroot()
+        container.samples   =   [MultimodalSample.from_element(elm) for elm in container.root.findall("sample")]
+        return container
+
+    def sample_visual(self, start_idx=0, figsize=(20, 12), title=None, tt_fontsize=16):
+        visualized_samples = self.samples[start_idx:start_idx+15]
+        fig, axs = plt.subplots(3, 5, figsize=figsize, constrained_layout=True)
+        if title is not None:
+            plt.suptitle(title, fontproperties={"size": tt_fontsize})
+        for row in range(3):
+            for collum in range(5):
+                n_sp    =   row*5 + collum
+                ax      =   axs[row, collum]
+                sample: MultimodalSample = visualized_samples[n_sp]
+                ax.imshow(sample.phase, cmap="gray")
+                ax.set_xticks([])
+                ax.set_yticks([])
+                for sp in ("top", "bottom", "left", "right"):
+                    ax.spines[sp].set_visible(False)
+                sample.annotate_axes(ax)
+        plt.show()
 
     @staticmethod
     def subElem(parent: ET.Element, child_tag: str, text: str = None):
@@ -40,8 +233,39 @@ class StandardXMLContainer:
         return child
 
     @staticmethod
-    def element2sampleDict(sample: ET.Element):
-        pass
+    def sample_msg(sample: ET.Element):
+        output          =   "Sample"
+        img_idx_str     =   sample.find('image_idx').text
+        output          +=  f"\timage idx:      {img_idx_str}\n"
+
+        shape_elm       =   sample.find("image_shape")
+        height, width   =   [int(shape_elm.find(tag).text) for tag in ("height", "width")]
+        output          +=  f"\timage shape:    ({height}, {height})\n"
+
+        amp_fpath, amp_fname        =   os.path.split(sample.find("amp_fullname").text)
+        pha_fpath, pha_fname        =   os.path.split(sample.find("pha_fullname").text)
+        over_fpath, over_fname      =   os.path.split(sample.find("over_fullname").text)
+        under_fpath, under_fname    =   os.path.split(sample.find("under_fullname").text)
+        amp_root, amp_dir           =   os.path.split(amp_fpath)
+        pha_root, pha_dir           =   os.path.split(pha_fpath)
+        over_root, over_dir         =   os.path.split(over_fpath)
+        under_root, under_dir       =   os.path.split(under_fpath)
+        try:
+            assert amp_root == pha_root == over_root == under_root
+        except AssertionError as e:
+            print("Path root different:", e)
+            exit(1)
+
+        output          +=  f"\tmodalities root: {amp_root}\n"
+        output          +=  f"\t\tamplitude     dir: {amp_dir:<6s} filename: {amp_fname}\n"
+        output          +=  f"\t\tphase         dir: {pha_dir:<6s} filename: {pha_fname}\n"
+        output          +=  f"\t\tunder-focus   dir: {over_dir:<6s} filename: {under_fname}\n"
+        output          +=  f"\t\tover-focus    dir: {under_dir:<6s} filename: {over_fname}\n"
+
+        labels_elm      =   sample.find("labels")
+        num_labels      =   len(labels_elm.findall("label"))
+        output          +=  f"\tlabels number:  {num_labels}\n"
+        return output
 
     def add_sample(self, idx, image_shape, amplitude_filename, phase_filename, minus_filename, plus_filename):
         sample  =   ET.SubElement(self.root, "sample")
@@ -108,68 +332,34 @@ class StandardXMLContainer:
             with open(dst_fullname, "w") as f:
                 f.write(yolo_string)
 
+    def sample_splitting(self, split_root="", samples_per_batch=None, target_size=(340, 340)):
+        sample_set          =   []
+        n_samples           =   len(self.samples)
 
-def dataset_xml_from_annotations(minus_path, plus_path, focus_path, phase_path, annotations_path,
-                                 xml_filename, image_format=".bmp", fixed_class="rbc", creator="auto"):
-    """
-    Now that the modality and tag data have been generated, it is necessary to combine
-    these data into a single xml file to organize the subsequent training dataset.
-    """
-    minus_filenames     =   [fname for fname in os.listdir(minus_path)  if fname.endswith(image_format)]
-    plus_filenames      =   [fname for fname in os.listdir(plus_path)   if fname.endswith(image_format)]
-    focus_filenames     =   [fname for fname in os.listdir(focus_path)  if fname.endswith(image_format)]
-    phase_filenames     =   [fname for fname in os.listdir(phase_path)  if fname.endswith(image_format)]
-    ann_filenames       =   [fname for fname in os.listdir(annotations_path)  if fname.endswith(".txt")]
+        if split_root != "" and samples_per_batch is not None:
+            n_batch         =   n_samples // samples_per_batch + 1
+            batch_path      =   [join(split_root, f"batch_{n_bth:02d}") for n_bth in range(n_batch)]
+            if not os.path.exists(split_root):
+                os.mkdir(split_root)
+            for pth in batch_path:
+                if not os.path.exists(pth):
+                    os.mkdir(pth)
+        else:
+            batch_path      =   None
 
-    # create root xml Element
-    xml_container       =   StandardXMLContainer()
+        for i, sp in enumerate(self.samples):
+            child_samples   =   MultimodalSample.split(sp, target_size=target_size)
+            for k, child_sp in enumerate(child_samples):
+                child_sp.sample_idx = i*9 + k
 
-    for f_minus, f_plus, f_focus, f_phase, ann in zip(minus_filenames, plus_filenames, focus_filenames,
-                                                      phase_filenames, ann_filenames):
-
-        minus_idx   =   f_minus.removesuffix(image_format).removeprefix("minus_")
-        plus_idx    =   f_plus.removesuffix(image_format).removeprefix("plus_")
-        focus_idx   =   f_focus.removesuffix(image_format).removeprefix("focus_")
-        phase_idx   =   f_phase.removesuffix(image_format).removeprefix("phase_")
-        ann_idx     =   ann.removesuffix(".txt").removeprefix("modalities_")
-
-        try:
-            assert minus_idx == plus_idx == focus_idx == phase_idx == ann_idx
-        except AssertionError as e:
-            print("File did not of same sample: ", e)
-            exit(1)
-
-        minus_fullname  =   join(minus_path,    f_minus)
-        plus_fullname   =   join(plus_path,     f_plus)
-        focus_fullname  =   join(focus_path,    f_focus)
-        phase_fullname  =   join(phase_path,    f_phase)
-        ann_fullname    =   join(annotations_path, ann)
-
-        # add sample
-        img_idx         =   int(minus_idx)
-        image_shape     =   imread(phase_fullname, True, "simpleitk").shape             # load image shape
-        sample          =   xml_container.add_sample(img_idx,        image_shape,
-                                                     focus_fullname, phase_fullname,
-                                                     minus_fullname, plus_fullname)
-
-        # Loading the annotations
-        with open(ann_fullname, "r") as f:
-            for line in f:
-                if line.endswith("\n"):
-                    line = line.removesuffix("\n")
-                num_strings     =   list(filter(lambda elm: elm != "", line.split(" ")))
-                x, y, w, h      =   [int(num) for num in num_strings]
-
-                # Add label
-                if fixed_class == "rbc":
-                    clsn = 0
-                else:
-                    raise Exception("wrong label class")
-                xml_container.add_label(sample, x, y, w, h, clsn, creator)
-
-    # writes into disk
-    xml_container.compile(xml_filename)
-    return xml_container
+                if split_root != "":
+                    if samples_per_batch is not None:
+                        save_root   =   batch_path[i//samples_per_batch]
+                    else:
+                        save_root   =   split_root
+                    child_sp.save(save_root)
+            sample_set = np.hstack((sample_set, child_samples))
+        return sample_set
 
 
 class DataTransform:
@@ -250,146 +440,14 @@ class DataTransform:
         return mask, gt_box, class_oh[..., 1:], grid
 
 
-class MultimodalSample:
-    def __init__(self):
-        self.sample_idx = None
-        self.phase      = None
-        self.amplitude  = None
-        self.overfocus  = None
-        self.underfocus = None
-        self.labels     = []
-
-    @property
-    def modalities(self):
-        return self.amplitude, self.phase, self.underfocus, self.overfocus
-
-    def set_modalities(self, amp, pha, under, over):
-        self.amplitude  = amp
-        self.phase      = pha
-        self.overfocus  = over
-        self.underfocus = under
-
-    @classmethod
-    def from_dict(cls, dictionary):
-        sample = cls()
-        sample.sample_idx = dictionary["image_idx"]
-        sample.labels     = dictionary["labels"]
-        sample.phase      = imread(dictionary["pha_fullname"])
-        sample.amplitude  = imread(dictionary["amp_fullname"])
-        sample.overfocus  = imread(dictionary["over_fullname"])
-        sample.underfocus = imread(dictionary["under_fullname"])
-        return sample
-
-    def label_reshape(self):
-        labels_array = []
-        for cls, bbox in self.labels:
-            labels_array.append([*bbox, cls])
-        return np.array(labels_array)
-
-    labels_array = property(label_reshape)
-
-    def annotate_axes(self, ax: mpl.figure.Axes):
-        for _, bbox in self.labels:
-            x, y, w, h = bbox
-            rect = plt.Rectangle((x-w//2-1, y-h//2-1), w, h, fill=False, color="blue")
-            ax.add_patch(rect)
-        return ax
-
-
-class AnnotationParser:
-    AmpNameStr   = "amp_fullname"
-    PhaNameStr   = "pha_fullname"
-    OverNameStr  = "over_fullname"
-    UnderNameStr = "under_fullname"
-    NameStrings  = [AmpNameStr, PhaNameStr, OverNameStr, UnderNameStr]
-
-    def __init__(self, filename):
-        etree = ET.parse(filename)
-        self.elementsRoot: ET.Element           = etree.getroot()
-        self.sampleElements: list               = self.elementsRoot.findall("sample")
-        self.samples: List[MultimodalSample]    = [MultimodalSample.from_dict(self.element_to_dict(sp))
-                                                   for sp in self.sampleElements]
-
-    def __len__(self):
-        return len(self.samples)
-
-    def __getitem__(self, item):
-        return self.samples[item]
-
-    def element_to_dict(self, element: ET.Element) -> dict:
-        sample_dict = {"image_idx": element.find("image_idx").text}
-
-        for name_string in self.NameStrings:
-            sample_dict.update({name_string: element.find(name_string).text})
-
-        # Extracting all label bboxes
-        labels      =   []
-        labels_root =   element.find("labels")
-        for label_element in labels_root.findall("label"):
-            cls     =   int(label_element.find("class").text)
-            bbox    =   [int(label_element.find("bbox").find(tag).text) for tag in ["x", "y", "w", "h"]]
-            labels.append((cls, bbox))
-        sample_dict.update({"labels": labels})
-        return sample_dict
-
-    @staticmethod
-    def split_sample(sample: MultimodalSample, n_split=3, target_size=(320, 320)) -> List[MultimodalSample]:
-        assert (sample.phase.shape == sample.amplitude.shape ==
-                sample.underfocus.shape == sample.overfocus.shape)
-
-        height, width               =   sample.phase.shape
-        tgt_height, tgt_width       =   target_size
-        centroid_arrange_width      =   width-tgt_width
-        centroid_arrange_height     =   height-tgt_height
-
-        centroid_interval_width     =   centroid_arrange_width  // n_split
-        centroid_interval_height    =   centroid_arrange_height // n_split
-
-        subview_multimodal_samples  =   []
-        for i in range(n_split):        # ROW split
-            for k in range(n_split):    # COLUMN split
-                x_centroid = tgt_width//2 + k*centroid_interval_width
-                y_centroid = tgt_height//2 + i*centroid_interval_height
-
-                x0 = x_centroid - tgt_width//2
-                x1 = x_centroid + tgt_width//2
-                y0 = y_centroid - tgt_height//2
-                y1 = y_centroid + tgt_height//2
-
-                subview_modalities = [image[y0:y1, x0:x1] for image in sample.modalities]
-
-                subview_labels  = []
-                for cls, [x, y, w, h] in sample.labels:
-                    if x0 <= x < x1 and y0 <= y < y1:
-                        subview_labels.append((cls, [x-x0, y-y0, w, h]))
-
-                subview_mltSample = MultimodalSample()
-                subview_mltSample.labels  = subview_labels
-                subview_mltSample.set_modalities(*subview_modalities)
-                subview_multimodal_samples.append(subview_mltSample)
-        return subview_multimodal_samples
-
-    def subview_dataset(self, set_type="training") -> np.ndarray:
-        set_length  =   len(self.samples)
-        train_len   =   int(0.8 * set_length)
-        valid_len   =   int(0.9 * set_length)
-
-        if set_type == "training":
-            return np.hstack([self.split_sample(sp) for sp in self.samples[:train_len]])
-        elif set_type == "validating":
-            return np.hstack([self.split_sample(sp) for sp in self.samples[train_len:valid_len]])
-        else:  # set_type == "testing"
-            return np.hstack([self.split_sample(sp) for sp in self.samples[valid_len:]])
-
-
-class RBCXmlDataset(Dataset):
-    def __init__(self, xml_filename, set_name, image_transform=None, target_transform=None):
+class BloodSmearDataset(Dataset):
+    def __init__(self, xml_filename, image_transform=None, target_transform=None):
         self.max_boxes                  =   0
         self.image_transform            =   image_transform
         self.target_transform           =   target_transform
 
-        parser                          =   AnnotationParser(xml_filename)
-        sample_sets                     =   parser.subview_dataset(set_name)
+        sample_container                =   StandardXMLContainer.fromXML(xml_filename)
+        sample_sets                     =   sample_container.sample_splitting()
         self.modalities, self.labels    =   self.load_datasets(sample_sets)
 
     def load_datasets(self, sample_sets: np.ndarray):
@@ -424,6 +482,69 @@ class RBCXmlDataset(Dataset):
             label   = self.target_transform(label)
         sample = {"modality": modality, "label": label}
         return sample
+
+
+def dataset_xml_from_annotations(minus_path, plus_path, focus_path, phase_path, annotations_path,
+                                 xml_filename, image_format=".bmp", fixed_class="rbc", creator="auto"):
+    """
+    Now that the modality and tag data have been generated, it is necessary to combine
+    these data into a single xml file to organize the subsequent training dataset.
+    """
+    minus_filenames     =   [fname for fname in os.listdir(minus_path)  if fname.endswith(image_format)]
+    plus_filenames      =   [fname for fname in os.listdir(plus_path)   if fname.endswith(image_format)]
+    focus_filenames     =   [fname for fname in os.listdir(focus_path)  if fname.endswith(image_format)]
+    phase_filenames     =   [fname for fname in os.listdir(phase_path)  if fname.endswith(image_format)]
+    ann_filenames       =   [fname for fname in os.listdir(annotations_path)  if fname.endswith(".txt")]
+
+    # create root xml Element
+    xml_container       =   StandardXMLContainer()
+
+    for f_minus, f_plus, f_focus, f_phase, ann in zip(minus_filenames, plus_filenames, focus_filenames,
+                                                      phase_filenames, ann_filenames):
+
+        minus_idx   =   f_minus.removesuffix(image_format).removeprefix("minus_")
+        plus_idx    =   f_plus.removesuffix(image_format).removeprefix("plus_")
+        focus_idx   =   f_focus.removesuffix(image_format).removeprefix("focus_")
+        phase_idx   =   f_phase.removesuffix(image_format).removeprefix("phase_")
+        ann_idx     =   ann.removesuffix(".txt").removeprefix("auto_")
+
+        try:
+            assert minus_idx == plus_idx == focus_idx == phase_idx == ann_idx
+        except AssertionError as e:
+            print("File did not of same sample: ", e)
+            raise AssertionError
+
+        minus_fullname  =   join(minus_path,    f_minus)
+        plus_fullname   =   join(plus_path,     f_plus)
+        focus_fullname  =   join(focus_path,    f_focus)
+        phase_fullname  =   join(phase_path,    f_phase)
+        ann_fullname    =   join(annotations_path, ann)
+
+        # add sample
+        img_idx         =   int(minus_idx)
+        image_shape     =   imread(phase_fullname, True, "simpleitk").shape             # load image shape
+        sample          =   xml_container.add_sample(img_idx,        image_shape,
+                                                     focus_fullname, phase_fullname,
+                                                     minus_fullname, plus_fullname)
+
+        # Loading the annotations
+        with open(ann_fullname, "r") as f:
+            for line in f:
+                if line.endswith("\n"):
+                    line = line.removesuffix("\n")
+                num_strings     =   list(filter(lambda elm: elm != "", line.split(" ")))
+                x, y, w, h      =   [int(num) for num in num_strings]
+
+                # Add label
+                if fixed_class == "rbc":
+                    clsn = 0
+                else:
+                    raise Exception("wrong label class")
+                xml_container.add_label(sample, x, y, w, h, clsn, creator)
+
+    # writes into disk
+    xml_container.compile(xml_filename)
+    return xml_container
 
 
 TRAIN_DS_CONSTRUCTOR = {"xml_filename":     FFOV_XML,

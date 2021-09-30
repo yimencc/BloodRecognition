@@ -10,8 +10,8 @@ from skimage.transform import resize
 from cccode.math    import sigmoid
 from cccode.image   import Value, Check
 
-from dataset        import ANCHORS
-from models         import YoloV5Model
+from Deeplearning.dataset        import ANCHORS
+from Deeplearning.models         import YoloV5Model
 
 ck = Check()
 vl = Value()

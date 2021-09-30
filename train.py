@@ -7,8 +7,8 @@ import torch
 import numpy as np
 from torch.utils.data import DataLoader
 
-from models     import YoloV5Model
-from dataset    import RBCXmlDataset, TRAIN_DS_CONSTRUCTOR, VALID_DS_CONSTRUCTOR
+from Deeplearning.models     import YoloV5Model
+from Deeplearning.dataset    import BloodSmearDataset, TRAIN_DS_CONSTRUCTOR, VALID_DS_CONSTRUCTOR
 
 print("Torch Version: ",    torch.__version__)
 print("Cuda Available: ",   torch.cuda.is_available())
@@ -277,8 +277,8 @@ def main():
     PLAN_DICT = {"epochs": 100,
                  "batch_size": 8,
                  "storage_mode": "dict",
-                 "train_set": RBCXmlDataset(**TRAIN_DS_CONSTRUCTOR),
-                 "valid_set": RBCXmlDataset(**VALID_DS_CONSTRUCTOR),
+                 "train_set": BloodSmearDataset(**TRAIN_DS_CONSTRUCTOR),
+                 "valid_set": BloodSmearDataset(**VALID_DS_CONSTRUCTOR),
                  "callbacks": "early_stopping",
                  "cb_params": {"patience": 7}}
 

@@ -1,56 +1,20 @@
 import os
 import sys
 from os.path    import join
-from functools  import reduce, partial
 
-import torch
 import numpy as np
 import matplotlib.pyplot as plt
-from torch.utils.data       import DataLoader
 
 from cccode                 import image
-from evaluate               import PredHandle
-from models                 import YoloV5Model
-from dataset                import (RBCXmlDataset, dataset_xml_from_annotations, ANCHORS,
+from Deeplearning.evaluate  import PredHandle
+from Deeplearning.models    import YoloV5Model
+from Deeplearning.dataset   import (ANCHORS, dataset_xml_from_annotations, BloodSmearDataset,
                                     VALID_DS_CONSTRUCTOR, StandardXMLContainer)
 
 
 nx          =   np.newaxis
-ck          =   image.Check()
+ck          =   image.Check(False, False, False)
 MODEL_PATH  =   "..\\data\\models"
-
-
-def sample_analyse(sample, model, thresh):
-    """
-    """
-    inputs, labels = sample["image"], sample["label"]
-    phand = PredHandle(inputs, model(inputs), ANCHORS)      # inputs [1, 1, 320, 320]
-
-    def result_generator(input_tensor):
-        for i, input_img_tensor in enumerate(input_tensor):
-            input_img_numpy = input_img_tensor[0].numpy()
-            label_true = [lb.numpy() for lb in labels[3][i] if any(lb)]
-            label_pred = phand.real_coord_results(i, thresh)
-            yield input_img_numpy, label_true, label_pred
-
-    # fig_inputs = result_generator(inputs)
-    # pred_show(fig_inputs, fig_path="..\\data\\models\\results", time_stamp="", idx=0, display=True)
-
-    fig_inputs = result_generator(inputs)
-    n_label, n_preds = [sum(elm) for elm in zip(*[(len(label), len(preds)) for _, label, preds in fig_inputs])]
-    return n_label, n_preds
-
-
-def yolo_evaluate():
-    thresh = .7
-    yolo_model = None
-    rbcDataset = RBCXmlDataset(**VALID_DS_CONSTRUCTOR)
-    valid_dataloader = DataLoader(rbcDataset, batch_size=8, shuffle=False)
-
-    sample_results_gen = (sample_analyse(sp, yolo_model, thresh) for sp in valid_dataloader)
-    total_label, total_preds = reduce(lambda x, y: (x[0]+y[0], x[1]+y[1]), sample_results_gen)
-    acc = 100*(total_preds-total_label)/total_label
-    print(total_label, total_preds, acc)
 
 
 def pred_show(inputs: list[list], fig_path: str, time_stamp: str,
@@ -96,134 +60,6 @@ def pred_show(inputs: list[list], fig_path: str, time_stamp: str,
         plt.show()
 
 
-class Figure:
-    """
-    Results image display for annotation process
-    """
-    def __init__(self):
-        self.dpi = 150
-        self.crop_rate = (.3/.95, .3/.95)
-        self.crop_fn = partial(image.View.crop, crop_rate=self.crop_rate)
-        self.fig = None
-        self.ax = None
-
-    def figure_params(self, image_shape, constrained=True):
-        pad_ratio = 0.2
-        pxl_num_row, pxl_num_collum = image_shape
-        fig_height, fig_width = ((1 + pad_ratio) * pxl_num_row / self.dpi,
-                                 (1 + pad_ratio) * pxl_num_collum / self.dpi)
-        constrained_layout = True if constrained else False
-        fig_params = {"figsize": (fig_height, fig_width),
-                      "constrained_layout": constrained_layout}
-        return fig_params
-
-    @staticmethod
-    def indicators_setting(ax, ticks=False, spines=False):
-        if not ticks:
-            ax.set_xticks([])
-            ax.set_yticks([])
-        if not spines:
-            for sp in ["top", "bottom", "right", "left"]:
-                ax.spines[sp].set_visible(False)
-        return ax
-
-    def single_image_figure(self, img, fig_name="", cmap="gray", vmin=None, vmax=None, colorbar=False, show=False):
-        # ck.hist(img)
-        fig_params = self.figure_params(img.shape)
-        self.fig, self.ax = plt.subplots(**fig_params)
-        mp = self.ax.imshow(img, cmap=cmap, interpolation="antialiased", vmin=vmin, vmax=vmax)
-
-        self.ax = self.indicators_setting(self.ax)
-        if colorbar:
-            plt.colorbar(mp, ax=self.ax, fraction=.1)
-
-        # Save or Print
-        if fig_name:
-            plt.savefig(fig_name, dpi=self.dpi)
-        if show:
-            plt.show()
-
-    def geometry_plot(self, bg_image, circle_locations, implement="show", **fig_params):
-        fig, ax = plt.subplots(constrained_layout=True, **fig_params)
-        ax.imshow(bg_image, cmap="gray")
-        self.indicators_setting(ax)
-        scale = 320/40
-        for location in circle_locations:
-            # location: (y, x, r)
-            x1, y1, x2, y2 = [elm*scale for elm in location]
-            rect = plt.Rectangle((x1, y1), width=(x2-x1), height=(y2-y1), lw=1.1, fill=False, color="red", alpha=.8)
-            ax.add_patch(rect)
-        if implement == "show":
-            plt.show()
-        else:
-            return fig, ax
-
-
-class PaperFigure3:
-    def __init__(self, batch_size=8):
-        self.thresh = .7
-        self.batch_size = batch_size
-        plan_name = "plan_5.3"
-        model_name = "yolov2_0506-195652.pth"
-
-        self.model = YoloV5Model()
-        cur_model_fname = join(MODEL_PATH, plan_name, model_name)
-        self.model.load_state_dict(torch.load(cur_model_fname))
-
-        rbcDataset = RBCXmlDataset(**VALID_DS_CONSTRUCTOR)
-        self.valid_dataloader = DataLoader(rbcDataset,
-                                           batch_size=batch_size,
-                                           shuffle=False)
-
-    def network_output_conf_map(self):
-        input_image, output_conf_map, label_pred = None, None, None
-        for i, sample in enumerate(self.valid_dataloader):
-            if i == 7:
-                inputs, labels = sample["image"], sample["label"]
-                # inputs [1, 1, 320, 320]
-                phand = PredHandle(self.model(inputs), ANCHORS)
-                phand.decompose()
-
-                input_image = inputs.to("cpu").numpy()[0, 0]
-                output_conf_map = phand.conf[0]
-
-                phand.nms_along_box()
-                label_pred = phand.real_coord_results(0, self.thresh)
-
-        output_conf_map = output_conf_map.squeeze().sum(axis=(-1))
-
-        fig = Figure()
-        for i, img in enumerate([input_image, output_conf_map]):
-            if i == 1:
-                vmin = 0
-                vmax = 1
-            else:
-                vmin = None
-                vmax = None
-            fig.single_image_figure(img, show=True, vmin=vmin, vmax=vmax)
-        fig.geometry_plot(input_image, label_pred)
-
-    def pred_results(self):
-        input_image, output_conf_map, label_pred = None, None, None
-        for i, sample in enumerate(self.valid_dataloader):
-            inputs, labels = sample["image"], sample["label"]
-            # inputs [1, 1, 320, 320]
-            phand = PredHandle(self.model(inputs), ANCHORS)
-            phand.decompose()
-
-            for n in range(self.batch_size):
-                input_image = inputs.to("cpu").numpy()[n, 0]
-                output_conf_map = phand.conf[0]
-
-                phand.nms_along_box()
-                label_pred = phand.real_coord_results(0, self.thresh)
-
-
-def figure_plot():
-    fig3 = PaperFigure3()
-    fig3.network_output_conf_map()
-
-
 def dataset_construct():
     """
     Date: 2021-09-09
@@ -247,7 +83,21 @@ def dataset_construct():
     container.toyolo(yolo_path)
 
 
+def image_splitting_test():
+    """
+    Date: 2021-09-11
+    """
+    from Deeplearning.dataset import StandardXMLContainer
+    source_root     =   "D:\\Workspace\\RBC Recognition\\datasets"
+    ffov_xml        =   join(source_root, "20210902 BloodSmear01", "BloodSmear20210902_01.xml")
+    split_root      =   join(source_root, "20210902 BloodSmear01", "CVAT SourceData-SplitSamples")
+
+    xml_docs        =   StandardXMLContainer.fromXML(ffov_xml)
+    sample_set      =   xml_docs.sample_splitting(split_root=split_root, n_batch=8)
+    print(sample_set.shape)
+
+
 if __name__ == "__main__":
     """Run Entrance"""
     print(sys.version_info, "\n", sys.version)
-    dataset_construct()
+    image_splitting_test()
