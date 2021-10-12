@@ -1,24 +1,30 @@
 import os
 import sys
-from os.path    import join
+import time
+import logging.config
+from os.path import join
 
 import numpy as np
 import matplotlib.pyplot as plt
 
-from cccode                 import image
-from Deeplearning.evaluate  import PredHandle
-from Deeplearning.models    import YoloV5Model
-from Deeplearning.dataset   import (ANCHORS, dataset_xml_from_annotations, BloodSmearDataset,
-                                    VALID_DS_CONSTRUCTOR, StandardXMLContainer)
+from cccode                     import image
+# from Deeplearning.evaluate      import PredHandle
+# from Deeplearning.util.models   import YoloV5Model
+from Deeplearning.util.dataset  import (dataset_xml_from_annotations, StandardXMLContainer, DATA_ROOT)
 
-
+timeStamp   =   time.strftime("%Y%m%d-%H%M%S")
 nx          =   np.newaxis
 ck          =   image.Check(False, False, False)
 MODEL_PATH  =   "..\\data\\models"
 
+# Logging Config ---------------------------------------------------------------------------------------
+logging.config.fileConfig(".\\log\\config\\util.conf")
+logger      =   logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+# Logging Config Ended ---------------------------------------------------------------------------------
 
-def pred_show(inputs: list[list], fig_path: str, time_stamp: str,
-              idx: int, display: bool, save_fig=False):
+
+def pred_show(inputs: list[list], fig_path: str, time_stamp: str, idx: int, display: bool, save_fig=False):
     """
     Evaluate the model accuracy, this func will plot several figures,
     each figure contain eight rbc recognition results, both for
@@ -61,11 +67,9 @@ def pred_show(inputs: list[list], fig_path: str, time_stamp: str,
 
 
 def dataset_construct():
-    """
-    Date: 2021-09-09
+    """ Date: 2021-09-09
     Constructing dataset from generated modalities and automatic labeled annotations,
-    for subsequent manual data annotating and network training.
-    """
+    for subsequent manual data annotating and network training. """
     sources_root    =   "D:\\Database\\prism_dual-tie_dataset\\20210902 RBC Detection"
     targets_root    =   "D:\\Workspace\\RBC Recognition\\datasets\\20210902 BloodSmear01"
 
@@ -84,20 +88,49 @@ def dataset_construct():
 
 
 def image_splitting_test():
-    """
-    Date: 2021-09-11
-    """
-    from Deeplearning.dataset import StandardXMLContainer
+    """ Date: 2021-09-11 """
+    from Deeplearning.util.dataset import StandardXMLContainer
     source_root     =   "D:\\Workspace\\RBC Recognition\\datasets"
     ffov_xml        =   join(source_root, "20210902 BloodSmear01", "BloodSmear20210902_01.xml")
     split_root      =   join(source_root, "20210902 BloodSmear01", "CVAT SourceData-SplitSamples")
 
     xml_docs        =   StandardXMLContainer.fromXML(ffov_xml)
-    sample_set      =   xml_docs.sample_splitting(split_root=split_root, n_batch=8)
-    print(sample_set.shape)
+    xml_docs.sample_slicing(split_root=split_root, n_batch=8)
+
+
+def issue_20211002_01():
+    """
+    Because of the filenames inside the annotation XML files don't matched the accurate filepath
+    of exact file after the original files is moved, the file reader couldn't found the files according
+    to current given path. The file path recording should be corrected.
+    """
+    # Read the XML file
+    from xml.etree import ElementTree as ET
+    dstXmlFilename  =   join(DATA_ROOT, "20210105 BloodSmear\\fov_annotations.xml")
+
+    etree = ET.parse(dstXmlFilename)
+    stdContainer = StandardXMLContainer()
+    stdContainer.root = etree.getroot()
+
+    err_strings = "data\\2021-01-05"
+    acc_folder  = "datasets\\20210105 BloodSmear"
+    for sample in stdContainer.root:
+        logger.debug(f"This item in stdContainer is a {type(sample)}")
+        for tag in ["amp_fullname", "pha_fullname", "over_fullname", "under_fullname"]:
+            element = sample.find(tag)
+            try:
+                assert err_strings in element.text
+                element.text = element.text.replace(err_strings, acc_folder)
+                assert os.path.isfile(element.text)
+            except Exception as e:
+                logger.exception(e)
+
+    xmlStrings = ET.tostring(stdContainer.root, encoding="utf-8")
+    with open(dstXmlFilename, "wb") as f:
+        f.write(xmlStrings)
 
 
 if __name__ == "__main__":
     """Run Entrance"""
     print(sys.version_info, "\n", sys.version)
-    image_splitting_test()
+    issue_20211002_01()

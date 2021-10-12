@@ -3,15 +3,15 @@ from os.path import join
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
-from numpy import ndarray
-from skimage.io import imread
-from skimage.transform import resize
+from numpy              import ndarray
+from skimage.io         import imread
+from skimage.transform  import resize
 
-from cccode.math    import sigmoid
-from cccode.image   import Value, Check
+from cccode.math        import sigmoid
+from cccode.image       import Value, Check
 
-from Deeplearning.dataset        import ANCHORS
-from Deeplearning.models         import YoloV5Model
+from Deeplearning.util.dataset  import ANCHORS
+from Deeplearning.util.models   import YoloV5Model
 
 ck = Check()
 vl = Value()

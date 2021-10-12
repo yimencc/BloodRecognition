@@ -1,8 +1,6 @@
 import torch
 import torch.nn as nn
 
-from Deeplearning.dataset import GRIDSZ
-
 
 class CAB(nn.Module):
     # channel attention
@@ -15,8 +13,8 @@ class CAB(nn.Module):
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
-        poolout = self.fc2(self.relu(self.fc1(self.maxpooling(x))))
-        return self.sigmoid(poolout)
+        pool_out = self.fc2(self.relu(self.fc1(self.maxpooling(x))))
+        return self.sigmoid(pool_out)
 
 
 class SAB(nn.Module):
@@ -84,12 +82,12 @@ class ConvBlock(nn.Module):
 
 
 class YoloV5Model(nn.Module):
-    def __init__(self, n_box=4, n_cls=4, attention_layer=6):
+    def __init__(self, n_box=4, n_cls=3, grid_size=40, attention_layer=6):
         super(YoloV5Model, self).__init__()
 
-        self.gridsz = GRIDSZ
-        self.n_box = n_box
-        self.n_cls = n_cls
+        self.gridsz =   grid_size
+        self.n_box  =   n_box
+        self.n_cls  =   n_cls
         self.attention_layer = attention_layer
 
         # layers define
@@ -121,8 +119,7 @@ class YoloV5Model(nn.Module):
         self.bn_6 = nn.BatchNorm2d(256)
 
         # unit 7  (b, 256, 40, 40) -> (b, 4*9, 40, 40)
-        self.conv_7 = nn.Conv2d(256, self.n_box*(5+self.n_cls), (1, 1), stride=(1, 1),
-                                padding_mode='zeros', bias=False)
+        self.conv_7 = nn.Conv2d(256, self.n_box*(5+self.n_cls), (1, 1), stride=(1, 1), padding_mode='zeros', bias=False)
 
         # Channel and Spatial attention
         # The 'in_feature' param of CAB in instance generating is decided according to
@@ -174,12 +171,5 @@ class YoloV5Model(nn.Module):
             x = self.cab(x) * x
             x = self.sab(x) * x
 
-        x = x.reshape(-1, self.n_box, self.n_cls + 5, 40, 40)
+        x = x.reshape(-1, self.n_box, self.n_cls+5, self.gridsz, self.gridsz)
         return x.permute(0, 3, 4, 1, 2)
-
-
-if __name__ == "__main__":
-    input_tensor = torch.randn(1, 4, 320, 320)
-    model = YoloV5Model(attention_layer=7)
-    output = model(input_tensor)
-    print(output.shape)

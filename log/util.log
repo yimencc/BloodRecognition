@@ -1,0 +1,112 @@
+[I 2021-09-30 16:47:29,166 util.py 113] My first logger
+[D 2021-09-30 16:47:29,167 util.py 114] Some thing should be notice
+[W 2021-09-30 16:47:29,167 util.py 115] Sounds like not god?
+[E 2021-09-30 16:47:29,167 util.py 116] There is an error!!
+[I 2021-09-30 16:48:06,830 util.py 113] My first logger
+[D 2021-09-30 16:48:06,831 util.py 114] Some thing should be notice
+[W 2021-09-30 16:48:06,831 util.py 115] Sounds like not god?
+[E 2021-09-30 16:48:06,831 util.py 116] There is an error!!
+[D 20210930-173749 util.py 105] something not good?
+[D 2021-09-30 17:38:38,210 util.py 105] something not good?
+[D 2021-10-02 14:22:22,486 dataset.py 567] Debug test
+[D 2021-10-02 14:48:53,452 util.py 120] something not good?
+[D 2021-10-02 15:19:31,482 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,484 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,484 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,486 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,486 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,486 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,488 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,488 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,488 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,490 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,490 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,490 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,492 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,492 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,492 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,494 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,494 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,496 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,496 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,496 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,498 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,498 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,498 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,500 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,500 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,500 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,502 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,502 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,502 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,504 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,504 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,506 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,506 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,506 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,508 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,508 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,510 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,510 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,512 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,512 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,514 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,514 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,516 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,516 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,516 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,518 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,518 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,520 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,520 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,522 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,522 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,524 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,524 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,526 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,526 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,526 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,528 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,528 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,530 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,530 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,532 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,532 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,534 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,534 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,534 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,536 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,538 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,538 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,538 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,540 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,542 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,542 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,544 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,544 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,546 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,546 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,548 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,548 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,550 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,550 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,552 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,552 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,554 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,554 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,556 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,556 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,558 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,558 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,560 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,560 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,562 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,562 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,564 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,566 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,566 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,566 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,568 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,570 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[D 2021-10-02 15:19:31,570 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
+[I 2021-10-02 15:24:25,522 util.py 130] b'<FFoV_Annotations>\n\t<sample>\n\t\t<image_idx>0</image_idx>\n\t\t<amp_fullname>D:\\Workspace\\RBC Recognition\\datasets\\20210105 BloodSmear\\amplitude\\amp_00.tif</amp_fullname>\n\t\t<pha_fullname>D:\\Workspace\\RBC Recognition\\datasets\\20210105 BloodSmear\\phase\\pha_00.tif</pha_fullname>\n\t\t<over_fullname>D:\\Workspace\\RBC Recognition\\datasets\\20210105 BloodSmear\\over-focus\\over_00.tif</over_fullname>\n\t\t<under_fullname>D:\\Workspace\\RBC Recognition\\datasets\\20210105 BloodSmear\\under-focus\\under_00.tif</under_fullna'

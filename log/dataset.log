@@ -1,0 +1,336 @@
+[E 2021-10-02 14:27:35,227 dataset.py 572] Exception thrown in SimpleITK ImageFileReader_Execute: D:\a\1\sitk\Code\IO\src\sitkImageReaderBase.cxx:97:
+sitk::ERROR: The file "D:\Workspace\RBC Recognition\data\2021-01-05\amplitude\amp_00.tif" does not exist.
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 569, in <module>
+    bsDataset = BloodSmearDataset(**TRAIN_DS_CONSTRUCTOR)
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 451, in __init__
+    sample_container                =   StandardXMLContainer.fromXML(xml_filename)
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 209, in fromXML
+    container.samples   =   [MultimodalSample.from_element(elm) for elm in container.root.findall("sample")]
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 209, in <listcomp>
+    container.samples   =   [MultimodalSample.from_element(elm) for elm in container.root.findall("sample")]
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 88, in from_element
+    mm_sample.amplitude  =   imread(amp_fullname,    True, "simpleitk")
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\io\_io.py", line 48, in imread
+    img = call_plugin('imread', fname, plugin=plugin, **plugin_args)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\io\manage_plugins.py", line 207, in call_plugin
+    return func(*args, **kwargs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\io\_plugins\simpleitk_plugin.py", line 15, in imread
+    sitk_img = sitk.ReadImage(fname)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\SimpleITK\extra.py", line 346, in ReadImage
+    return reader.Execute()
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\SimpleITK\SimpleITK.py", line 8015, in Execute
+    return _SimpleITK.ImageFileReader_Execute(self)
+RuntimeError: Exception thrown in SimpleITK ImageFileReader_Execute: D:\a\1\sitk\Code\IO\src\sitkImageReaderBase.cxx:97:
+sitk::ERROR: The file "D:\Workspace\RBC Recognition\data\2021-01-05\amplitude\amp_00.tif" does not exist.
+[E 2021-10-02 14:48:48,520 dataset.py 572] Exception thrown in SimpleITK ImageFileReader_Execute: D:\a\1\sitk\Code\IO\src\sitkImageReaderBase.cxx:97:
+sitk::ERROR: The file "D:\Workspace\RBC Recognition\data\2021-01-05\amplitude\amp_00.tif" does not exist.
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 569, in <module>
+    bsDataset = BloodSmearDataset(**TRAIN_DS_CONSTRUCTOR)
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 451, in __init__
+    sample_container                =   StandardXMLContainer.fromXML(xml_filename)
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 209, in fromXML
+    container.samples   =   [MultimodalSample.from_element(elm) for elm in container.root.findall("sample")]
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 209, in <listcomp>
+    container.samples   =   [MultimodalSample.from_element(elm) for elm in container.root.findall("sample")]
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 88, in from_element
+    mm_sample.amplitude  =   imread(amp_fullname,    True, "simpleitk")
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\io\_io.py", line 48, in imread
+    img = call_plugin('imread', fname, plugin=plugin, **plugin_args)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\io\manage_plugins.py", line 207, in call_plugin
+    return func(*args, **kwargs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\io\_plugins\simpleitk_plugin.py", line 15, in imread
+    sitk_img = sitk.ReadImage(fname)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\SimpleITK\extra.py", line 346, in ReadImage
+    return reader.Execute()
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\SimpleITK\SimpleITK.py", line 8015, in Execute
+    return _SimpleITK.ImageFileReader_Execute(self)
+RuntimeError: Exception thrown in SimpleITK ImageFileReader_Execute: D:\a\1\sitk\Code\IO\src\sitkImageReaderBase.cxx:97:
+sitk::ERROR: The file "D:\Workspace\RBC Recognition\data\2021-01-05\amplitude\amp_00.tif" does not exist.
+[E 2021-10-02 15:32:52,030 dataset.py 575] fromXML() missing 1 required positional argument: 'read_image'
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 572, in <module>
+    bsDataset = BloodSmearDataset(**TRAIN_DS_CONSTRUCTOR)
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 454, in __init__
+    sample_container                =   StandardXMLContainer.fromXML(xml_filename)
+TypeError: fromXML() missing 1 required positional argument: 'read_image'
+[E 2021-10-02 15:33:16,920 dataset.py 575] 'NoneType' object has no attribute 'find'
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 572, in <module>
+    bsDataset = BloodSmearDataset(**TRAIN_DS_CONSTRUCTOR)
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 454, in __init__
+    sample_container                =   StandardXMLContainer.fromXML(xml_filename)
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 211, in fromXML
+    container.samples   =   [MultimodalSample.from_element(elm, read_image)
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 211, in <listcomp>
+    container.samples   =   [MultimodalSample.from_element(elm, read_image)
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 97, in from_element
+    height, width   =   [int(img_shape_elm.find(tag).text) for tag in ["height", "width"]]
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 97, in <listcomp>
+    height, width   =   [int(img_shape_elm.find(tag).text) for tag in ["height", "width"]]
+AttributeError: 'NoneType' object has no attribute 'find'
+[E 2021-10-02 15:53:41,288 dataset.py 578] too many values to unpack (expected 2)
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 575, in <module>
+    bsDataset = BloodSmearDataset(**TRAIN_DS_CONSTRUCTOR)
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 459, in __init__
+    self.modalities, self.labels    =   self.load_datasets(sample_sets)
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 468, in load_datasets
+    labels_array = subview_sample.labels_array
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 182, in label_reshape
+    for cls, bbox in self.labels:
+ValueError: too many values to unpack (expected 2)
+[I 2021-10-02 16:00:01,255 dataset.py 572] dataset obj:<__main__.BloodSmearDataset object at 0x0000025AC7ACF850>, type:<class '__main__.BloodSmearDataset'>
+[I 2021-10-02 16:13:23,898 dataset.py 582] dataset obj:<Class 'BloodSmearDataset'>
+	Source: D:\Workspace\RBC Recognition\datasets\20210105 BloodSmear\fov_annotations.xml
+	Modalities: <class 'numpy.ndarray'> * 891, shape-(4, 340, 340)
+	Labels: <class 'numpy.ndarray'> * 891, shape:-(336, 5), type:<class '__main__.BloodSmearDataset'>
+[I 2021-10-02 16:13:23,900 dataset.py 583] <Class 'BloodSmearDataset'>
+	Source: D:\Workspace\RBC Recognition\datasets\20210105 BloodSmear\fov_annotations.xml
+	Modalities: <class 'numpy.ndarray'> * 891, shape-(4, 340, 340)
+	Labels: <class 'numpy.ndarray'> * 891, shape:-(336, 5)
+[I 2021-10-02 16:21:31,468 dataset.py 586] dataset obj:<Class 'BloodSmearDataset'>
+	Source: D:\Workspace\RBC Recognition\datasets\20210105 BloodSmear\fov_annotations.xml
+	Modalities: <class 'numpy.ndarray'> * 891, shape-(4, 340, 340)
+	Labels: <class 'numpy.ndarray'> * 891, shape:-(336, 5), type:<class '__main__.BloodSmearDataset'>
+[I 2021-10-02 16:21:31,470 dataset.py 587] <Class 'BloodSmearDataset'>
+	Source: D:\Workspace\RBC Recognition\datasets\20210105 BloodSmear\fov_annotations.xml
+	Modalities: <class 'numpy.ndarray'> * 891, shape-(4, 340, 340)
+	Labels: <class 'numpy.ndarray'> * 891, shape:-(336, 5)
+[I 2021-10-02 16:37:18,028 dataset.py 599] dataset obj:<Class 'BloodSmearDataset'>
+	Source: D:\Workspace\RBC Recognition\datasets\20210105 BloodSmear\fov_annotations.xml
+	Modalities: <class 'numpy.ndarray'> * 891, shape-(4, 340, 340)
+	Labels: <class 'numpy.ndarray'> * 891, shape:-(336, 5), type:<class '__main__.BloodSmearDataset'>
+[I 2021-10-02 16:37:18,032 dataset.py 600] <Class 'BloodSmearDataset'>
+	Source: D:\Workspace\RBC Recognition\datasets\20210105 BloodSmear\fov_annotations.xml
+	Modalities: <class 'numpy.ndarray'> * 891, shape-(4, 340, 340)
+	Labels: <class 'numpy.ndarray'> * 891, shape:-(336, 5)
+[I 2021-10-02 16:37:54,206 dataset.py 599] dataset obj:<Class 'BloodSmearDataset'>
+	Source: D:\Workspace\RBC Recognition\datasets\20210105 BloodSmear\fov_annotations.xml
+	Modalities: <class 'numpy.ndarray'> * 891, shape-(4, 340, 340)
+	Labels: <class 'numpy.ndarray'> * 891, shape:-(336, 5), type:<class '__main__.BloodSmearDataset'>
+[I 2021-10-02 16:37:54,206 dataset.py 600] <Class 'BloodSmearDataset'>
+	Source: D:\Workspace\RBC Recognition\datasets\20210105 BloodSmear\fov_annotations.xml
+	Modalities: <class 'numpy.ndarray'> * 891, shape-(4, 340, 340)
+	Labels: <class 'numpy.ndarray'> * 891, shape:-(336, 5)
+[I 2021-10-02 16:39:41,792 dataset.py 599] <Class 'BloodSmearDataset'>
+	Source: D:\Workspace\RBC Recognition\datasets\20210105 BloodSmear\fov_annotations.xml
+	Modalities: <class 'numpy.ndarray'> * 891, shape-(4, 340, 340)
+	Labels: <class 'numpy.ndarray'> * 891, shape:-(336, 5)
+[I 2021-10-02 16:40:24,518 dataset.py 599] <Class 'BloodSmearDataset'>
+	Source: D:\Workspace\RBC Recognition\datasets\20210105 BloodSmear\fov_annotations.xml
+	Modalities: <class 'numpy.ndarray'> * 891, shape-(4, 340, 340)
+	Labels: <class 'numpy.ndarray'> * 891, shape:-(336, 5)
+[I 2021-10-02 16:41:01,295 dataset.py 599] <Class 'BloodSmearDataset'>
+	Source: D:\Workspace\RBC Recognition\datasets\20210105 BloodSmear\fov_annotations.xml
+	Modalities: <class 'numpy.ndarray'> * 891, shape-(4, 340, 340)
+	Labels: <class 'numpy.ndarray'> * 891, shape:-(336, 5)
+[E 2021-10-02 16:41:01,345 dataset.py 602] 
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 600, in <module>
+    print(next(iter(bsDataset)))
+StopIteration
+[E 2021-10-02 16:41:32,141 dataset.py 601] 
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 599, in <module>
+    print(next(iter(bsDataset)))
+StopIteration
+[E 2021-10-02 19:03:26,210 dataset.py 602] index 41 is out of bounds for axis 0 with size 40
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 599, in <module>
+    for i, sample in enumerate(bsLoader):
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\dataloader.py", line 517, in __next__
+    data = self._next_data()
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\dataloader.py", line 557, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\_utils\fetch.py", line 44, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\_utils\fetch.py", line 44, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 575, in __getitem__
+    label   = self.target_transform(label)
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 505, in target_transform
+    cls.process_true_boxes(label, ANCHORS, IMGSZ))
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 479, in process_true_boxes
+    detector_mask[y_coord, x_coord, best_anchor] = 1
+IndexError: index 41 is out of bounds for axis 0 with size 40
+[E 2021-10-03 10:27:30,930 dataset.py 632] unsupported operand type(s) for /: 'tuple' and 'tuple'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/dataset.py", line 627, in <module>
+    bsDataset   =   BloodSmearDataset(**TRAIN_DS_CONSTRUCTOR)
+  File "D:/Workspace/RBC Recognition/Deeplearning/dataset.py", line 543, in __init__
+    self.modalities, self.labels    =   self.load_datasets(sample_sets)
+  File "D:/Workspace/RBC Recognition/Deeplearning/dataset.py", line 550, in load_datasets
+    modalities, labels = subview_sample.output_labeled_data(self.destined_image_shape)
+  File "D:/Workspace/RBC Recognition/Deeplearning/dataset.py", line 194, in output_labeled_data
+    self.labels[i] = lbl[0], *[mag*dst_image_shape/self.image_shape for mag in lbl[1:]]
+  File "D:/Workspace/RBC Recognition/Deeplearning/dataset.py", line 194, in <listcomp>
+    self.labels[i] = lbl[0], *[mag*dst_image_shape/self.image_shape for mag in lbl[1:]]
+TypeError: unsupported operand type(s) for /: 'tuple' and 'tuple'
+[E 2021-10-03 10:38:16,007 dataset.py 634] index 15 is out of bounds for dimension 3 with size 5
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/dataset.py", line 631, in <module>
+    for _, spl in enumerate(bsLoader):
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\dataloader.py", line 517, in __next__
+    data = self._next_data()
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\dataloader.py", line 557, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\_utils\fetch.py", line 44, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\_utils\fetch.py", line 44, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "D:/Workspace/RBC Recognition/Deeplearning/dataset.py", line 607, in __getitem__
+    label   = self.target_transform(label)
+  File "D:/Workspace/RBC Recognition/Deeplearning/dataset.py", line 534, in target_transform
+    class_oh = oh_base.scatter_(-1, gt_box[..., 4:].to(torch.int64), 1)
+RuntimeError: index 15 is out of bounds for dimension 3 with size 5
+[E 2021-10-03 10:48:04,011 dataset.py 636] Index tensor must have the same number of dimensions as self tensor
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/dataset.py", line 633, in <module>
+    for _, spl in enumerate(bsLoader):
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\dataloader.py", line 517, in __next__
+    data = self._next_data()
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\dataloader.py", line 557, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\_utils\fetch.py", line 44, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\_utils\fetch.py", line 44, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "D:/Workspace/RBC Recognition/Deeplearning/dataset.py", line 609, in __getitem__
+    label   = self.target_transform(label)
+  File "D:/Workspace/RBC Recognition/Deeplearning/dataset.py", line 536, in target_transform
+    class_oh = oh_base.scatter_(-1, gt_box[..., cls_loc].to(torch.int64), 1)
+RuntimeError: Index tensor must have the same number of dimensions as self tensor
+[E 2021-10-03 10:51:46,913 dataset.py 636] Invalid shape (4, 320, 320) for image data
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 634, in <module>
+    BloodSmearDataset.single_sample_visualization(spl["modalities"], spl["labels"])
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 578, in single_sample_visualization
+    ax.imshow(arr, cmap="gray")
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\matplotlib\__init__.py", line 1352, in inner
+    return func(ax, *map(sanitize_sequence, args), **kwargs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\matplotlib\axes\_axes.py", line 5589, in imshow
+    im.set_data(X)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\matplotlib\image.py", line 709, in set_data
+    raise TypeError("Invalid shape {} for image data"
+TypeError: Invalid shape (4, 320, 320) for image data
+[E 2021-10-03 10:52:47,103 dataset.py 636] too many values to unpack (expected 5)
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 634, in <module>
+    BloodSmearDataset.single_sample_visualization(spl["modalities"][0], spl["labels"][0])
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 584, in single_sample_visualization
+    for cls, x, y, w, h in label:
+ValueError: too many values to unpack (expected 5)
+[E 2021-10-04 17:33:27,622 dataset.py 595] too many values to unpack (expected 5)
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 593, in <module>
+    BloodSmearDataset.single_sample_visualization(spl["modalities"][0], spl["labels"][0])
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 569, in single_sample_visualization
+    for cls, x, y, w, h in label:
+ValueError: too many values to unpack (expected 5)
+[E 2021-10-04 17:48:23,933 dataset.py 595] too many values to unpack (expected 5)
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 593, in <module>
+    BloodSmearDataset.single_sample_visualization(spl["modalities"][0], spl["labels"][0])
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 569, in single_sample_visualization
+    for cls, x, y, w, h in label:
+ValueError: too many values to unpack (expected 5)
+[E 2021-10-04 17:50:30,473 dataset.py 595] index 3 is out of bounds for dimension 0 with size 1
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 593, in <module>
+    BloodSmearDataset.single_sample_visualization(spl["modalities"][0], spl["labels"][0][3][0])
+IndexError: index 3 is out of bounds for dimension 0 with size 1
+[E 2021-10-04 17:52:25,957 dataset.py 595] only integer tensors of a single element can be converted to an index
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 593, in <module>
+    BloodSmearDataset.single_sample_visualization(spl["modalities"][0], spl["labels"][3][0])
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 570, in single_sample_visualization
+    color = ("green", "blue", "yellow")[cls]
+TypeError: only integer tensors of a single element can be converted to an index
+[E 2021-10-04 17:53:19,141 dataset.py 595] only integer tensors of a single element can be converted to an index
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 593, in <module>
+    BloodSmearDataset.single_sample_visualization(spl["modalities"][0], spl["labels"][3][0])
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 570, in single_sample_visualization
+    color = ("green", "blue", "yellow")[cls]
+TypeError: only integer tensors of a single element can be converted to an index
+[E 2021-10-04 17:54:31,140 dataset.py 596] tuple indices must be integers or slices, not numpy.float32
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 593, in <module>
+    BloodSmearDataset.single_sample_visualization(spl["modalities"][0].detach().numpy(),
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 570, in single_sample_visualization
+    color = ("green", "blue", "yellow")[cls]
+TypeError: tuple indices must be integers or slices, not numpy.float32
+[E 2021-10-05 09:57:10,988 dataset.py 602] scatter_(): Expected dtype int64 for index.
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 598, in <module>
+    for batch_sample in bsLoader:
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\dataloader.py", line 517, in __next__
+    data = self._next_data()
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\dataloader.py", line 557, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\_utils\fetch.py", line 44, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\_utils\fetch.py", line 44, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 555, in __getitem__
+    labels   = self.target_transform(labels)
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 500, in target_transform
+    class_oh = oh_base.scatter_(-1, ground_truth_box[..., cls_loc:cls_loc+1].to(torch.int32), 1)
+IndexError: scatter_(): Expected dtype int64 for index.
+[E 2021-10-05 09:57:35,101 dataset.py 602] too many values to unpack (expected 5)
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 600, in <module>
+    BloodSmearDataset.single_sample_visualization(bt_modalities[0].numpy(), bt_modalities[3][0].numpy())
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 570, in single_sample_visualization
+    for cls, x, y, w, h in label:
+ValueError: too many values to unpack (expected 5)
+[E 2021-10-05 09:59:24,197 dataset.py 602] tuple index out of range
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 600, in <module>
+    BloodSmearDataset.single_sample_visualization(bt_modalities[0].numpy(), bt_labels[3][0].numpy())
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 571, in single_sample_visualization
+    color = ("green", "blue", "yellow")[int(cls)]
+IndexError: tuple index out of range
+[E 2021-10-07 11:02:26,800 dataset.py 596] zeros_like(): argument 'input' (position 1) must be Tensor, not numpy.ndarray
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 592, in <module>
+    for batch_sample in bsLoader:
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\dataloader.py", line 517, in __next__
+    data = self._next_data()
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\dataloader.py", line 557, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\_utils\fetch.py", line 44, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\_utils\fetch.py", line 44, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 547, in __getitem__
+    labels   = self.target_transform(labels)
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 496, in target_transform
+    return toTensor32(cls.process_true_boxes(label, ANCHORS, DST_IMGSZ, cls_loc))
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 462, in process_true_boxes
+    onehot_base     =   torch.tile(torch.zeros_like(detect_mask), (1, 1, 1, 5))
+TypeError: zeros_like(): argument 'input' (position 1) must be Tensor, not numpy.ndarray
+[E 2021-10-07 21:41:51,610 dataset.py 593] tuple index out of range
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/dataset.py", line 591, in <module>
+    single_sample_visualization(bt_modalities[0].numpy(), bt_labels[3][0].numpy())
+  File "D:\Workspace\RBC Recognition\Deeplearning\visualization.py", line 24, in single_sample_visualization
+    color = ("green", "blue", "yellow", "red", "pink")[int(cls)]
+IndexError: tuple index out of range
+[E 2021-10-08 14:46:52,542 dataset.py 634] an integer is required (got type tuple)
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 626, in <module>
+    newDataset = BloodSmearDataset.from_cache(dataset_cachefile,
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 559, in from_cache
+    dataset = cls(xml_filename=cache_dict["src_filename"], image_transform=image_transform,
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 525, in __init__
+    self.modalities, self.labels    =   self.load_datasets(xml_filename)
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 577, in load_datasets
+    sample_modalities, sample_labels = subviewSample.output_labeled_data(self.destined_image_shape)
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 184, in output_labeled_data
+    self.set_modalities(*[resize(img, dst_image_shape) for img in self.modalities])
+  File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 184, in <listcomp>
+    self.set_modalities(*[resize(img, dst_image_shape) for img in self.modalities])
+TypeError: an integer is required (got type tuple)

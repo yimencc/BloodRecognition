@@ -1,0 +1,284 @@
+[E 2021-10-07 14:38:35,811 train.py 313] CUDA error: device-side assert triggered
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 310, in <module>
+    train_plan.execute(learning_rates=[3e-4], decay_rates=[0.03], patience=7)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 275, in execute
+    self.training(lr, decay_rate)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 203, in training
+    train_loop(self.train_loader, self.model, loss_fn, optimizer, decay_rate)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 115, in train_loop
+    loss        =   loss_fn(pred, y)
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 199, in __call__
+    self.obj_loss = 5*self.object_loss() + self.non_object_loss()
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 102, in object_loss
+    ious = compute_iou(x1, y1, w1, h1, x2, y2, w2, h2).unsqueeze(-1)
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 28, in compute_iou
+    union = w1 * h1 + w2 * h2 - inter
+RuntimeError: CUDA error: device-side assert triggered
+[E 2021-10-07 15:33:44,022 train.py 313] 'YoloLoss' object has no attribute 'class_loss'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 310, in <module>
+    train_plan.execute(learning_rates=[3e-4], decay_rates=[0.03], patience=7)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 275, in execute
+    self.training(lr, decay_rate)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 203, in training
+    train_loop(self.train_loader, self.model, loss_fn, optimizer, decay_rate)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 115, in train_loop
+    loss        =   loss_fn(pred, y, ANCHORS)
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 198, in __call__
+    + weights["cls"] * self.class_loss()
+AttributeError: 'YoloLoss' object has no attribute 'class_loss'
+[E 2021-10-07 15:37:43,067 train.py 313] CUDA error: device-side assert triggered
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 310, in <module>
+    train_plan.execute(learning_rates=[3e-4], decay_rates=[0.03], patience=7)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 275, in execute
+    self.training(lr, decay_rate)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 203, in training
+    train_loop(self.train_loader, self.model, loss_fn, optimizer, decay_rate)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 115, in train_loop
+    loss        =   loss_fn(pred, y, ANCHORS)
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 199, in __call__
+    + weights["obj"] * self.object_loss()
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 99, in object_loss
+    ious = compute_iou(x1, y1, w1, h1, x2, y2, w2, h2).unsqueeze(-1)
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 14, in compute_iou
+    xmin1 = x1 - 0.5 * w1
+RuntimeError: CUDA error: device-side assert triggered
+[E 2021-10-07 16:09:10,685 train.py 313] CUDA error: device-side assert triggered
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 310, in <module>
+    train_plan.execute(learning_rates=[3e-4], decay_rates=[0.03], patience=7)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 275, in execute
+    self.training(lr, decay_rate)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 203, in training
+    train_loop(self.train_loader, self.model, loss_fn, optimizer, decay_rate)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 115, in train_loop
+    loss        =   loss_fn(pred, y, ANCHORS)
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 200, in __call__
+    + weights["non_obj"] * self.non_object_loss())
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 112, in non_object_loss
+    pred_wh_half = pred_wh / 2.
+RuntimeError: CUDA error: device-side assert triggered
+[E 2021-10-07 16:14:31,263 train.py 313] CUDA error: device-side assert triggered
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 310, in <module>
+    train_plan.execute(learning_rates=[3e-4], decay_rates=[0.03], patience=7)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 275, in execute
+    self.training(lr, decay_rate)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 203, in training
+    train_loop(self.train_loader, self.model, loss_fn, optimizer, decay_rate)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 115, in train_loop
+    loss        =   loss_fn(pred, y, ANCHORS)
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 199, in __call__
+    + weights["obj"] * self.object_loss()
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 103, in object_loss
+    obj_loss = torch.sum(self.mask*torch.square(ious-self.pred_conf))/(self.num_obj + 1e-6)
+RuntimeError: CUDA error: device-side assert triggered
+[E 2021-10-08 10:42:59,742 train.py 314] 'list' object has no attribute 'shape'
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 311, in <module>
+    train_plan.execute(learning_rates=[3e-4], decay_rates=[0.03], patience=7)
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 276, in execute
+    self.training(lr, decay_rate)
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 204, in training
+    train_loop(self.train_loader, self.model, loss_fn, optimizer, decay_rate)
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 116, in train_loop
+    loss        =   loss_fn(pred, y)
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 226, in __call__
+    pred = ModelOutput(y_pred, self.grid_size, self.anchors, self.n_classes, self.device)
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 53, in __init__
+    if len(anchors.shape) != 2:
+AttributeError: 'list' object has no attribute 'shape'
+[E 2021-10-08 10:44:16,596 train.py 314] Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 311, in <module>
+    train_plan.execute(learning_rates=[3e-4], decay_rates=[0.03], patience=7)
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 276, in execute
+    self.training(lr, decay_rate)
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 204, in training
+    train_loop(self.train_loader, self.model, loss_fn, optimizer, decay_rate)
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 116, in train_loop
+    loss        =   loss_fn(pred, y)
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 229, in __call__
+    coord_loss  =   self.coordinate_loss(truth_xy=truth_xy, pred_xy=pred.xy, truth_wh=truth_wh,
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 71, in xy
+    return xy_grid + torch.sigmoid(xy_bias)
+RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+[E 2021-10-08 10:45:19,552 train.py 314] Expected target size (8, 40, 4, 4), got torch.Size([8, 40, 40, 4, 3])
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 311, in <module>
+    train_plan.execute(learning_rates=[3e-4], decay_rates=[0.03], patience=7)
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 276, in execute
+    self.training(lr, decay_rate)
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 204, in training
+    train_loop(self.train_loader, self.model, loss_fn, optimizer, decay_rate)
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 116, in train_loop
+    loss        =   loss_fn(pred, y)
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 232, in __call__
+    class_loss  =   self.class_loss(truth_classes_oh=truth_classes_oh, truth_mask=truth_mask,
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 122, in class_loss
+    class_loss = loss(pred_classes, truth_classes_oh)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\loss.py", line 1047, in forward
+    return F.cross_entropy(input, target, weight=self.weight,
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\functional.py", line 2693, in cross_entropy
+    return nll_loss(log_softmax(input, 1), target, weight, None, ignore_index, None, reduction)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\functional.py", line 2397, in nll_loss
+    raise ValueError("Expected target size {}, got {}".format(out_size, target.size()))
+ValueError: Expected target size (8, 40, 4, 4), got torch.Size([8, 40, 40, 4, 3])
+[E 2021-10-08 11:11:39,556 train.py 314] Expected target size (8, 40, 4, 3), got torch.Size([8, 40, 40, 4, 3])
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 311, in <module>
+    train_plan.execute(learning_rates=[3e-4], decay_rates=[0.03], patience=7)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 276, in execute
+    self.training(lr, decay_rate)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 204, in training
+    train_loop(self.train_loader, self.model, loss_fn, optimizer, decay_rate)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 116, in train_loop
+    loss        =   loss_fn(pred, y)
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 232, in __call__
+    class_loss  =   self.class_loss(truth_classes_oh=truth_classes_oh, truth_mask=truth_mask,
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 122, in class_loss
+    class_loss = loss(pred_classes, truth_classes_oh)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\loss.py", line 1047, in forward
+    return F.cross_entropy(input, target, weight=self.weight,
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\functional.py", line 2693, in cross_entropy
+    return nll_loss(log_softmax(input, 1), target, weight, None, ignore_index, None, reduction)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\functional.py", line 2397, in nll_loss
+    raise ValueError("Expected target size {}, got {}".format(out_size, target.size()))
+ValueError: Expected target size (8, 40, 4, 3), got torch.Size([8, 40, 40, 4, 3])
+[E 2021-10-08 11:13:43,560 train.py 314] Expected target size (8, 40, 4, 3), got torch.Size([8, 40, 40, 4])
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 311, in <module>
+    train_plan.execute(learning_rates=[3e-4], decay_rates=[0.03], patience=7)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 276, in execute
+    self.training(lr, decay_rate)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 204, in training
+    train_loop(self.train_loader, self.model, loss_fn, optimizer, decay_rate)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 116, in train_loop
+    loss        =   loss_fn(pred, y)
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 232, in __call__
+    class_loss  =   self.class_loss(truth_classes_oh=truth_classes_oh, truth_mask=truth_mask,
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 122, in class_loss
+    class_loss = loss(pred_classes, true_box_class)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\loss.py", line 1047, in forward
+    return F.cross_entropy(input, target, weight=self.weight,
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\functional.py", line 2693, in cross_entropy
+    return nll_loss(log_softmax(input, 1), target, weight, None, ignore_index, None, reduction)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\functional.py", line 2397, in nll_loss
+    raise ValueError("Expected target size {}, got {}".format(out_size, target.size()))
+ValueError: Expected target size (8, 40, 4, 3), got torch.Size([8, 40, 40, 4])
+[E 2021-10-08 11:33:52,917 train.py 314] unsupported operand type(s) for +: 'Tensor' and 'tuple'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 311, in <module>
+    train_plan.execute(learning_rates=[3e-4], decay_rates=[0.03], patience=7)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 276, in execute
+    self.training(lr, decay_rate)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 204, in training
+    train_loop(self.train_loader, self.model, loss_fn, optimizer, decay_rate)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 116, in train_loop
+    loss        =   loss_fn(pred, y)
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 243, in __call__
+    self.loss = w["coord"]*coord_loss + w["cls"]*class_loss + w["obj"]*object_loss + w["non_obj"]*nonobj_loss
+TypeError: unsupported operand type(s) for +: 'Tensor' and 'tuple'
+[E 2021-10-09 15:57:07,500 train.py 359] __init__() got an unexpected keyword argument 'class_loc'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 356, in <module>
+    Training.training(y5Model, learnRate, trainLoader, validLoader, numEpochs, lossParams)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 172, in training
+    loss_fn     =   YoloLoss(**loss_params)
+TypeError: __init__() got an unexpected keyword argument 'class_loc'
+[E 2021-10-09 16:05:28,935 train.py 359] __init__() got an unexpected keyword argument 'class_location'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 352, in <module>
+    trainer = Training(lr=1e-4, loss_params={"device": DEVICE,
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 179, in __init__
+    self.loss_fn = YoloLoss(**loss_params)
+TypeError: __init__() got an unexpected keyword argument 'class_location'
+[E 2021-10-09 16:06:12,417 train.py 359] __init__() missing 1 required positional argument: 'n_classes'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 352, in <module>
+    trainer = Training(lr=1e-4, loss_params={"device": DEVICE,
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 179, in __init__
+    self.loss_fn = YoloLoss(**loss_params)
+TypeError: __init__() missing 1 required positional argument: 'n_classes'
+[E 2021-10-09 16:07:08,817 train.py 360] 'BloodSmearDataset' object has no attribute 'dataset'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 357, in <module>
+    trainer.training(5)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 186, in training
+    train_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 108, in train_loop
+    size = len(dataloader.dataset)
+AttributeError: 'BloodSmearDataset' object has no attribute 'dataset'
+[E 2021-10-09 16:09:42,588 train.py 363] The size of tensor a (4) must match the size of tensor b (0) at non-singleton dimension 0
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 360, in <module>
+    trainer.training(5)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 187, in training
+    train_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 117, in train_loop
+    loss = loss_fn(pred, y)
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 238, in __call__
+    object_loss =   self.object_loss(gtruth_boxes=gTruth_boxes, truth_mask=truth_mask, truth_nobj=truth_nObj,
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 145, in object_loss
+    obj_loss = torch.sum(truth_mask*torch.square(ious-pred_conf))/(truth_nobj + 1e-6)
+RuntimeError: The size of tensor a (4) must match the size of tensor b (0) at non-singleton dimension 0
+[E 2021-10-09 16:22:18,320 train.py 363] The size of tensor a (4) must match the size of tensor b (0) at non-singleton dimension 0
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 360, in <module>
+    trainer.training(5)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 187, in training
+    train_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 117, in train_loop
+    loss = loss_fn(pred, y)
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 238, in __call__
+    object_loss =   self.object_loss(gtruth_boxes=gTruth_boxes, truth_mask=truth_mask, truth_nobj=truth_nObj,
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 145, in object_loss
+    obj_loss = torch.sum(truth_mask*torch.square(ious-pred_conf))/(truth_nobj + 1e-6)
+RuntimeError: The size of tensor a (4) must match the size of tensor b (0) at non-singleton dimension 0
+[E 2021-10-09 16:46:00,519 train.py 363] invalid index of a 0-dim tensor. Use `tensor.item()` in Python or `tensor.item<T>()` in C++ to convert a 0-dim tensor to a number
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 360, in <module>
+    trainer.training(5)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 187, in training
+    train_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 117, in train_loop
+    loss = loss_fn(pred, y)
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 246, in __call__
+    self.loss = w["coord"]*coord_loss + w["cls"]*class_loss + w["obj"]*obj_loss[0] + w["non_obj"]*nonobj_loss
+IndexError: invalid index of a 0-dim tensor. Use `tensor.item()` in Python or `tensor.item<T>()` in C++ to convert a 0-dim tensor to a number
+[E 2021-10-10 15:24:13,394 train.py 360] 
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 357, in <module>
+    train_plan.execute(learning_rates=[3e-4], decay_rates=[0.03], patience=7)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 322, in execute
+    self.training(self.model, self.train_loader, self.valid_loader, lr, decay_rate)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 252, in training
+    train_loop(train_loader, model, loss_fn, optimizer, decay_rate)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 118, in train_loop
+    loss = loss_fn(pred, y)
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 230, in __call__
+    pred = ModelOutput(y_pred, self.grid_size, self.anchors, self.n_classes, self.device)
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 56, in __init__
+    self.assertion()
+  File "D:\Workspace\RBC Recognition\Deeplearning\losses.py", line 64, in assertion
+    assert self.data.shape[4] == 4 + 1 + self.n_classes
+AssertionError
+[E 2021-10-10 15:29:53,132 train.py 361] 'int' object has no attribute 'item'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 358, in <module>
+    train_plan.execute(learning_rates=[3e-4], decay_rates=[0.03], patience=7)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 323, in execute
+    self.training(self.model, self.train_loader, self.valid_loader, lr, decay_rate)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 256, in training
+    valid_loss, acc = valid_loop(valid_loader, model, loss_fn)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 155, in valid_loop
+    cur_acy = loss_fn.accuracy.item()
+AttributeError: 'int' object has no attribute 'item'

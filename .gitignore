@@ -3,6 +3,7 @@
 
 #
 __pycache__/
+caches/
 
 # User-specific stuff
 .idea/
