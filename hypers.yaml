@@ -1,10 +1,25 @@
 # Hyper-parameters for training model
 # Current states: store the basic hyper-parameters as the defaults
 
-lr: 0.0001
+lr: 0.00001
 n_box: 4
 n_cls: 3
+decay_rate: 0.0005
 grid_size: 40
 attention_layer: 7
+
+train_loader_params:
+  fpath_str: D:\Workspace\RBC Recognition\datasets\Set-202109
+  training_stage: train
+  batch_size: 8
+  shuffle: True
+
+valid_loader_params:
+  fpath_str: D:\Workspace\RBC Recognition\datasets\Set-202109
+  training_stage: valid
+  batch_size: 8
+  shuffle: True
+
+model_fpath: D:\Workspace\RBC Recognition\models\plan_8.0
 
 anchors: [1., 1., 1.125, 1.125, 1.25, 1.25, 1.375, 1.375]

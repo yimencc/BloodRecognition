@@ -1,6 +1,12 @@
+import torch.nn
 import numpy as np
 import matplotlib.pyplot as plt
-import torch.nn
+
+from cccode.image   import Value, Check
+
+ck = Check()
+vl = Value()
+nx = np.newaxis
 
 
 def single_sample_visualization(modality, labels, scale=8):
@@ -72,3 +78,33 @@ def yolov5_prediction_inspect(predict: torch.Tensor):
     fig.suptitle("Predictions xy-wh-conf-cls")
     ax.violinplot((xy, wh, confidence, cls_preds), showmeans=True, showmedians=False, showextrema=True)
     plt.show()
+
+
+def locationSize2fourPoints(coord_in: np.ndarray):
+    # four point to location size
+    # coord_in (40, 40, x-y-w-h) -> coord_out (40, 40, x1-y1-x2-y2)
+    x = coord_in[..., 0]    # (40, 40)
+    y = coord_in[..., 1]    # (40, 40)
+    w = coord_in[..., 2]    # (40, 40)
+    h = coord_in[..., 3]    # (40, 40)
+
+    x1 = np.maximum(x-w/2, 0.)
+    x2 = np.minimum(x+w/2, 40.)
+    y1 = np.maximum(y-h/2, 0.)
+    y2 = np.minimum(y+h/2, 40.)
+    return np.r_["2,3,0", x1, y1, x2, y2]
+
+
+def fourPoints2locationSize(coords):
+    # PointPoint to PointSize
+    # coords: (N, x1-y1-x2-y2)
+    x1 = coords[..., 0]    # (40, 40)
+    y1 = coords[..., 1]    # (40, 40)
+    x2 = coords[..., 2]    # (40, 40)
+    y2 = coords[..., 3]    # (40, 40)
+
+    x = (x1+x2)/2
+    y = (y1+y2)/2
+    w = x2-x1
+    h = y2-y1
+    return np.r_["1,2,0", x, y, w, h]

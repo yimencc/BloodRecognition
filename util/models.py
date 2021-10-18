@@ -84,10 +84,10 @@ class ConvBlock(nn.Module):
 class YoloV5Model(nn.Module):
     def __init__(self, n_box=4, n_cls=3, grid_size=40, attention_layer=6):
         super(YoloV5Model, self).__init__()
-
-        self.gridsz =   grid_size
-        self.n_box  =   n_box
-        self.n_cls  =   n_cls
+        # TODO: replace leakReLU with ELU
+        self.gridsz  =   grid_size
+        self.n_box   =   n_box
+        self.n_cls   =   n_cls
         self.attention_layer = attention_layer
 
         # layers define

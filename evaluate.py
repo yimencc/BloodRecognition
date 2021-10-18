@@ -1,57 +1,31 @@
 from os.path import join
 
+import tqdm
 import torch
+import logging
 import numpy as np
-import matplotlib.pyplot as plt
-from numpy              import ndarray
-from skimage.io         import imread
-from skimage.transform  import resize
+from logging        import config
+from numpy          import ndarray
+from matplotlib     import pyplot as plt
 
-from cccode.math        import sigmoid
-from cccode.image       import Value, Check
+from Deeplearning.util.losses       import Prediction
+from Deeplearning.util.dataset      import create_dataloader, ANCHORS, SET202109_FILENAME, GRIDSZ, N_CLASSES
+from Deeplearning.util.functions    import locationSize2fourPoints, fourPoints2locationSize, nx
 
-from Deeplearning.util.dataset  import ANCHORS
-from Deeplearning.util.models   import YoloV5Model
-
-ck = Check()
-vl = Value()
-nx = np.newaxis
-MODEL_PATH = "..\\data\\models"
+MODEL_PATH = "..\\models"
 
 
-def locationSize2fourPoints(coord_in):
-    # four point to location size
-    # coord_in (40, 40, x-y-w-h) -> coord_out (40, 40, x1-y1-x2-y2)
-    x = coord_in[..., 0]    # (40, 40)
-    y = coord_in[..., 1]    # (40, 40)
-    w = coord_in[..., 2]    # (40, 40)
-    h = coord_in[..., 3]    # (40, 40)
-
-    x1 = np.maximum(x-w/2, 0.)
-    x2 = np.minimum(x+w/2, 40.)
-    y1 = np.maximum(y-h/2, 0.)
-    y2 = np.minimum(y+h/2, 40.)
-    return np.r_["2,3,0", x1, y1, x2, y2]
+def softmax(arr):
+    arr -= np.max(arr, axis=-1)[..., np.newaxis]
+    return np.exp(arr) / np.sum(np.exp(arr), axis=-1)[..., np.newaxis]
 
 
-def fourPoints2locationSize(coords):
-    # PointPoint to PointSize
-    # coords: (N, x1-y1-x2-y2)
-    x1 = coords[..., 0]    # (40, 40)
-    y1 = coords[..., 1]    # (40, 40)
-    x2 = coords[..., 2]    # (40, 40)
-    y2 = coords[..., 3]    # (40, 40)
-
-    x = (x1+x2)/2
-    y = (y1+y2)/2
-    w = x2-x1
-    h = y2-y1
-    return np.r_["1,2,0", x, y, w, h]
-
-
-def non_maximum_suppress(coord_2d: ndarray, boxes_conf: ndarray, conf_thresh=.6, over_thresh=.4) -> ndarray:
-    confidences: np.ndarray = boxes_conf[boxes_conf > conf_thresh]
-    coordinates: np.ndarray = locationSize2fourPoints(coord_2d)[boxes_conf > conf_thresh]
+def non_maximum_suppress(coord_2d, boxes_conf, class_scores,
+                         conf_thresh=.6, over_thresh=.4):
+    confidences  =   boxes_conf[boxes_conf > conf_thresh]
+    coordinates  =   locationSize2fourPoints(coord_2d)[boxes_conf > conf_thresh]
+    class_scores =   softmax(class_scores[boxes_conf > conf_thresh])
+    class_scores =   np.argmax(class_scores, axis=-1)
 
     x1, y1, x2, y2 = np.moveaxis(coordinates, -1, 0)
     areas = (x2-x1) * (y2-y1)
@@ -71,11 +45,11 @@ def non_maximum_suppress(coord_2d: ndarray, boxes_conf: ndarray, conf_thresh=.6,
 
         w = np.maximum(0., xx2-xx1)
         h = np.maximum(0., yy2-yy1)
-        inter = w*h
-        over = inter / (areas[idx] + areas[order[:-1]] - inter)
-        order = order[:-1][over < over_thresh]
+        inter   =   w*h
+        over    =   inter / (areas[idx] + areas[order[:-1]] - inter)
+        order   =   order[:-1][over < over_thresh]
 
-    return fourPoints2locationSize(coordinates[pick])
+    return fourPoints2locationSize(coordinates[pick]), class_scores[pick]
 
 
 def image_splitting(image, k_split=3, overrates=0.2):
@@ -90,16 +64,15 @@ def image_splitting(image, k_split=3, overrates=0.2):
             split image original point (usually TopLeft) on the initial image.
      """
     if len(image.shape) == 3:
-        height = image.shape[0]
-        width = image.shape[1]
+        height, width = image.shape[:2]
     else:   # image only have two dimension
         height, width = image.shape
 
     # size of subview image (split image)
-    row_height = int(height / (k_split - 2*overrates))
-    collum_width = int(width / (k_split - 2*overrates))
-    overlap_height = int(overrates*row_height)
-    overlap_width = int(overrates*collum_width)
+    row_height      =   int(height / (k_split - 2*overrates))
+    collum_width    =   int(width / (k_split - 2*overrates))
+    overlap_height  =   int(overrates*row_height)
+    overlap_width   =   int(overrates*collum_width)
 
     # position of subview original image on initial image
     split_images = []
@@ -110,151 +83,175 @@ def image_splitting(image, k_split=3, overrates=0.2):
             height_origin = k * (row_height - overlap_height)
             width_origin = i * (collum_width - overlap_width)
 
-            subview_image = image[height_origin:height_origin+row_height,
-                                  width_origin:width_origin+collum_width]
+            subview_image = image[height_origin:height_origin+row_height, width_origin:width_origin+collum_width]
             split_images.append(subview_image)
             original_point_positions.append((height_origin, width_origin))
     return split_images, original_point_positions
 
 
-class PredContainer:
-    def __init__(self, pred_tensor, anchors, conf_thresh=.6):
-        self.conf_map = pred_tensor[..., 4:5]
-        self.cls = pred_tensor[..., 5:]
-        self.xy = pred_tensor[..., :2]
-        self.wh = pred_tensor[..., 2:4]
-        self.anchors = anchors
-        self.no_bias()
+class ModelPrediction(Prediction):
+    def __init__(self, pred_tensor, grid_size, anchors, n_class, device, conf_thres):
+        super(ModelPrediction, self).__init__(pred_tensor, grid_size, anchors, n_class, device)
+
+        self.out = {}
+        self.n_batch = len(self.data)
+        self.n_box = len(self.anchors)
+
         self.nms_along_box()
+        self.coord_list, self.classes_pred = non_maximum_suppress(
+            torch.cat((self.out["xy"], self.out["wh"]), -1), self.out["conf"].squeeze(),
+            self.out["class_scores"], conf_thres)
 
-        self.coord_list = None
-        self.input_image = None
-        self.coord_list = non_maximum_suppress(self.get_coords(), self.conf_map.squeeze(), conf_thresh=conf_thresh)
-
-    @staticmethod
-    def _truth_xy(xy: np.ndarray):
-        # self.preds (40, 40, 4, 9)
-        x_g, y_g = np.meshgrid(np.arange(xy.shape[0]), np.arange(xy.shape[1]))
-        # (40, 40) + (40, 40) -> (40, 40, 1, 2)
-        xy_grid = np.r_["3,4,0", x_g, y_g]
-        # (40, 40, 1, 2) + (40, 40, 4, 2) -> (40, 40, 4, 2)
-        return sigmoid(xy) + xy_grid
-
-    def _truth_wh(self, wh):
-        if not isinstance(self.anchors, np.ndarray):
-            self.anchors = np.array(self.anchors)
-        if self.anchors.shape != (4, 2):
-            self.anchors = self.anchors.reshape((4, 2))
-        # (4, 2) * (b, 40, 40, 4, 2) -> (b, 40, 40, 4, 2)
-        return self.anchors*np.exp(wh)
-
-    def get_coords(self):
-        return np.r_["-1", self.xy, self.wh]
-
-    def no_bias(self):
-        # (40, 40, 4, 2)
-        self.xy = self._truth_xy(self.xy)
-        # (40, 40, 4, 2)
-        self.wh = self._truth_wh(self.wh)
-        # (40, 40, 4, 1)
-        self.conf_map = sigmoid(self.conf_map)
+    def n_class(self, name):
+        # TODO: Transplant to PredHandle
+        mapping = {"rbc": 0, "wbc": 1, "platelet": 2}
+        assert name in mapping.keys()
+        return np.sum((self.class_scores == mapping[name]).astype(int))
 
     def nms_along_box(self):
-        # (40, 40, 4, 1) -> (40, 40)
-        conf_argmax = self.conf_map.squeeze(-1).argmax(axis=2)
-        # (40, 40) -> (40, 40, 4)
-        oh_mask = np.concatenate([(conf_argmax == n)[..., nx] for n in range(4)], -1)
+        # TODO: Transplant to PredHandle
+        # (b, gdsz, gdsz, n_anc, 1) -> (b, gdsz, gdsz)
+        conf_argmax = self.conf.squeeze(-1).argmax(axis=-1)
+        # (b, gdsz, gdsz) -> (b, gdsz, gdsz, n_anc)
+        oh_mask = torch.stack([conf_argmax == n for n in range(self.n_box)], -1)
 
-        def boxes_nms(vector: np.ndarray, mask: np.ndarray):
-            shape_list = list(vector.shape[:2]) + [vector.shape[-1]]
-            return vector[mask].reshape(shape_list)
+        def boxes_nms(vector, mask):
+            return vector[mask].view(self.n_batch, self.grid_size, self.grid_size, -1)
 
-        for elm in ["xy", "wh", "conf_map", "cls"]:
-            self.__dict__[elm] = boxes_nms(self.__dict__[elm], oh_mask)
+        self.out["xy"] = boxes_nms(self.xy, oh_mask)
+        self.out["wh"] = boxes_nms(self.wh, oh_mask)
+        self.out["conf"] = boxes_nms(self.conf, oh_mask)
+        self.out["class_scores"] = boxes_nms(self.class_scores, oh_mask)
 
 
 class PredHandle:
-    def __init__(self, input_images: torch.Tensor, model, anchors: ndarray, dim_h=1):
+    def __init__(self, input_images: torch.Tensor, model, pred_params):
         """ Predicting the red blood cell inside given images."""
         self.model = model
-        self.anchors = anchors
-        self.input_images = input_images
-
-        self.preds = self.model_predict()
+        self.inputs = input_images
+        self.pred_tensor = self.model(self.inputs)
+        assert len(self.pred_tensor.shape) == 5
 
         # the dimension of Height start on 1
-        self.dim_H = dim_h
-        self.Ni, self.Nj = self.preds.shape[1:3]
+        self.Ni, self.Nj = self.pred_tensor.shape[1:3]
+        self.predictions = ModelPrediction(self.pred_tensor, **pred_params)     # processing
 
-        # processing
-        self.pContainers = self.prediction_splitting()
-
-    def model_predict(self) -> np.ndarray:
-        predictions = self.model(self.input_images)
-        if predictions.requires_grad:
-            predictions = predictions.detach()
-        return predictions.numpy()
-
-    def get_input_image(self, index):
-        if self.input_images.requires_grad:
-            self.input_images.detach()
-        return self.input_images.numpy()[index, 0]
-
-    def prediction_splitting(self) -> tuple[PredContainer]:
-        """ Separate bundled predictions """
-        return tuple([PredContainer(pr, self.anchors) for pr in self.preds])
-
-    def __getitem__(self, item) -> PredContainer:
-        pContainer = self.pContainers[item]
-        pContainer.input_image = self.get_input_image(item)
-        return pContainer
+    def __getitem__(self, item) -> ModelPrediction:
+        prediction = self.predictions[item]
+        if self.inputs.requires_grad:
+            self.inputs.detach()
+        prediction.inputs = self.inputs.cpu().numpy()[item]
+        return prediction
 
 
-def specific_image_recognition():
-    """Testing the trained network models."""
-
-    def load_model(plan_name="plan_6.0", model_name="yoloV2_0823-153552.pth"):
-        model = YoloV5Model()
-        cur_model_fname = join(MODEL_PATH, plan_name, model_name)
-        model.load_state_dict(torch.load(cur_model_fname))
-        return model
-
-    def load_data(image_fullname):
-        image = imread(image_fullname)
-        split_images, original_positions = image_splitting(image)
-        return split_images, original_positions
-
-    def pred_show(input_image, pred_coords, image_fname=""):
-        scale = 320 / 40
-        fig, ax = plt.subplots(constrained_layout=True, figsize=(5, 5))
-        ax.imshow(input_image, cmap="gray")
+def pred_show(input_images, pred_coords, classes_label, image_fname=""):
+    scale = 320 / 40
+    for i, img in enumerate(input_images):
+        fig, ax = plt.subplots(constrained_layout=True, figsize=(6, 6))
+        ax.imshow(img, cmap="gray")
         ax.set_xticks([])
         ax.set_yticks([])
         for sp in ["top", "bottom", "right", "left"]:
             ax.spines[sp].set_visible(False)
-        for coord in pred_coords:
-            x, y, w, h = [elm * scale for elm in coord]
-            rect = plt.Circle((x, y), radius=np.maximum(w, h)/2, lw=1.6, fill=False, color="red", alpha=.8)
-            ax.ch(rect)
+        if i == 1:
+            for coord, lbl in zip(pred_coords, classes_label):
+                x, y, w, h = [elm * scale for elm in coord]
+                rect = plt.Rectangle((x - w / 2, y - h / 2), w, h, lw=1.6, fill=False,
+                                     color=("green", "blue", "purple")[int(lbl)])
+                ax.add_patch(rect)
+        img_savename = image_fname + f"_{i}.tif"
+        print(img_savename)
         if image_fname:
-            plt.savefig(image_fname)
+            plt.savefig(img_savename, dpi=100, bbox_inches="tight", pad_inches=0)
         else:
             plt.show()
 
-    yolo_model = load_model()
-    imageFullname = "D:\\Workspace\\RBC Recognition\\data\\2021-01-05\\phase\\pha_70.tif"
 
-    for i, (phase_img, _) in enumerate(zip(*load_data(imageFullname))):
-        # the size of split image is (356, 356), which is not satisfy
-        # the shape of (320, 320) for network input, therefore should be resized
-        # Notice: the size of RBC in resized image will be decreased, other words, not the real size.
-        phase_img = resize(phase_img, (320, 320))
-        input_tensor = torch.from_numpy(phase_img[nx, nx, ...].astype(np.float32)/255)
-        pHand = PredHandle(input_tensor, yolo_model, ANCHORS)
-        pred_show(vl.sigmoid_hist(pHand[0].input_image), pHand[0].coord_list)
+def image_recognition(dataloader, model_fpath, pred_params):
+    """Testing the trained network models."""
+    logger.info("Loading Model...")
+    device = pred_params.get("device")
+    yolo_model = torch.load(model_fpath)
+
+    # Data processing
+    predHandles, yData = [], []
+    for modalities, labels in tqdm.tqdm(dataloader):
+        X, y_truth = modalities.to(device), [item.to(device) for item in labels]
+        predHandles.append(PredHandle(X, yolo_model, pred_params))
+        yData.append(y_truth)
+
+    # # Instance Show
+    # for nd, pHand in enumerate(predHandles[:3]):
+    #     for ni, prediction in enumerate(pHand):
+    #         pred_show(vl.sigmoid_hist(prediction.input_images), prediction.coord_list, prediction.cls_label,
+    #                   image_fname=join(MODEL_PATH, "plan_8.0\\images\\mod_1014-174441_"+str(nd)+"-"+str(ni)))
+
+    # Statistic
+    total_objects_truth, total_rbc_truth, total_wbc_truth, total_platelet_truth = 0, 0, 0, 0
+    total_objects_pred, total_rbc_pred, total_wbc_pred, total_platelet_pred = 0, 0, 0, 0
+    for pHand, y_truth in zip(predHandles, yData):
+        print("")
+        y_truth = y_truth[3].to("cpu").numpy()
+        obj_truth, rbc_truth, wbc_truth, pla_truth = [], [], [], []
+        for sp in y_truth:
+            # sp: [n_sample, 5]
+            sp_mask = np.sum(sp, -1) > 0
+            obj_truth.append(np.sum(sp_mask.astype(int)))
+            rbc_truth.append(np.sum(sp[sp_mask][..., 4] == 0.))
+            wbc_truth.append(np.sum(sp[sp_mask][..., 4] == 1.))
+            pla_truth.append(np.sum(sp[sp_mask][..., 4] == 2.))
+        obj_pred = [len(pred.coord_list) for pred in pHand.predictions]  # One batch object number
+        rbc_pred = [pred.n_class("rbc") for pred in pHand.predictions]
+        wbc_pred = [pred.n_class("wbc") for pred in pHand.predictions]
+        pla_pred = [pred.n_class("platelet") for pred in pHand.predictions]
+        for num in (obj_truth, rbc_truth, wbc_truth, pla_truth):
+            print(num)
+        for num in (obj_pred, rbc_pred, wbc_pred, pla_pred):
+            print(num)
+
+        total_objects_truth += np.sum(obj_truth)
+        total_rbc_truth += np.sum(rbc_truth)
+        total_wbc_truth += np.sum(wbc_truth)
+        total_platelet_truth += np.sum(pla_truth)
+
+        total_objects_pred += np.sum(obj_pred)
+        total_rbc_pred += np.sum(rbc_pred)
+        total_wbc_pred += np.sum(wbc_pred)
+        total_platelet_pred += np.sum(pla_pred)
+
+    print(f"Truth  total: {total_objects_truth}, rbc {total_rbc_truth}, wbc {total_wbc_truth}, "
+          f"platelet {total_platelet_truth}\n"
+          f"Predict total: {total_objects_pred}, rbc {total_rbc_pred}, wbc {total_wbc_pred}, "
+          f"platelet {total_platelet_pred}\n"
+          f"Accuracy total: {100*total_objects_pred/total_objects_truth:.2f} %, "
+          f"rbc {100*total_rbc_pred/total_rbc_truth:.2f} %, "
+          f"wbc {100*total_wbc_pred/total_wbc_truth:.2f} %, "
+          f"platelet {100*total_platelet_pred/total_platelet_truth:.2f} %\n"
+          f"Error total: {100*(total_objects_pred/total_objects_truth-1):.2f} %, "
+          f"rbc {100*(total_rbc_pred/total_rbc_truth-1):.2f} %, "
+          f"wbc {100*(total_wbc_pred/total_wbc_truth-1):.2f} %, "
+          f"platelet {100*(total_platelet_pred/total_platelet_truth-1):.2f} %")
 
 
 if __name__ == '__main__':
+    # ================== Python interpreter initializing =================
     if not plt.get_backend() == "tkagg":
         plt.switch_backend("tkagg")
-    specific_image_recognition()
+    # Logging Config ---------------------------------------------------
+    logging.config.fileConfig(".\\log\\config\\evaluate.conf")
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+    # Logging Config Ended ---------------------------------------------
+
+    # ========================== Scripts Execute =========================
+    try:
+        CONF_THRES      =   0.6
+        DEVICE          =   "cuda" if torch.cuda.is_available() else "cpu"
+        modelFullname   =   join(MODEL_PATH, "plan_8.0\\yolov5_1014-174441.pth")
+        test_loader     =   create_dataloader(SET202109_FILENAME, "test", 8, shuffle=True)
+        predParams      =   {"grid_size": GRIDSZ, "anchors": ANCHORS, "n_class": N_CLASSES,
+                             "device": DEVICE, "conf_thres": CONF_THRES}
+
+        image_recognition(test_loader, modelFullname, pred_params=predParams)
+    except Exception as e:
+        logger.exception(e)

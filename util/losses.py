@@ -1,10 +1,9 @@
 import os
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+
 import torch
-
+import numpy as np
 import matplotlib.pyplot as plt
-
-F32 = torch.float32
 
 
 def compute_iou(x1, y1, w1, h1, x2, y2, w2, h2):
@@ -42,14 +41,14 @@ def cartesian_coordinate(batch_size, grid_size):
     return xy_grid
 
 
-class ModelOutput:
+class Prediction:
     """ Comprehend the output of the model in the forward propagation."""
     def __init__(self, outputs: torch.Tensor, grid_size, anchors, n_classes, device):
-        self.data       =   outputs
-        self.grid_size  =   grid_size
-        self.n_classes  =   n_classes
-        self.device     =   device
-        self.anchors    =   torch.tensor(anchors, dtype=F32, device=self.device)
+        self.data      =   outputs
+        self.device    =   device
+        self.n_class   =   n_classes
+        self.grid_size =   grid_size
+        self.anchors   =   torch.tensor(anchors, dtype=torch.float32, device=self.device)
         if len(self.anchors.shape) != 2:
             self.anchors = self.anchors.view(-1, 2)
 
@@ -61,22 +60,22 @@ class ModelOutput:
         assert self.data.ndim == 5
         assert self.data.shape[1:3] == (self.grid_size, self.grid_size)
         assert self.data.shape[3] == self.anchors.shape[0]
-        assert self.data.shape[4] == 4 + 1 + self.n_classes
-
-        # value assertions
+        assert self.data.shape[4] == 4 + 1 + self.n_class
 
     @property
     def xy(self):
         # (Batch, Grid_size, Grid_size, N_anchors, x-y)
-        xy_bias =   self.data[..., :2]
-        xy_grid =   cartesian_coordinate(self.data.shape[0], self.grid_size).to(self.device)
-        return xy_grid + torch.sigmoid(xy_bias)
+        xy = self.data[..., :2]
+        x_g, y_g = np.meshgrid(np.arange(xy.shape[1]), np.arange(xy.shape[2]))
+        # (Grid_size, Grid_size) + (Grid_size, Grid_size) -> (1, Grid_size, Grid_size, 1, 2)
+        xy_grid = torch.from_numpy(np.r_["4,5,1", x_g, y_g]).to(self.device)
+        # (1, gdsz, gdsz, 1, 2) + (b, gdsz, gdsz, N_anchors, x-y) -> (b, gdsz, gdsz, N_anchors, x-y)
+        return torch.sigmoid(xy) + xy_grid
 
     @ property
     def wh(self):
         # (Batch, Grid_size, Grid_size, N_anchors, w-h)
-        wh_bias =   self.data[..., 2:4]
-        return self.anchors * torch.exp(wh_bias)
+        return self.anchors * torch.exp(self.data[..., 2:4])
 
     @property
     def conf(self):
@@ -84,7 +83,7 @@ class ModelOutput:
         return torch.sigmoid(self.data[..., 4:5])
 
     @property
-    def classes(self):
+    def class_scores(self):
         # (Batch, Grid_size, Grid_size, N_anchors, N_classes)
         return self.data[..., 5:]
 
@@ -226,14 +225,14 @@ class YoloLoss:
         truth_wh    =   gTruth_boxes[..., 2:4]      # [b, gsz, gsz, n_anc, 2]
 
         # Predictions, y_pred shape: (b, grid_size, grid_size, n_anchors, 5+n_cls)
-        pred = ModelOutput(y_pred, self.grid_size, self.anchors, self.n_classes, self.device)
+        pred = Prediction(y_pred, self.grid_size, self.anchors, self.n_classes, self.device)
 
         # Losses
         coord_loss  =   self.coordinate_loss(truth_xy=truth_xy, pred_xy=pred.xy, truth_wh=truth_wh,
                                              pred_wh=pred.wh, truth_mask=truth_mask, truth_nobj=truth_nObj)
 
         class_loss  =   self.class_loss(truth_classes_oh=truth_classes_oh, truth_mask=truth_mask,
-                                        truth_nobj=truth_nObj, pred_classes=pred.classes)
+                                        truth_nobj=truth_nObj, pred_classes=pred.class_scores)
 
         obj_loss, acc =   self.object_loss(gtruth_boxes=gTruth_boxes, truth_mask=truth_mask, truth_nobj=truth_nObj,
                                            pred_xy=pred.xy, pred_wh=pred.wh, pred_conf=pred.conf)

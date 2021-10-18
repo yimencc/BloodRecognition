@@ -1,9 +1,12 @@
 import os
+import re
 import pickle
 import logging.config
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
+from functools              import partial
+from typing                 import List, Optional
 from pprint                 import pformat
-from os.path                import join
+from os.path                import join, split, isfile, isdir
 from xml.etree              import ElementTree as ET
 from xml.dom.minidom        import parseString
 
@@ -14,7 +17,7 @@ import matplotlib.pyplot    as plt
 from cv2                    import resize
 from matplotlib             import figure
 from skimage.io             import imread, imsave
-from skimage.util           import dtype_limits, img_as_ubyte
+from skimage.util           import dtype_limits, img_as_ubyte, img_as_float32
 from torch.utils.data       import Dataset, DataLoader
 
 from cccode.image                   import Check
@@ -29,11 +32,6 @@ F32         =   torch.float32
 ck          =   Check(False, False, False)
 ANCHORS     =   [1., 1., 1.125, 1.125, 1.25, 1.25, 1.375, 1.375]
 DATA_ROOT   =   "D:\\Workspace\\RBC Recognition\\datasets"
-
-# Logging Config -----------------------------------------------------------------
-logging.config.fileConfig(".\\log\\config\\dataset.conf")
-logger      =   logging.getLogger(__name__)
-# Logging Config Ended -----------------------------------------------------------
 
 
 class MultimodalSample:
@@ -118,7 +116,7 @@ class MultimodalSample:
         centroid_interval_width     =   centroid_arrange_width  // (n_split-1)
         centroid_interval_height    =   centroid_arrange_height // (n_split-1)
 
-        subview_multimodal_samples  =   []
+        subview_multimodal_samples: List[MultimodalSample]  =   []
         for i in range(n_split):        # ROW split
             for k in range(n_split):    # COLUMN split
                 x_centroid = tgt_width//2  + k*centroid_interval_width
@@ -175,7 +173,9 @@ class MultimodalSample:
         with open(anno_fullname, "w") as f:
             f.write(yolo_string)
 
-    def output_labeled_data(self, dst_image_shape: tuple[int]):
+    def out_labeled_data(self, dst_image_shape: tuple[int],
+                         modalities_to: Optional[list] = None,
+                         labels_to: Optional[list] = None):
         # cast image and labels to destined shape
         if self.image_shape is None:
             self.image_shape = self.modalities[0].shape
@@ -189,7 +189,11 @@ class MultimodalSample:
                 x, w = x*scale_x, w*scale_x
                 y, h = y*scale_x, h*scale_y
                 self.labels[i] = cls, x, y, w, h
-        return np.array(self.modalities), np.array(self.labels)
+        if modalities_to and labels_to:
+            modalities_to.append(np.array(self.modalities))
+            labels_to.append(np.array(self.labels))
+        else:
+            return np.array(self.modalities), np.array(self.labels)
 
     def annotate_axes(self, ax: mpl.figure.Axes):
         for _, x, y, w, h in self.labels:
@@ -206,8 +210,8 @@ class StandardXMLContainer:
     as the child element of 'labels'. """
 
     def __init__(self):
-        self.root       =   ET.Element("FFoV_Annotation")
-        self.sample_elements    =   None
+        self.root = ET.Element("FFoV_Annotation")
+        self.sample_elements = None
 
     @classmethod
     def fromXML(cls, filename):
@@ -226,8 +230,8 @@ class StandardXMLContainer:
             plt.suptitle(title, fontproperties={"size": tt_fontsize})
         for row in range(3):
             for collum in range(5):
-                n_sp    =   row*5 + collum
-                ax      =   axs[row, collum]
+                n_sp =   row*5 + collum
+                ax   =   axs[row, collum]
                 sample: MultimodalSample = visualized_samples[n_sp]
                 ax.imshow(sample.phase, cmap="gray")
                 ax.set_xticks([])
@@ -247,39 +251,33 @@ class StandardXMLContainer:
     @staticmethod
     def sample_msg(sample: ET.Element):
         img_idx_str     =   sample.find('image_idx').text
-        output          =  f"Sample\n\timage idx:      {img_idx_str}\n"
+        height, width   =   [int(sample.find("image_shape").find(tag).text) for tag in ("height", "width")]
+        output = f"Sample\n\timage idx:      {img_idx_str}\n\timage shape:    ({height}, {height})\n"
 
-        shape_elm       =   sample.find("image_shape")
-        height, width   =   [int(shape_elm.find(tag).text) for tag in ("height", "width")]
-        output          +=  f"\timage shape:    ({height}, {height})\n"
-
-        amp_fpath, amp_fname        =   os.path.split(sample.find("amp_fullname").text)
-        pha_fpath, pha_fname        =   os.path.split(sample.find("pha_fullname").text)
-        over_fpath, over_fname      =   os.path.split(sample.find("over_fullname").text)
-        under_fpath, under_fname    =   os.path.split(sample.find("under_fullname").text)
-        amp_root, amp_dir           =   os.path.split(amp_fpath)
-        pha_root, pha_dir           =   os.path.split(pha_fpath)
-        over_root, over_dir         =   os.path.split(over_fpath)
-        under_root, under_dir       =   os.path.split(under_fpath)
+        amp_fpath,      amp_fname   =   split(sample.find("amp_fullname").text)
+        pha_fpath,      pha_fname   =   split(sample.find("pha_fullname").text)
+        over_fpath,     over_fname  =   split(sample.find("over_fullname").text)
+        under_fpath,    under_fname =   split(sample.find("under_fullname").text)
+        amp_root,       amp_dir     =   split(amp_fpath)
+        pha_root,       pha_dir     =   split(pha_fpath)
+        over_root,      over_dir    =   split(over_fpath)
+        under_root,     under_dir   =   split(under_fpath)
         try:
             assert amp_root == pha_root == over_root == under_root
         except AssertionError as e:
             logger.exception(e)
 
-        output          +=  f"\tmodalities root: {amp_root}\n"
-        output          +=  f"\t\tamplitude     dir: {amp_dir:<6s} filename: {amp_fname}\n"
-        output          +=  f"\t\tphase         dir: {pha_dir:<6s} filename: {pha_fname}\n"
-        output          +=  f"\t\tunder-focus   dir: {over_dir:<6s} filename: {under_fname}\n"
-        output          +=  f"\t\tover-focus    dir: {under_dir:<6s} filename: {over_fname}\n"
-
-        labels_elm      =   sample.find("labels")
-        num_labels      =   len(labels_elm.findall("label"))
-        output          +=  f"\tlabels number:  {num_labels}\n"
+        num_labels  =   len(sample.find("labels").findall("label"))
+        output      +=  f"\tmodalities root: {amp_root}\n"
+        output      +=  f"\t\tamplitude     dir: {amp_dir:<6s} filename: {amp_fname}\n"
+        output      +=  f"\t\tphase         dir: {pha_dir:<6s} filename: {pha_fname}\n"
+        output      +=  f"\t\tunder-focus   dir: {over_dir:<6s} filename: {under_fname}\n"
+        output      +=  f"\t\tover-focus    dir: {under_dir:<6s} filename: {over_fname}\n"
+        output      +=  f"\tlabels number:  {num_labels}\n"
         return output
 
     def add_sample(self, idx, image_shape, amplitude_filename, phase_filename, minus_filename, plus_filename):
         sample  =   ET.SubElement(self.root, "sample")
-
         shape   =   self.subElem(sample, "image_shape")
         self.subElem(shape,  "height",          image_shape[0])
         self.subElem(shape,  "width",           image_shape[1])
@@ -340,7 +338,7 @@ class StandardXMLContainer:
             with open(dst_fullname, "w") as f:
                 f.write(yolo_string)
 
-    def sample_slicing(self, split_root="", sample_per_batch=10, dst_shape=(340, 340)) -> list:
+    def sample_slicing(self, split_root="", sample_per_batch=10, dst_shape=(340, 340)) -> List[MultimodalSample]:
         """ Slicing all samples into subview samples """
         # TODO: dst_shape should determined through dataset configuration
         batch_path  =   []
@@ -365,23 +363,39 @@ class StandardXMLContainer:
             sample_set += children
         return sample_set
 
+    def dataset_output(self, destined_image_shape, splitting=True):
+        # Create a container for parsing the raw data loaded from disk,
+        # and operating (Splitting) the dataset through attached method.
+        # sample_sets: np.array([MltSample1, MltSample2, MltSample3, ....])
+        sample_sets = self.sample_slicing() if splitting else None
 
-def dataset_xml_from_annotations(minus_path, plus_path, focus_path, phase_path, annotations_path,
-                                 xml_filename, image_format=".bmp", fixed_class="rbc", creator="auto"):
-    """
-    Now that the modality and tag data have been generated, it is necessary to combine
+        modalities_set, labels_set = [], []
+        for i, subviewSample in enumerate(sample_sets):
+            subviewSample.out_labeled_data(destined_image_shape, modalities_to=modalities_set, labels_to=labels_set)
+
+        # Determine the maximum labels number
+        max_boxes = max([len(lbl) for lbl in labels_set])
+
+        # Packaging the labels using uniform size array: [N_samples, n_label_per_sample, 5]
+        boxes_set = np.zeros((len(labels_set), max_boxes, 5))
+        for i, label in enumerate(labels_set):  # overwrite the N boxes_set info  [N,5]
+            boxes_set[i, :label.shape[0]] = label
+        return modalities_set, boxes_set
+
+
+def dataset_xml_from_annotations(focus_path, phase_path, minus_path, plus_path, annotations_path,
+                                 xml_filename, imgfmt=".bmp", fixed_class="rbc", creator="auto"):
+    """ Now that the modality and tag data have been generated, it is necessary to combine
     these data into a single xml file to organize the subsequent training dataset.
     """
-    minus_filenames     =   [fname for fname in os.listdir(minus_path)  if fname.endswith(image_format)]
-    plus_filenames      =   [fname for fname in os.listdir(plus_path)   if fname.endswith(image_format)]
-    focus_filenames     =   [fname for fname in os.listdir(focus_path)  if fname.endswith(image_format)]
-    phase_filenames     =   [fname for fname in os.listdir(phase_path)  if fname.endswith(image_format)]
-    ann_filenames       =   [fname for fname in os.listdir(annotations_path)  if fname.endswith(".txt")]
+    minus_filenames, plus_filenames, focus_filenames, phase_filenames, ann_filenames = [
+        [fname for fname in os.listdir(pth) if fname.endswith(imgfmt, ".txt")] 
+        for pth in (minus_path, plus_path, focus_path, phase_path, annotations_path)]
 
     # create root xml Element
     xml_container       =   StandardXMLContainer()
     for *fnames, ann_fname in zip(focus_filenames, phase_filenames, minus_filenames, plus_filenames, ann_filenames):
-        indexes     =   [fname.rstrip(image_format).lstrip(pref) for fname, pref in
+        indexes     =   [fname.rstrip(imgfmt).lstrip(pref) for fname, pref in
                          zip(fnames, ("focus_", "phase_", "minus_", "plus_"))]
         ann_idx     =   ann_fname.removesuffix(".txt").removeprefix("auto_")
 
@@ -414,8 +428,67 @@ def dataset_xml_from_annotations(minus_path, plus_path, focus_path, phase_path, 
     return xml_container
 
 
-class DataTransform:
+def read_yolo_labels_set(filenames: str, dst_shape):
+    _H, _W = dst_shape
 
+    def _read_single_label(fname):
+        boxes = []
+        with open(fname, "r") as _f:
+            for line in _f:
+                # processing one line to a box data, the x-y-w-h in here is normalized to 0~1
+                cls, x, y, w, h = [float(elm) for elm in line.rstrip("\n").split(" ")]
+                x, w = x*_W, w*_W
+                y, h = y*_H, h*_H
+                boxes.append((cls, x, y, w, h))
+        return boxes
+
+    label_set = [_read_single_label(f) for f in filenames]
+    max_boxes = max((len(lbl) for lbl in label_set))
+
+    # Packaging the labels using uniform size array: [N_samples, n_label_per_sample, 5]
+    boxes_set = np.zeros((len(label_set), max_boxes, 5))
+    for i, label in enumerate(label_set):  # overwrite the N boxes_set info  [N,5]
+        boxes_set[i, :len(label)] = label
+    return boxes_set
+
+
+def validate_same_sample(filenames: List[str]):
+    # '20210902-10000.jpg'   r'\d{8}\-\d{5}.\w{3}'
+    file_ids = []
+    for name in filenames:
+        assert re.match(r'\d{8}-\d{5}.\w{3}', name)
+        file_ids.append(name.split(".")[0])
+    try:
+        assert all([fid == file_ids[0] for fid in file_ids])
+        return True
+    except AssertionError:
+        return False
+
+
+def load_modalities_training_data(src_fpath: str, training_stage: str, dst_imsz):
+    """ Read all the filename in the target path """
+    sub_directories = ("amp", "pha", "minus", "plus", "anno")
+    for subdir in sub_directories:
+        assert os.path.isdir(join(src_fpath, subdir, training_stage))
+
+    # {'anno': ['pha_0000.txt', ...], 'amp': ['amp_0000.jpg', ...], ...}
+    dataset_dict = {subdir: [join(src_fpath, subdir, training_stage, f)
+                             for f in os.listdir(join(src_fpath, subdir, training_stage))]
+                    for subdir in sub_directories}
+
+    # read all labels into a single numpy ndarray
+    label_set = read_yolo_labels_set(dataset_dict["anno"], (dst_imsz, dst_imsz))
+
+    modalities_set = []     # Load Modalities set
+    for mod_filenames in zip(*[dataset_dict[mod] for mod in ("amp", "pha", "minus", "plus")]):
+        assert validate_same_sample([os.path.split(fname)[-1] for fname in mod_filenames])
+        modalities = [img_as_float32(imread(fname, True, "simpleitk")) for fname in mod_filenames]
+        modalities = np.vstack([resize(mod, (dst_imsz, dst_imsz))[np.newaxis, :] for mod in modalities])
+        modalities_set.append(modalities)
+    return modalities_set, label_set
+
+
+class DataTransform:
     @staticmethod
     def process_truth_boxes(ground_truth_boxes, anchors, image_size, grid_size, n_classes, cls_location=0):
         """ Generate y (labels) of the training dataset from original labels for model training.
@@ -437,6 +510,7 @@ class DataTransform:
             matching_gTruth_boxes  [GRID_SIZE, GRID_SIZE, N_anchor, x-y-w-h-l],
             class_onehot           [GRID_SIZE, GRID_SIZE, N_anchor, n_classes],
             gTruth_boxes_grid      [N_labels,  x-y-w-h-l]]
+        TODO: Arguments should be determined by the caller
         """
         # ground_truth_boxes: [N_labels, 5]
         # Dictionary: (gTruth -> ground truth)
@@ -478,9 +552,8 @@ class DataTransform:
                     matching_gTruth_boxes[y1, x1, best_anchor] = np.array([x0, y0, w0, h0, cls])
 
         # Produce one-hot  (GRID_SIZE, GRID_SIZE, N_anchor, n_classes)
-        onehot_base     =   np.expand_dims(matching_gTruth_boxes[..., 4], axis=-1)
-        class_onehot    =   np.concatenate([(onehot_base == j).astype(np.int8) for j in range(n_classes)], axis=-1)
-
+        onehot_base = np.expand_dims(matching_gTruth_boxes[..., 4], axis=-1)
+        class_onehot = np.concatenate([(onehot_base == j).astype(np.int8) for j in range(n_classes)], axis=-1)
         #  detect_mask           [[GRID_SIZE, GRID_SIZE, N_anchor, 1],
         #  matching_gTruth_boxes  [GRID_SIZE, GRID_SIZE, N_anchor, x-y-w-h-l],
         #  class_onehot           [GRID_SIZE, GRID_SIZE, N_anchor, n_classes],
@@ -489,6 +562,10 @@ class DataTransform:
 
     @staticmethod
     def image_transform(image):
+        # inputs are filenames, read it
+        if isinstance(image, str):
+            image = imread(image, True, "simpleitk")
+
         image   =   torch.tensor(image)
         mu      =   torch.mean(image, dim=(1, 2), keepdim=True)
         sigma   =   torch.std(image, dim=(1, 2), keepdim=True)
@@ -516,14 +593,23 @@ class DataTransform:
 
 class BloodSmearDataset(Dataset):
     """ Loading the given files, produce a Dataset object. """
-    def __init__(self, xml_filename, image_transform=None, target_transform=None, dst_imgsz=DST_IMGSZ, load_data=True):
-        self.max_boxes                  =   0
-        self.src_filename               =   xml_filename
-        self.image_transform            =   image_transform
-        self.target_transform           =   target_transform
-        self.destined_image_shape       =   (dst_imgsz, dst_imgsz)
-        if load_data:
-            self.modalities, self.labels    =   self.load_datasets(xml_filename)
+    def __init__(self, xml_filename="", filepath="", training_stage="train",
+                 image_transform=None, target_transform=None, dst_imgsz=DST_IMGSZ):
+        self.max_boxes              =   0
+        self.image_transform        =   image_transform
+        self.target_transform       =   target_transform
+        self.destined_image_shape   =   (dst_imgsz, dst_imgsz)
+
+        if xml_filename:    # Load data from an XML file
+            self.src_filename = xml_filename
+            # Create a container for parsing the raw data loaded from disk,
+            # and operating (Splitting) the dataset through attached method.
+            spContainer = StandardXMLContainer.fromXML(xml_filename)
+            # sample_sets: np.array([MltSample1, MltSample2, MltSample3, ....])
+            self.modalities, self.labels = spContainer.dataset_output(self.destined_image_shape)
+
+        elif filepath:
+            self.modalities, self.labels = load_modalities_training_data(filepath, training_stage, dst_imgsz)
 
     def __len__(self):
         return len(self.labels)
@@ -533,63 +619,22 @@ class BloodSmearDataset(Dataset):
         return f"<Class 'BloodSmearDataset'>\n\tSource: {self.src_filename}\n\t" \
                f"Modalities: {pmd[0]}*{pmd[1]}, shape-{pmd[2]}\n\tLabels: {plbl[0]}*{plbl[1]}, shape:-{plbl[2]}"
 
-    def cache(self, filename):
-        # Organize cached data
-        cache_dict = {"max_boxes":            self.max_boxes,
-                      "src_filename":         self.src_filename,
-                      "destined_image_shape": self.destined_image_shape,
-                      "modalities":           self.modalities,
-                      "labels":               self.labels}
-
-        # save into disk with pickle serialization
-        with open(filename, "wb") as f:
-            pickle.dump(cache_dict, f)
-
     @classmethod
-    def from_cache(cls, filename, image_transform=None, target_transform=None):
+    def from_xml_cache(cls, filename, image_transform=None, target_transform=None):
         if not os.path.isfile(filename):
             return None
 
+        # Construct instance
         with open(filename, "rb") as f:
             cache_dict = pickle.load(f)
-
-        assert all([name in cache_dict for name in ("max_boxes", "destined_image_shape",
-                                                    "src_filename", "modalities", "labels")])
-
-        # Construct instance
-        dataset = cls(xml_filename=cache_dict["src_filename"],
-                      image_transform=image_transform,
-                      target_transform=target_transform,
-                      dst_imgsz=cache_dict["destined_image_shape"],
-                      load_data=False)
+        dataset = cls(image_transform=image_transform, target_transform=target_transform,
+                      dst_imgsz=cache_dict["destined_image_shape"])
 
         # Recall attributes
         dataset.max_boxes   =   cache_dict["max_boxes"]
         dataset.modalities  =   cache_dict["modalities"]
         dataset.labels      =   cache_dict["labels"]
         return dataset
-
-    def load_datasets(self, xml_filename, splitting=True):
-        # Create a container for parsing the raw data loaded from disk,
-        # and operating (Splitting) the dataset through attached method.
-        spContainer = StandardXMLContainer.fromXML(xml_filename)
-        # sample_sets: np.array([MltSample1, MltSample2, MltSample3, ....])
-        sample_sets = spContainer.sample_slicing() if splitting else None
-
-        modalities_set, labels_set = [], []
-        for i, subviewSample in enumerate(sample_sets):
-            sample_modalities, sample_labels = subviewSample.output_labeled_data(self.destined_image_shape)
-            modalities_set.append(sample_modalities)
-            labels_set.append(sample_labels)
-
-        # Determine the maximum labels number
-        self.max_boxes = max([len(lbl) for lbl in labels_set])
-
-        # Packaging the labels using uniform size array: [N_samples, n_label_per_sample, 5]
-        boxes_set = np.zeros((len(labels_set), self.max_boxes, 5))
-        for i, label in enumerate(labels_set):  # overwrite the N boxes_set info  [N,5]
-            boxes_set[i, :label.shape[0]] = label
-        return modalities_set, boxes_set
 
     def __getitem__(self, idx):
         labels      =   self.labels[idx]
@@ -599,47 +644,38 @@ class BloodSmearDataset(Dataset):
         if self.image_transform:
             modalities = self.image_transform(modalities)
         if self.target_transform:
-            labels   = self.target_transform(labels)
-        return {"modalities": modalities, "labels": labels}
+            labels = self.target_transform(labels)
+        return modalities, labels
 
 
-def create_dataloader():
-    # TODO: should produce the train_loader, valid_loader and test_loader
-    pass
+def create_dataloader(fpath_str: str, training_stage, batch_size, image_tf=None, target_tf=None, **loader_params):
+    constructor = {"image_transform":  DataTransform.image_transform if image_tf is None else image_tf,
+                   "target_transform": DataTransform.target_transform if target_tf is None else target_tf}
+
+    if isdir(fpath_str):
+        constructor.update({"filepath": fpath_str, "training_stage": training_stage})
+    elif isfile(fpath_str):
+        if fpath_str.endswith("xml"):
+            constructor.update({"xml_filename": fpath_str, "training_stage": training_stage})
+        elif fpath_str.endswith("pkl"):
+            constructor.update({"filename": fpath_str, "training_stage": training_stage})
+
+    return DataLoader(batch_size=batch_size, dataset=BloodSmearDataset(**constructor), **loader_params)
 
 
 # Pytorch format Dataset Constructor, using in the initialing of 'BloodSmearDataset'
-TRAIN_DS_CONSTRUCTOR = {"xml_filename":     join(DATA_ROOT, "20210105 BloodSmear\\fov_annotations.xml"),
-                        "image_transform":  DataTransform.image_transform,
-                        "target_transform": DataTransform.target_transform}
-
-VALID_DS_CONSTRUCTOR = {"xml_filename":     join(DATA_ROOT, "20210105 BloodSmear\\fov_annotations.xml"),
-                        "image_transform":  DataTransform.image_transform,
-                        "target_transform": DataTransform.target_transform}
-
-TRAIN_DS_CACHES = {"filename":         ".\\caches\\cache-20210105-blood_smear.pkl",
-                   "image_transform":  DataTransform.image_transform,
-                   "target_transform": DataTransform.target_transform}
+XML_DATASET_FILENAME    =   join(DATA_ROOT, "20210105 BloodSmear\\fov_annotations.xml")
+XML_CACHE_FILENAME      =   ".\\caches\\cache-20210105-blood_smear.pkl"
+SET202109_FILENAME      =   join(DATA_ROOT, "Set-202109")
 
 
 if __name__ == "__main__":
+    # Logging Config -----------------------------------------------------------------
+    logging.config.fileConfig("..\\log\\config\\dataset.conf")
+    logger      =   logging.getLogger(__name__)
+    # Logging Config Ended -----------------------------------------------------------
     try:
-        # Constructing a 'Dataset' Object from given data
-        bsDataset   =   BloodSmearDataset(**TRAIN_DS_CONSTRUCTOR)
-        # Wrapping the 'Dataset' instance into a 'Dataloader' according to PyTorch process.
-        # Dataloader: return the dataset inside dataset once a batch
-        #      |--sampler: SequentialSampler
-        #      |--batch_sampler: BatchSampler
-        #              |--sampler  #directing to Dataloader.sampler
-        #      |--dataset: Dataset
-
-        dataset_cachefile = ".\\caches\\cache-20210105-blood_smear.pkl"
-        # bsDataset.cache(dataset_cachefile)
-
-        newDataset = BloodSmearDataset.from_cache(dataset_cachefile,
-                                                  DataTransform.image_transform,
-                                                  DataTransform.target_transform)
-        bsLoader = DataLoader(newDataset, batch_size=4)
+        bsLoader = create_dataloader(SET202109_FILENAME, "valid", 4, shuffle=True)
         for batch_sample in bsLoader:
             bt_modalities, bt_labels = batch_sample["modalities"], batch_sample["labels"]
             single_sample_visualization(bt_modalities[0].numpy(), bt_labels[3][0].numpy())

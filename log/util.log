@@ -110,3 +110,46 @@
 [D 2021-10-02 15:19:31,570 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
 [D 2021-10-02 15:19:31,570 util.py 118] This item in stdContainer in a <class 'xml.etree.ElementTree.Element'>
 [I 2021-10-02 15:24:25,522 util.py 130] b'<FFoV_Annotations>\n\t<sample>\n\t\t<image_idx>0</image_idx>\n\t\t<amp_fullname>D:\\Workspace\\RBC Recognition\\datasets\\20210105 BloodSmear\\amplitude\\amp_00.tif</amp_fullname>\n\t\t<pha_fullname>D:\\Workspace\\RBC Recognition\\datasets\\20210105 BloodSmear\\phase\\pha_00.tif</pha_fullname>\n\t\t<over_fullname>D:\\Workspace\\RBC Recognition\\datasets\\20210105 BloodSmear\\over-focus\\over_00.tif</over_fullname>\n\t\t<under_fullname>D:\\Workspace\\RBC Recognition\\datasets\\20210105 BloodSmear\\under-focus\\under_00.tif</under_fullna'
+[D 2021-10-15 10:42:52,001 TiffImagePlugin.py 1471] Tiffinfo Keys: []
+[D 2021-10-15 10:42:52,001 TiffImagePlugin.py 810] Tag 256, Type: 4, Value: 586
+[D 2021-10-15 10:42:52,003 TiffImagePlugin.py 831] save: ImageWidth (256) - type: long (4) - value: (586,)
+[D 2021-10-15 10:42:52,003 TiffImagePlugin.py 810] Tag 257, Type: 4, Value: 453
+[D 2021-10-15 10:42:52,003 TiffImagePlugin.py 831] save: ImageLength (257) - type: long (4) - value: (453,)
+[D 2021-10-15 10:42:52,003 TiffImagePlugin.py 810] Tag 258, Type: 3, Value: (8, 8, 8, 8)
+[D 2021-10-15 10:42:52,003 TiffImagePlugin.py 831] save: BitsPerSample (258) - type: short (3) - value: (8, 8, 8, 8)
+[D 2021-10-15 10:42:52,003 TiffImagePlugin.py 810] Tag 259, Type: 3, Value: 1
+[D 2021-10-15 10:42:52,003 TiffImagePlugin.py 831] save: Compression (259) - type: short (3) - value: (1,)
+[D 2021-10-15 10:42:52,003 TiffImagePlugin.py 810] Tag 262, Type: 3, Value: 2
+[D 2021-10-15 10:42:52,003 TiffImagePlugin.py 831] save: PhotometricInterpretation (262) - type: short (3) - value: (2,)
+[D 2021-10-15 10:42:52,003 TiffImagePlugin.py 810] Tag 273, Type: 4, Value: (0,)
+[D 2021-10-15 10:42:52,003 TiffImagePlugin.py 831] save: StripOffsets (273) - type: long (4) - value: (0,)
+[D 2021-10-15 10:42:52,003 TiffImagePlugin.py 810] Tag 277, Type: 3, Value: 4
+[D 2021-10-15 10:42:52,003 TiffImagePlugin.py 831] save: SamplesPerPixel (277) - type: short (3) - value: (4,)
+[D 2021-10-15 10:42:52,003 TiffImagePlugin.py 810] Tag 278, Type: 4, Value: 453
+[D 2021-10-15 10:42:52,003 TiffImagePlugin.py 831] save: RowsPerStrip (278) - type: long (4) - value: (453,)
+[D 2021-10-15 10:42:52,003 TiffImagePlugin.py 810] Tag 279, Type: 4, Value: (1061832,)
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 831] save: StripByteCounts (279) - type: long (4) - value: (1061832,)
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 810] Tag 282, Type: 5, Value: 100.0
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 831] save: XResolution (282) - type: rational (5) - value: (100.0,)
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 810] Tag 283, Type: 5, Value: 100.0
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 831] save: YResolution (283) - type: rational (5) - value: (100.0,)
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 810] Tag 284, Type: 3, Value: 1
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 831] save: PlanarConfiguration (284) - type: short (3) - value: (1,)
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 810] Tag 296, Type: 3, Value: 2
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 831] save: ResolutionUnit (296) - type: short (3) - value: (2,)
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 810] Tag 338, Type: 3, Value: (2,)
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 831] save: ExtraSamples (338) - type: short (3) - value: (2,)
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 857] 256 4 1 b'J\x02\x00\x00' b''
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 857] 257 4 1 b'\xc5\x01\x00\x00' b''
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 857] 258 3 4 b'\xb6\x00\x00\x00' b'\x08\x00\x08\x00\x08\x00\x08\x00'
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 857] 259 3 1 b'\x01\x00\x00\x00' b''
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 857] 262 3 1 b'\x02\x00\x00\x00' b''
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 857] 273 4 1 b'\xce\x00\x00\x00' b''
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 857] 277 3 1 b'\x04\x00\x00\x00' b''
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 857] 278 4 1 b'\xc5\x01\x00\x00' b''
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 857] 279 4 1 b'\xc83\x10\x00' b''
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 857] 282 5 1 b'\xbe\x00\x00\x00' b'd\x00\x00\x00\x01\x00\x00\x00'
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 857] 283 5 1 b'\xc6\x00\x00\x00' b'd\x00\x00\x00\x01\x00\x00\x00'
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 857] 284 3 1 b'\x01\x00\x00\x00' b''
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 857] 296 3 1 b'\x02\x00\x00\x00' b''
+[D 2021-10-15 10:42:52,005 TiffImagePlugin.py 857] 338 3 1 b'\x02\x00\x00\x00' b''

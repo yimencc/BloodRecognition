@@ -334,3 +334,72 @@ Traceback (most recent call last):
   File "D:\Workspace\RBC Recognition\Deeplearning\dataset.py", line 184, in <listcomp>
     self.set_modalities(*[resize(img, dst_image_shape) for img in self.modalities])
 TypeError: an integer is required (got type tuple)
+[E 2021-10-13 11:17:30,237 dataset.py 682] [Errno 2] No such file or directory: '20210902-10000.txt'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 677, in <module>
+    bsLoader = DataLoader(batch_size=4, dataset=BloodSmearDataset(**TRAIN_CONSTRUCTOR))
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 609, in __init__
+    self.modalities, self.labels = load_modalities_training_data(filepath, training_stage)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 477, in load_modalities_training_data
+    label_set = read_yolo_labels_set(dataset_dict["anno"])
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 445, in read_yolo_labels_set
+    label_set = [_read_single_label(f) for f in filenames]
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 445, in <listcomp>
+    label_set = [_read_single_label(f) for f in filenames]
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 439, in _read_single_label
+    with open(fname, "r") as _f:
+FileNotFoundError: [Errno 2] No such file or directory: '20210902-10000.txt'
+[E 2021-10-13 11:21:05,343 dataset.py 684] 
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 679, in <module>
+    bsLoader = DataLoader(batch_size=4, dataset=BloodSmearDataset(**TRAIN_CONSTRUCTOR))
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 611, in __init__
+    self.modalities, self.labels = load_modalities_training_data(filepath, training_stage)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 483, in load_modalities_training_data
+    assert validate_same_sample(mod_filenames)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 459, in validate_same_sample
+    assert re.match(r'\d{8}-\d{5}.\w{3}', name)
+AssertionError
+[E 2021-10-13 11:22:39,030 dataset.py 684] expected str, bytes or os.PathLike object, not tuple
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 679, in <module>
+    bsLoader = DataLoader(batch_size=4, dataset=BloodSmearDataset(**TRAIN_CONSTRUCTOR))
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 611, in __init__
+    self.modalities, self.labels = load_modalities_training_data(filepath, training_stage)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 483, in load_modalities_training_data
+    assert validate_same_sample(mod_filenames)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 458, in validate_same_sample
+    for name in os.path.split(filenames)[-1]:
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\ntpath.py", line 185, in split
+    p = os.fspath(p)
+TypeError: expected str, bytes or os.PathLike object, not tuple
+[E 2021-10-13 11:24:12,113 dataset.py 684] Can only calculate the mean of floating types. Got Byte instead.
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 680, in <module>
+    for batch_sample in bsLoader:
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\dataloader.py", line 517, in __next__
+    data = self._next_data()
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\dataloader.py", line 557, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\_utils\fetch.py", line 44, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\_utils\fetch.py", line 44, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 643, in __getitem__
+    modalities = self.image_transform(modalities)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 569, in image_transform
+    mu      =   torch.mean(image, dim=(1, 2), keepdim=True)
+RuntimeError: Can only calculate the mean of floating types. Got Byte instead.
+[E 2021-10-13 11:45:13,449 dataset.py 686] Unable to allocate 531. MiB for an array with shape (1280, 320, 340) and data type float32
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 681, in <module>
+    bsLoader = DataLoader(batch_size=4, dataset=BloodSmearDataset(**TRAIN_CONSTRUCTOR))
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 613, in __init__
+    self.modalities, self.labels = load_modalities_training_data(filepath, training_stage, dst_imgsz)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 484, in load_modalities_training_data
+    modalities = np.vstack([resize(img_as_float32(imread(fname, True, "simpleitk")[np.newaxis, :]),
+  File "<__array_function__ internals>", line 5, in vstack
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\numpy\core\shape_base.py", line 283, in vstack
+    return _nx.concatenate(arrs, 0)
+  File "<__array_function__ internals>", line 5, in concatenate
+numpy.core._exceptions._ArrayMemoryError: Unable to allocate 531. MiB for an array with shape (1280, 320, 340) and data type float32

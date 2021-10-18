@@ -4,6 +4,7 @@ import time
 import logging.config
 from os.path import join
 
+import yaml
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -130,7 +131,26 @@ def issue_20211002_01():
         f.write(xmlStrings)
 
 
+def model_loss_plot():
+    """ Losses graph for model D:\Workspace\RBC Recognition\models\plan_8.0\yolov5_1014-174441.pth """
+    loss_filename = "D:\\Workspace\\RBC Recognition\\models\\plan_8.0\\losses_1014-174441.yaml"
+    with open(loss_filename, "r") as f:
+        data = yaml.load(f, yaml.FullLoader)
+
+    accuracy, train_loss, valid_loss = [data.get(ls) for ls in ("accuracy", "train_loss", "valid_loss")]
+
+    fig, ax1 = plt.subplots(constrained_layout=True, figsize=(6, 6))
+    ax1.plot(train_loss, c="green")
+    ax1.plot(valid_loss, c="blue")
+    # ax.set_xlim(0, len(accuracy)-1)
+    ax1.set_ylim(0)
+
+    ax2 = ax1.twinx()
+    ax2.plot(accuracy, c="orange")
+    plt.show()
+
+
 if __name__ == "__main__":
     """Run Entrance"""
     print(sys.version_info, "\n", sys.version)
-    issue_20211002_01()
+    model_loss_plot()

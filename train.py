@@ -3,36 +3,29 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 import time
 import logging
 from logging import config
-from os.path import join
-from collections import OrderedDict
+from os.path import join, abspath
 
 import yaml
 import torch
 import numpy as np
-from torch.utils.data import DataLoader
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 from Deeplearning.util.losses   import YoloLoss
 from Deeplearning.util.models   import YoloV5Model
-from Deeplearning.util.dataset  import BloodSmearDataset, ANCHORS, GRIDSZ, TRAIN_DS_CACHES
+from Deeplearning.util.dataset  import create_dataloader
 
 # Meta-Parameters
-IMGSZ       =   320
-seed        =   123456
+CLASS_LOC   =   0
+N_CLASSES   =   3
+DST_IMGSZ   =   320
+SEED        =   123456
 IMG_PLUGIN  =   "simpleitk"
 MODEL_PATH  =   "..\\models"
 DEVICE      =   "cuda" if torch.cuda.is_available() else "cpu"
-CLASS_LOC   =   0
-N_CLASSES   =   3
 
 # Fixed the random states
-torch.manual_seed(seed)
-torch.cuda.manual_seed(seed)
-
-# Logging Config ---------------------------------------------------
-logging.config.fileConfig(".\\log\\config\\train.conf")
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-# Logging Config Ended ---------------------------------------------
+torch.manual_seed(SEED)
+torch.cuda.manual_seed(SEED)
 
 
 class _LossTracer:
@@ -62,11 +55,27 @@ class _LossTracer:
         return self.box[item]
 
 
+class Tracer:
+    def __init__(self, name):
+        self.name = name
+        self.boxes = {}
+
+    def register_box(self, name=""):
+        self.boxes[name] = _LossTracer(name)
+
+    def track(self, value, name, c=None):
+        self.boxes[name].track(value, c)
+
+    def update_state(self, name):
+        self.boxes[name].update_state()
+
+    def get(self, name, idx):
+        return self.boxes[name][idx]
+
+
 class EarlyStopping:
-    """
-    Early stopping to stop the training when the loss does not improve after
-    certain epochs.
-    """
+    """ Early stopping to stop the training when the loss does not improve after
+    certain epochs. """
     def __init__(self, patience=5, min_delta=0, mode: str = "max"):
         """
         :param patience: how many epochs to wait before stopping when loss is
@@ -81,7 +90,7 @@ class EarlyStopping:
         self.early_stop = False
         self.mode = mode
 
-    def __call__(self, val_acc):
+    def step(self, val_acc):
         if self.best_acc is None:
             self.best_acc = val_acc
         else:
@@ -104,276 +113,217 @@ class EarlyStopping:
                     self.early_stop = True
 
 
-def train_loop(dataloader, model, loss_fn, optimizer, decay_rate=.01, regularization=False):
-    train_loss = []
+def train_loop(dataloader, model, loss_fn, optimizer, device, decay_rate=0):
     size = len(dataloader.dataset)
-    for batch, db_train in enumerate(dataloader):
+    train_loss, model_loss, regula_loss, n_current = 0, 0, 0, 0
+    for batch, (modalities, labels) in enumerate(dataloader):
         # Transfer data to gpu
-        X, y = db_train["modalities"].to(DEVICE), [item.to(DEVICE) for item in db_train["labels"]]
+        X, y = modalities.to(device), [item.to(device) for item in labels]
 
         # Forward propagation
         pred = model(X)
 
         # Compute training loss
-        loss = loss_fn(pred, y)
-        if regularization:
-            regula_loss =   sum([torch.sum(param.data) for param in model.parameters()])
-            loss        +=  decay_rate * regula_loss
+        reg_loss = decay_rate * sum([torch.sum(param.data) for param in model.parameters()])
+        total_loss = loss_fn(pred, y) + reg_loss
 
         # Backpropagation
         optimizer.zero_grad()
-        loss.backward()
+        total_loss.backward()
         optimizer.step()
 
-        train_loss.append(loss.item()*len(X))
-        if (batch+1) % 5 == 0:
-            loss, current = loss.item(), (batch+1) * len(X)
-            print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+        # Batch loss
+        n_current   +=  len(X)
+        cur_loss    =   total_loss.item()
+        reg_loss    =   reg_loss.item()
 
-    epoch_avg_loss = sum(train_loss)/size
-    print(f"Train Error: Avg Loss {epoch_avg_loss:>8f}")
-    return epoch_avg_loss
+        # Epoch loss update
+        train_loss  +=  cur_loss*len(X)
+        model_loss  +=  (cur_loss-reg_loss)*len(X)
+        regula_loss +=  reg_loss*len(X)
+
+        if (batch+1) % 10 == 0:
+            print(f"Total: {cur_loss:>7f}   Model: {cur_loss-reg_loss:>7f}   "
+                  f"Regula: {reg_loss:>7f}   [{n_current:>5d}/{size:>5d}]")
+
+    avg_train_loss = train_loss/size
+    avg_model_loss = model_loss/size
+    avg_regula_loss = regula_loss/size
+    print(f"Train Error: [Avg Loss {avg_train_loss:>8f}, Avg Model {avg_model_loss:>8f}, "
+          f"Avg Regula {avg_regula_loss:>8f}]")
+    return avg_train_loss, avg_model_loss, avg_regula_loss
 
 
-def valid_loop(dataloader, model, loss_fn):
-    size = len(dataloader.dataset)
-    test_loss, accuracy = 0, 0
-
-    print("\nTest:")
+def valid_loop(dataloader, model, loss_fn, device):
+    print("\nTest\n"+"-"*30)
+    test_loss, accuracy, n_current, size = 0, 0, 0, len(dataloader.dataset)
     with torch.no_grad():
         for batch, db_valid in enumerate(dataloader):
             # Transfer data to gpu
-            X, y = db_valid["modalities"].to(DEVICE), [item.to(DEVICE) for item in db_valid["labels"]]
+            X, y = db_valid["modalities"].to(device), [item.to(device) for item in db_valid["labels"]]
 
             # Forward propagation
             pred = model(X)
 
-            # Compute test loss
-            cur_loos = loss_fn(pred, y).item()
-            test_loss += cur_loos*len(X)
-            cur_acy = loss_fn.accuracy.item()
-            accuracy += cur_acy * len(X)
+            # Compute batch test loss
+            cur_loos    =   loss_fn(pred, y).item()
+            cur_acy     =   loss_fn.accuracy.item()
 
+            # Epoch data
+            n_current   +=  len(X)
+            test_loss   +=  cur_loos * len(X)
+            accuracy    +=  cur_acy * len(X)
             if (batch+1) % 5 == 0:
-                loss, current = cur_loos, (batch+1)*len(X)
-                print(f"loss: {loss:>7f}  accuracy: {cur_acy:>5f}  [{current:>5d}/{size:>5d}]")
+                print(f"loss: {cur_loos:>7f}  accuracy: {cur_acy:>5f}  [{n_current:>5d}/{size:>5d}]")
 
     test_loss /= size
     accuracy /= size
-    print(f"Test Error: Avg loss {test_loss:>8f}, Avg accuracy {accuracy:>3f}\n")
+    print(f"Test Error: [Avg loss {test_loss:>8f}, Avg accuracy {accuracy:>3f}]\n")
     return test_loss, accuracy
 
 
 class Trainer:
-    def __init__(self, hyp):
+    def __init__(self, hyp, train_loader=None, valid_loader=None):
         if isinstance(hyp, str) and hyp.endswith(".yaml"):
-            with open(hyp, "r") as hyp_f:
-                self.hyp = yaml.load(hyp_f, yaml.FullLoader)
+            with open(hyp, "r") as hyp_file:
+                hyp = yaml.load(hyp_file, yaml.FullLoader)
 
-        params_list         =   ("lr", "n_box", "n_cls", "grid_size", "attention_layer", "anchors")
-        lr, n_box, n_cls, grid_sz, attention_ly, anchors = [self.hyp.get(item) for item in params_list]
-
-        self.max_epochs     =   0
+        n_box, n_cls, grid_sz, anchors, attention, lr = [hyp.get(item) for item in ("n_box", "n_cls", "grid_size",
+                                                                                    "anchors", "attention", "lr")]
+        self.hyp            =   hyp
+        self.stop_epoch     =   0
         self.callbacks      =   {}
+        self.train_break    =   False
+        self.device         =   hyp.get("device", DEVICE)
 
-        self.loss_fn        =   YoloLoss(DEVICE, anchors, grid_sz, n_cls)
-        self.model          =   YoloV5Model(n_box, n_cls, grid_sz, attention_ly).to(DEVICE)
-        self.optimizer      =   torch.optim.Adam(self.model.parameters(), lr=self.hyp["lr"])
+        self.loss_fn        =   YoloLoss(self.device, anchors, grid_sz, n_cls)
+        self.model          =   YoloV5Model(n_box, n_cls, grid_sz, attention).to(self.device)
+        self.optimizer      =   torch.optim.Adam(self.model.parameters(), lr=lr)
 
-        self.acc_tracer     =   _LossTracer("acc")
-        self.train_tracer   =   _LossTracer("train")
+        self.train_tracer   =   Tracer("train")
         self.valid_tracer   =   _LossTracer("valid")
+        self.acc_tracer     =   _LossTracer("acc")
+        self.train_tracer.register_box("total")
+        self.train_tracer.register_box("model")
+        self.train_tracer.register_box("regula")
 
-    def registering_training_callbacks(self, names):
-        for name in names:
-            if name == "lr_schedule":
-                schedule_dict = {}
-                self.callbacks.update(
-                    {"schedule": torch.optim.lr_scheduler.ReduceLROnPlateau(**schedule_dict)}
-                )
-            if name == "early_stopping":
-                early_stopping_dict = {}
-                self.callbacks.update(
-                    {"early_stopping": EarlyStopping(**early_stopping_dict)}
-                )
+        # Register Default Callback
+        dft_callback = {"ReduceLR": ReduceLROnPlateau, "EarlyStopping": EarlyStopping}
+        self.register_callbacks(schedule=(dft_callback["ReduceLR"], {"optimizer": self.optimizer, "mode": "min"}),
+                                early_stopping=(dft_callback["EarlyStopping"], {"patience": 10}))
+        # Load data
+        logger.info("Loading data ...")
+        self.train_loader = create_dataloader(**hyp.get("train_loader_params")) if not train_loader else train_loader
+        self.valid_loader = create_dataloader(**hyp.get("valid_loader_params")) if not valid_loader else valid_loader
 
-    def before_training(self):
-        pass
+    def register_callbacks(self, **callbacks):
+        """ callbacks: {"cb_name": (callback, params_dict)} """
+        for cb_name, (callback, param_dict) in callbacks.items():
+            assert isinstance(cb_name, str)
+            assert isinstance(param_dict, dict)
+            self.callbacks.update({cb_name: callback(**param_dict)})
 
-    def after_epoch(self, **kwargs):
-        """
-        Mainly for call back executing
-        """
-        self.max_epochs += 1
+    def on_train_begin(self, **kwargs):
+        # Hyper-params
+        print("\nHyper-parameters:\n"+"="*30)
+        for k, v in self.hyp.items():
+            print(f"\t{k}: {v}")
 
-        # Callback search
-        valid_loss  =   kwargs.get("valid_loss")
-        acc         =   kwargs.get("acc")
+        # Model Info
+        if kwargs.get("model_info", None):
+            print("\nModel Info")
+            from torchsummary import summary
+            summary(self.model, (4, 320, 320))
+            print()
 
-        schedule = self.callbacks.get("lr_schedule", None)
-        if schedule:
-            schedule.step(valid_loss)
+        logger.info("Training Start\n")
 
-        early_stopping = self.callbacks.get("early_stopping")
-        if early_stopping:
-            early_stopping(acc)
+    def on_train_end(self, **kwargs):
+        # Model Save
+        if model_fpath := self.hyp.get("model_fpath", None):
+            model_prefix = kwargs.get("model_prefix", "yolov5")
+            self.model_save(model_fpath, model_prefix)
+
+    @staticmethod
+    def on_epoch_begin(**kwargs):
+        # Epoch Message
+        if epoch := kwargs.get("epoch", None):
+            print(f"[Epoch {epoch}]\n" + "-" * 30)
+
+    def on_epoch_end(self, **kwargs):
+        """ Mainly for call back executing """
+        self.stop_epoch += 1
+
+        # Learning Rate Schedule
+        if schedule := self.callbacks.get("schedule", None):
+            val_loss = kwargs.get("valid_loss")
+            schedule.step(val_loss)
+
+        # Early Stopping
+        if early_stopping := self.callbacks.get("early_stopping"):
+            accuracy = kwargs.get("accuracy")
+            early_stopping.step(accuracy)
             if early_stopping.early_stop:
-                print("Early stopped")
-                pass
+                logger.info(f"Early stopped at Accuracy {accuracy:.4f}")
+                return True
 
-    def training(self, epochs, train_loader, valid_loader):
-        self.before_training()
-
-        decay_rate = self.hyp["decay_rate"] if "decay_rate" in self.hyp.keys() else None
+    def training(self, epochs):
+        self.on_train_begin(model_info=True)
         for t in range(epochs):
-            print(f"Epoch {t+1}\n" + "-" * 30)
-            # Track training
-            train_loss = train_loop(train_loader, self.model, self.loss_fn, self.optimizer, decay_rate)
+            self.on_epoch_begin(epoch=t + 1)
+            # Train and Valid
+            tt_loss, md_loss, reg_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer,
+                                                    self.device, self.hyp.get("decay_rate", None))
+            val_loss, accuracy = valid_loop(self.valid_loader, self.model, self.loss_fn, self.device)
 
-            # Track testing
-            valid_loss, acc = valid_loop(valid_loader, self.model, self.loss_fn)
+            # Loss tracking
+            self.train_tracer.track(tt_loss, "total")
+            self.train_tracer.track(md_loss, "model")
+            self.train_tracer.track(reg_loss, "regula")
+            self.valid_tracer.track(val_loss)
+            self.acc_tracer.track(accuracy)
 
-            self.train_tracer.track(train_loss)
-            self.valid_tracer.track(valid_loss)
-            self.acc_tracer.track(acc)
+            if self.on_epoch_end(valid_loss=val_loss, accuracy=accuracy):    # Epoch end
+                break
 
-            self.after_epoch()
+        self.on_train_end()  # Training end
 
     def model_save(self, model_path, model_prefix="yolov5"):
         # Saving to model/plan_*/yolov5_mmdd-HHMM.pth
-        t_stamp = time.strftime("%m%d-%H%M%S")
+        stamp = time.strftime("%m%d-%H%M%S")
         if not os.path.exists(model_path):
             os.mkdir(model_path)
 
         # Model saved with OrderDict using torch
-        model_fp = join(model_path, "%s_%s.pth" % (model_prefix, t_stamp))
-        torch.save(self.model.state_dict(), model_fp)
+        model_fp = join(model_path, "%s_%s.pth" % (model_prefix, stamp))
+        torch.save(self.model, model_fp)
 
         # Hyper-params saving using yaml
         dump_dict = {"hyp":         self.hyp,
-                     "max_epochs":  self.max_epochs,
-                     "train_loss":  self.train_tracer.box,
+                     "max_epochs":  self.stop_epoch,
+                     "train_loss":  self.train_tracer.boxes["total"].box,
+                     "model_loss":  self.train_tracer.boxes["model"].box,
+                     "regula_loss":  self.train_tracer.boxes["regula"].box,
                      "valid_loss":  self.valid_tracer.box,
                      "accuracy":    self.acc_tracer.box}
 
-        losses_fp = join(model_path, "losses_%s.yaml" % t_stamp)
-        with open(losses_fp, "w") as loss_f:
+        losses_fpath = join(model_path, "losses_%s.yaml" % stamp)
+        with open(losses_fpath, "w") as loss_f:
             yaml.dump(dump_dict, loss_f)
-
-        print(f"Model weights saved in {os.path.abspath(model_fp)}\n")
-
-
-class HyperSearchingPlan:
-    """
-    Search the best parameters for model training, suitable for quickly
-    finding super parameters after the model training process is stable.
-    Notice: It is not recommended to use it when there are problems in the training process!!!
-    TODO: should be divided into two classes: Plan(For hyperParam searching) and Training(For training implementing)
-    TODO: For every group of parameters, save the trained model and parameters
-    """
-    def __init__(self, name, epochs, batch_size, train_set, valid_set,
-                 model_path, model_fname=None, store_mode="dict"):
-
-        self.model_path = os.path.join(model_path, name)
-        if not os.path.exists(self.model_path):
-            os.mkdir(self.model_path)
-
-        self.logs           =   {}
-        self.model          =   None
-        self.epochs         =   epochs
-        self.max_epochs     =   0
-
-        # TODO: Achieve 'callbacks' and 'cb_params' through registering_training_callbacks
-        self.callbacks      =   OrderedDict()
-        self.cb_params      =   OrderedDict()
-
-        self.batch_size     =   batch_size
-        self.model_fname    =   model_fname
-        self.store_mode     =   store_mode
-
-        # TODO: get dataloader through create_dataloader from dataset module
-        self.train_loader   =   DataLoader(train_set, batch_size, True)
-        self.valid_loader   =   DataLoader(valid_set, batch_size, True)
-
-        self.accuracy_tracer    =   _LossTracer("acc")
-        self.train_ls_tracer    =   _LossTracer("train")
-        self.valid_ls_tracer    =   _LossTracer("valid")
-
-    def search(self, learning_rates, decay_rates, patience):
-        """ Execute the given plans """
-
-        self.logs = {"epochs":          self.epochs,
-                     "batch_size":      self.batch_size,
-                     "learning_rates":  learning_rates,
-                     "decay_rates":     decay_rates,
-                     "patience":        patience}
-
-        best_params = {}
-        best_performance = 0
-        for i, lr in enumerate(learning_rates):
-            for k, decay_rate in enumerate(decay_rates):
-                cur_stage = i * len(decay_rates) + k + 1
-                print("stage {:d} lr: {:.5f} dc_rate: {:.4f}, patience: {:d}\n{:s}"
-                      .format(cur_stage, lr, decay_rate, patience, "="*50))
-
-                # Model initialization
-                self.model = YoloV5Model(attention_layer=7)
-                self.model = self.model.to(DEVICE)
-                # self.model.initialize_weights()
-
-                # Read weights from disk
-                if self.model_fname:
-                    print(f"Load Model from: {self.model_fname}")
-                    if self.store_mode == "dict":
-                        self.model.load_state_dict(torch.load(self.model_fname))
-                    elif self.store_mode == "pickle":
-                        self.model = torch.load(self.model_fname)
-
-                    # Implementing model training
-
-                # Update best stages and parameters
-                if (i == 0 and k == 0) or self.accuracy_tracer[-1] > best_performance:
-                    best_performance = self.accuracy_tracer[-1]
-                    best_params.update({"learning_rate": lr, "decay_rate": decay_rate, "patience": patience})
-
-        # Save logs. Training Ended!
-        self.msg_log(best_params)
-
-    def msg_log(self, best_params):
-        log_name = os.path.join(self.model_path, "log.txt")
-        with open(log_name, "w") as f:
-            if self.model_fname:
-                f.write("model load from: %s\n" % self.model_fname)
-            for key, val in self.logs.items():
-                f.write("%s: %s\n" % (key, str(val)))
-            f.write("Best Performance:\n")
-            for key, val in best_params.items():
-                f.write("%s: %s\n" % (key, str(val)))
+        print(f"Model weights saved in '{abspath(model_fp)}'\n")
 
 
 if __name__ == '__main__':
     print(f"Torch Version: {torch.__version__}, Cuda Available: {torch.cuda.is_available()}")
+    # Logging Config ---------------------------------------------------
+    logging.config.fileConfig(".\\log\\config\\train.conf")
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+    # Logging Config Ended ---------------------------------------------
 
     # ============================ Model Training ==================================
-    hyper_cfg   =   ".\\hypers.yaml"
-    modelSpath  =   join(MODEL_PATH, "plan_8.0")
-    dataLoader  =   DataLoader(BloodSmearDataset.from_cache(**TRAIN_DS_CACHES), batch_size=8)
-
-    trainer     =   Trainer(hyper_cfg)
-    trainer.training(2, dataLoader, dataLoader)
-    trainer.model_save(modelSpath)
-
-    # # ====================== Hyper-parameters Searching ============================
-    # try:
-    #     train_plan = HyperSearchingPlan(name="plan_8.0",
-    #                                     epochs=2,
-    #                                     batch_size=8,
-    #                                     store_mode="dict",
-    #                                     model_path=MODEL_PATH,
-    #                                     train_set=BloodSmearDataset.from_cache(**TRAIN_DS_CACHES),
-    #                                     valid_set=BloodSmearDataset.from_cache(**TRAIN_DS_CACHES))
-    #
-    #     train_plan.search(learning_rates=[3e-4], decay_rates=[0.03], patience=7)
-    #
-    # except Exception as e:
-    #     logger.exception(e)     # Error logging
+    try:
+        trainer = Trainer(".\\hypers.yaml")
+        trainer.training(100)
+    except Exception as e:
+        logger.exception(e)
