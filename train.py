@@ -11,7 +11,7 @@ import numpy as np
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 from Deeplearning.util.losses   import YoloLoss
-from Deeplearning.util.models   import YoloV5Model
+from Deeplearning.util.models   import YoloV6Model
 from Deeplearning.util.dataset  import create_dataloader
 
 # Meta-Parameters
@@ -158,9 +158,9 @@ def valid_loop(dataloader, model, loss_fn, device):
     print("\nTest\n"+"-"*30)
     test_loss, accuracy, n_current, size = 0, 0, 0, len(dataloader.dataset)
     with torch.no_grad():
-        for batch, db_valid in enumerate(dataloader):
+        for batch, (modalities, labels) in enumerate(dataloader):
             # Transfer data to gpu
-            X, y = db_valid["modalities"].to(device), [item.to(device) for item in db_valid["labels"]]
+            X, y = modalities.to(device), [item.to(device) for item in labels]
 
             # Forward propagation
             pred = model(X)
@@ -188,8 +188,8 @@ class Trainer:
             with open(hyp, "r") as hyp_file:
                 hyp = yaml.load(hyp_file, yaml.FullLoader)
 
-        n_box, n_cls, grid_sz, anchors, attention, lr = [hyp.get(item) for item in ("n_box", "n_cls", "grid_size",
-                                                                                    "anchors", "attention", "lr")]
+        params_names        =   ("n_box", "n_cls", "grid_size", "anchors", "attention_layer", "lr")
+        n_box, n_cls, grid_sz, anchors, attention, lr = [hyp.get(item) for item in params_names]
         self.hyp            =   hyp
         self.stop_epoch     =   0
         self.callbacks      =   {}
@@ -197,7 +197,7 @@ class Trainer:
         self.device         =   hyp.get("device", DEVICE)
 
         self.loss_fn        =   YoloLoss(self.device, anchors, grid_sz, n_cls)
-        self.model          =   YoloV5Model(n_box, n_cls, grid_sz, attention).to(self.device)
+        self.model          =   YoloV6Model(n_box, n_cls, grid_sz).to(self.device)
         self.optimizer      =   torch.optim.Adam(self.model.parameters(), lr=lr)
 
         self.train_tracer   =   Tracer("train")

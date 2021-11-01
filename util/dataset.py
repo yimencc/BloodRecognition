@@ -3,10 +3,9 @@ import re
 import pickle
 import logging.config
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
-from functools              import partial
 from typing                 import List, Optional
 from pprint                 import pformat
-from os.path                import join, split, isfile, isdir
+from os.path                import join, split, isdir, isfile
 from xml.etree              import ElementTree as ET
 from xml.dom.minidom        import parseString
 
@@ -16,12 +15,15 @@ import matplotlib           as mpl
 import matplotlib.pyplot    as plt
 from cv2                    import resize
 from matplotlib             import figure
+from skimage.filters        import gaussian
 from skimage.io             import imread, imsave
-from skimage.util           import dtype_limits, img_as_ubyte, img_as_float32
 from torch.utils.data       import Dataset, DataLoader
+from skimage.util           import dtype_limits, img_as_ubyte, img_as_float32, crop, invert
 
-from cccode.image                   import Check
-from Deeplearning.util.functions    import single_sample_visualization
+from cccode.image           import Check, LowFrequencyFilter
+from cccode.tie_tech        import affine_transform, tie_solution, energy_match
+from Autodetect.util.dataPreparing import defocus_background_estimate, prism_dual_image_separate
+from Deeplearning.util.functions import image_baseline
 
 DST_IMGSZ   =   320
 SRC_IMGSZ   =   340
@@ -34,10 +36,27 @@ ANCHORS     =   [1., 1., 1.125, 1.125, 1.25, 1.25, 1.375, 1.375]
 DATA_ROOT   =   "D:\\Workspace\\RBC Recognition\\datasets"
 
 
+def image_split(image, target_size, n_split=3):
+    h_image,  w_image   =   image.shape
+    h_target, w_target  =   target_size
+    centroid_x_arrange  =   w_image - w_target
+    centroid_y_arrange  =   h_image - h_target
+    centroid_x_interval =   centroid_x_arrange // (n_split-1)
+    centroid_y_interval =   centroid_y_arrange // (n_split-1)
+
+    subviews = []
+    for i in range(n_split):        # ROW split
+        for k in range(n_split):    # COLUMN split
+            x_centroid = w_target//2 + k*centroid_x_interval
+            y_centroid = h_target//2 + i*centroid_y_interval
+            x0, y0 = x_centroid - w_target//2, y_centroid - h_target//2
+            x1, y1 = x_centroid + w_target//2, y_centroid + h_target//2
+            subviews.append(image[y0:y1, x0:x1])
+    return subviews
+
+
 class MultimodalSample:
-    """
-    labels: [(cls, x, y, w, h)]
-    """
+    """ labels: [(cls, x, y, w, h)] """
     def __init__(self):
         self.sample_idx = None
         self.phase      = None
@@ -79,7 +98,6 @@ class MultimodalSample:
 
         mm_sample.source_msg.update({"amp_fullname": amp_fullname, "pha_fullname": pha_fullname,
                                      "over_fullname": over_fullname, "under_fullname": under_fullname})
-
         mm_sample.sample_idx =   int(sample.find("image_idx").text)
 
         if read_image:
@@ -105,9 +123,7 @@ class MultimodalSample:
 
     @staticmethod
     def split(sample, n_split=3, target_size=(320, 320)):
-        assert (sample.phase.shape == sample.amplitude.shape ==
-                sample.underfocus.shape == sample.overfocus.shape)
-
+        assert (sample.phase.shape == sample.amplitude.shape == sample.underfocus.shape == sample.overfocus.shape)
         height,     width           =   sample.phase.shape
         tgt_height, tgt_width       =   target_size
         centroid_arrange_width      =   width - tgt_width
@@ -173,9 +189,7 @@ class MultimodalSample:
         with open(anno_fullname, "w") as f:
             f.write(yolo_string)
 
-    def out_labeled_data(self, dst_image_shape: tuple[int],
-                         modalities_to: Optional[list] = None,
-                         labels_to: Optional[list] = None):
+    def out_labeled_data(self, dst_image_shape: tuple, modalities_to= None, labels_to: Optional[list] = None):
         # cast image and labels to destined shape
         if self.image_shape is None:
             self.image_shape = self.modalities[0].shape
@@ -480,15 +494,116 @@ def load_modalities_training_data(src_fpath: str, training_stage: str, dst_imsz)
     label_set = read_yolo_labels_set(dataset_dict["anno"], (dst_imsz, dst_imsz))
 
     modalities_set = []     # Load Modalities set
-    for mod_filenames in zip(*[dataset_dict[mod] for mod in ("amp", "pha", "minus", "plus")]):
+    modalities_filenames = list(zip(*[dataset_dict[mod] for mod in ("amp", "pha", "minus", "plus")]))
+    for mod_filenames in modalities_filenames:
+        # mod_filenames - {list: 4} - [amp_fname, pha_fname, minus_fname, plus_fname]
         assert validate_same_sample([os.path.split(fname)[-1] for fname in mod_filenames])
+        # Read from disk
         modalities = [img_as_float32(imread(fname, True, "simpleitk")) for fname in mod_filenames]
-        modalities = np.vstack([resize(mod, (dst_imsz, dst_imsz))[np.newaxis, :] for mod in modalities])
+        # Resize to destined image shape
+        modalities = [resize(mod, (dst_imsz, dst_imsz)) for mod in modalities]
+        # Aggregates to single ndarray
+        modalities = np.stack(modalities)
         modalities_set.append(modalities)
-    return modalities_set, label_set
+    return modalities_set, label_set, modalities_filenames
 
 
-class DataTransform:
+def get_original_modality_from_id(input_id, dataset_root=DATA_ROOT, original_shape=(960, 960),
+                                  shift_baseline=True, subview_shape=(340, 340), dst_shape=(320, 320)):
+    # If id with suffix, remove it
+    for suf in (".txt", ".jpg"):
+        input_id = input_id.removesuffix(suf)
+
+    # Analysis the image belong to, e.g. 20210902-20411.jpg
+    # -> dataset_folder: 20210902 BloodSmear02, image_id: 45 (411//9), patch_id: 6 (411%9)
+    acquired_date, picture_id = input_id.split("-")
+    folder_id, subview_id = int(picture_id[:1]), int(picture_id[1:])
+    image_id, patch_id = divmod(subview_id, 9)
+
+    dataset_folder = f"{acquired_date:s} BloodSmear{folder_id:02d}"
+    dataset_fpath = join(dataset_root, dataset_folder)
+
+    cache_path = join(dataset_fpath, "ndarrays")
+    if not os.path.exists(cache_path):
+        os.mkdir(cache_path)
+    cache_name = join(cache_path, f"{image_id:02d}.pkl")
+
+    # Try read from caches
+    try:
+        with open(cache_name, "rb") as f:
+            modality = pickle.load(f)
+    # No Caches, Create it
+    except IOError:
+        remove_strips = False
+        try:    # Read raw defocus(acquired by the camera, without processing), No background removing
+            remove_strips       =   True
+            defocus_folder      =   join(dataset_fpath, "raw_images")
+            defocus_filename    =   join(defocus_folder, f"{image_id:02d}.bmp")
+            original_defocus    =   imread(defocus_filename, True, "simpleitk")
+            minus, plus         =   prism_dual_image_separate(original_defocus)
+
+            # Remove background caused by inhomogeneous illumination
+            backgrounds_folder = join(dataset_fpath, "backgrounds")     # Loading files from disk
+            backgrounds_filename = join(backgrounds_folder, "average.pkl")
+            if isfile(backgrounds_filename):
+                with open(backgrounds_filename, "rb") as f:
+                    background_average = pickle.load(f)
+            else:
+                background_average = defocus_background_estimate(backgrounds_folder)
+
+            # Remove background
+            bg_minus, bg_plus = [gaussian(img, sigma=5) for img in prism_dual_image_separate(background_average)]
+            minus /= bg_minus / np.mean(bg_minus)
+            plus /= bg_plus / np.mean(bg_plus)
+
+            # Image FoV registering
+            mismatch_filename = join(defocus_folder, f"mismatch_{image_id//10:02d}.pkl")
+            with open(mismatch_filename, "rb") as f:
+                mismatch_mat = pickle.load(f)
+            minus = affine_transform(minus, mismatch_mat)
+
+            # Remove redundant area (edges)
+            h0, w0 = minus.shape
+            h1, w1 = original_shape
+            assert minus.shape == plus.shape and (h0 % 2 == 0 and w0 % 2 == 0)
+            h_pad = (h0 - h1) // 2
+            w_pad = (w0 - w1) // 2
+            minus, plus = [crop(img, ((h_pad, h_pad), (w_pad, w_pad))) for img in (minus, plus)]
+
+            # Match Energy
+            minus, plus = energy_match(minus, plus)
+
+        except RuntimeError:    # Couldn't get raw image, load from the processed defocus images.
+            minus_filename = join(dataset_fpath, f"minus\\minus_{image_id:04d}.bmp")
+            plus_filename = join(dataset_fpath, f"plus\\plus_{image_id:04d}.bmp")
+            minus, plus = imread(minus_filename, True, "simpleitk"), imread(plus_filename, True, "simpleitk")
+
+        if remove_strips:   # Remove Strips
+            minus_correction = LowFrequencyFilter.interest_filtering(minus, 8)
+            plus_correction = LowFrequencyFilter.interest_filtering(plus, 8)
+            correction = (minus-minus_correction + invert(plus-plus_correction)) / 2
+            minus, plus = minus-correction+np.mean(correction), plus+correction-np.mean(correction)
+
+        focus = (minus + plus) / 2
+        phase = tie_solution(focus, minus, plus, 1e-3, 532e-9, 4.8e-6, 3e7)
+        if shift_baseline:
+            phase -= image_baseline(phase)
+
+        # Split and return subview multi-modality
+        modality = (focus, phase, minus, plus)
+
+        # Cache
+        with open(cache_name, "wb") as f:
+            pickle.dump(modality, f)
+
+    modality_subviews = [image_split(mod, subview_shape, 3) for mod in modality]
+    required_subviews = [subview[patch_id] for subview in modality_subviews]
+    if dst_shape:
+        required_subviews = [resize(mod, dst_shape) for mod in required_subviews]
+    return np.stack(required_subviews)
+
+
+class Transform:
     @staticmethod
     def process_truth_boxes(ground_truth_boxes, anchors, image_size, grid_size, n_classes, cls_location=0):
         """ Generate y (labels) of the training dataset from original labels for model training.
@@ -566,7 +681,7 @@ class DataTransform:
         if isinstance(image, str):
             image = imread(image, True, "simpleitk")
 
-        image   =   torch.tensor(image)
+        image   =   torch.from_numpy(image)
         mu      =   torch.mean(image, dim=(1, 2), keepdim=True)
         sigma   =   torch.std(image, dim=(1, 2), keepdim=True)
         image   =   torch.sigmoid((image-mu)/sigma)
@@ -587,18 +702,18 @@ class DataTransform:
         """
         def toTensor32(inputs: tuple):
             return [torch.from_numpy(x).to(F32) for x in inputs]
-        
-        return toTensor32(DataTransform.process_truth_boxes(label, ANCHORS, DST_IMGSZ, GRIDSZ, N_CLASSES, cls_loc))
+
+        return toTensor32(Transform.process_truth_boxes(label, ANCHORS, DST_IMGSZ, GRIDSZ, N_CLASSES, cls_loc))
         
 
 class BloodSmearDataset(Dataset):
     """ Loading the given files, produce a Dataset object. """
     def __init__(self, xml_filename="", filepath="", training_stage="train",
                  image_transform=None, target_transform=None, dst_imgsz=DST_IMGSZ):
-        self.max_boxes              =   0
-        self.image_transform        =   image_transform
-        self.target_transform       =   target_transform
-        self.destined_image_shape   =   (dst_imgsz, dst_imgsz)
+        self.max_boxes = 0
+        self.image_transform = image_transform
+        self.target_transform = target_transform
+        self.destined_shape = (dst_imgsz, dst_imgsz)
 
         if xml_filename:    # Load data from an XML file
             self.src_filename = xml_filename
@@ -606,10 +721,10 @@ class BloodSmearDataset(Dataset):
             # and operating (Splitting) the dataset through attached method.
             spContainer = StandardXMLContainer.fromXML(xml_filename)
             # sample_sets: np.array([MltSample1, MltSample2, MltSample3, ....])
-            self.modalities, self.labels = spContainer.dataset_output(self.destined_image_shape)
-
+            self.modalities, self.labels = spContainer.dataset_output(self.destined_shape)
         elif filepath:
-            self.modalities, self.labels = load_modalities_training_data(filepath, training_stage, dst_imgsz)
+            self.modalities, self.labels, self.modalities_filenames = \
+                load_modalities_training_data(filepath, training_stage, dst_imgsz)
 
     def __len__(self):
         return len(self.labels)
@@ -621,19 +736,14 @@ class BloodSmearDataset(Dataset):
 
     @classmethod
     def from_xml_cache(cls, filename, image_transform=None, target_transform=None):
-        if not os.path.isfile(filename):
-            return None
-
         # Construct instance
         with open(filename, "rb") as f:
             cache_dict = pickle.load(f)
-        dataset = cls(image_transform=image_transform, target_transform=target_transform,
-                      dst_imgsz=cache_dict["destined_image_shape"])
-
+        dataset = cls("", "", "train", image_transform, target_transform, cache_dict["destined_image_shape"])
         # Recall attributes
+        dataset.labels      =   cache_dict["labels"]
         dataset.max_boxes   =   cache_dict["max_boxes"]
         dataset.modalities  =   cache_dict["modalities"]
-        dataset.labels      =   cache_dict["labels"]
         return dataset
 
     def __getitem__(self, idx):
@@ -648,36 +758,31 @@ class BloodSmearDataset(Dataset):
         return modalities, labels
 
 
-def create_dataloader(fpath_str: str, training_stage, batch_size, image_tf=None, target_tf=None, **loader_params):
-    constructor = {"image_transform":  DataTransform.image_transform if image_tf is None else image_tf,
-                   "target_transform": DataTransform.target_transform if target_tf is None else target_tf}
+def create_dataloader(fpath_str: str, training_stage, batch_size, image_tf=None,
+                      target_tf=None, dataset_obj=BloodSmearDataset, **loader_params):
+    """ Dataloader constructor """
+    constructor = {"training_stage":   training_stage,
+                   "image_transform":  Transform.image_transform if image_tf is None else image_tf,
+                   "target_transform": Transform.target_transform if target_tf is None else target_tf}
 
-    if isdir(fpath_str):
-        constructor.update({"filepath": fpath_str, "training_stage": training_stage})
-    elif isfile(fpath_str):
-        if fpath_str.endswith("xml"):
-            constructor.update({"xml_filename": fpath_str, "training_stage": training_stage})
-        elif fpath_str.endswith("pkl"):
-            constructor.update({"filename": fpath_str, "training_stage": training_stage})
-
-    return DataLoader(batch_size=batch_size, dataset=BloodSmearDataset(**constructor), **loader_params)
+    constructor.update({"filepath": fpath_str} if isdir(fpath_str)
+                       else {"xml_filename": fpath_str} if fpath_str.endswith("xml")
+                       else {"filename": fpath_str})
+    return DataLoader(batch_size=batch_size, dataset=dataset_obj(**constructor), **loader_params)
 
 
 # Pytorch format Dataset Constructor, using in the initialing of 'BloodSmearDataset'
-XML_DATASET_FILENAME    =   join(DATA_ROOT, "20210105 BloodSmear\\fov_annotations.xml")
-XML_CACHE_FILENAME      =   ".\\caches\\cache-20210105-blood_smear.pkl"
-SET202109_FILENAME      =   join(DATA_ROOT, "Set-202109")
+XML_CACHE_FILENAME    =   ".\\caches\\cache-20210105-blood_smear.pkl"
+SET202109_FILENAME    =   join(DATA_ROOT, "Set-202109")
+XML_DATASET_FILENAME  =   join(DATA_ROOT, "20210105 BloodSmear\\fov_annotations.xml")
 
 
 if __name__ == "__main__":
     # Logging Config -----------------------------------------------------------------
     logging.config.fileConfig("..\\log\\config\\dataset.conf")
-    logger      =   logging.getLogger(__name__)
+    logger = logging.getLogger(__name__)
     # Logging Config Ended -----------------------------------------------------------
     try:
-        bsLoader = create_dataloader(SET202109_FILENAME, "valid", 4, shuffle=True)
-        for batch_sample in bsLoader:
-            bt_modalities, bt_labels = batch_sample["modalities"], batch_sample["labels"]
-            single_sample_visualization(bt_modalities[0].numpy(), bt_labels[3][0].numpy())
+        get_original_modality_from_id("20210902-10037.jpg")
     except Exception as err:
         logger.exception(err)

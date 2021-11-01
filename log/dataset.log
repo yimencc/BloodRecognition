@@ -403,3 +403,91 @@ Traceback (most recent call last):
     return _nx.concatenate(arrs, 0)
   File "<__array_function__ internals>", line 5, in concatenate
 numpy.core._exceptions._ArrayMemoryError: Unable to allocate 531. MiB for an array with shape (1280, 320, 340) and data type float32
+[E 2021-10-28 15:50:26,091 dataset.py 690] invalid literal for int() with base 10: '0024.jpg'
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 688, in <module>
+    get_original_modality_from_id("20210902-10024.jpg")
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 665, in get_original_modality_from_id
+    folder_id, subview_id = int(picture_id[:1]), int(picture_id[1:])
+ValueError: invalid literal for int() with base 10: '0024.jpg'
+[E 2021-10-28 15:50:55,597 dataset.py 690] Exception thrown in SimpleITK ImageFileReader_Execute: D:\a\1\sitk\Code\IO\src\sitkImageReaderBase.cxx:97:
+sitk::ERROR: The file "D:\Workspace\RBC Recognition\datasets\20210902 BloodSmear01\raw_images\02.bmp" does not exist.
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 688, in <module>
+    get_original_modality_from_id("20210902-10024.jpg")
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 672, in get_original_modality_from_id
+    original_defocus = imread(original_defocus_filename, as_gray=True, plugin="simpleitk")
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\io\_io.py", line 48, in imread
+    img = call_plugin('imread', fname, plugin=plugin, **plugin_args)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\io\manage_plugins.py", line 207, in call_plugin
+    return func(*args, **kwargs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\io\_plugins\simpleitk_plugin.py", line 15, in imread
+    sitk_img = sitk.ReadImage(fname)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\SimpleITK\extra.py", line 346, in ReadImage
+    return reader.Execute()
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\SimpleITK\SimpleITK.py", line 8015, in Execute
+    return _SimpleITK.ImageFileReader_Execute(self)
+RuntimeError: Exception thrown in SimpleITK ImageFileReader_Execute: D:\a\1\sitk\Code\IO\src\sitkImageReaderBase.cxx:97:
+sitk::ERROR: The file "D:\Workspace\RBC Recognition\datasets\20210902 BloodSmear01\raw_images\02.bmp" does not exist.
+[E 2021-10-28 15:55:25,304 dataset.py 690] Exception thrown in SimpleITK ImageFileReader_Execute: D:\a\1\sitk\Code\IO\src\sitkImageReaderBase.cxx:97:
+sitk::ERROR: The file "D:\Workspace\RBC Recognition\datasets\20210902 BloodSmear01\raw_images\02.bmp" does not exist.
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 688, in <module>
+    get_original_modality_from_id("20210902-10024.jpg")
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 672, in get_original_modality_from_id
+    original_defocus = imread(original_defocus_filename, as_gray=True, plugin="simpleitk")
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\io\_io.py", line 48, in imread
+    img = call_plugin('imread', fname, plugin=plugin, **plugin_args)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\io\manage_plugins.py", line 207, in call_plugin
+    return func(*args, **kwargs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\io\_plugins\simpleitk_plugin.py", line 15, in imread
+    sitk_img = sitk.ReadImage(fname)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\SimpleITK\extra.py", line 346, in ReadImage
+    return reader.Execute()
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\SimpleITK\SimpleITK.py", line 8015, in Execute
+    return _SimpleITK.ImageFileReader_Execute(self)
+RuntimeError: Exception thrown in SimpleITK ImageFileReader_Execute: D:\a\1\sitk\Code\IO\src\sitkImageReaderBase.cxx:97:
+sitk::ERROR: The file "D:\Workspace\RBC Recognition\datasets\20210902 BloodSmear01\raw_images\02.bmp" does not exist.
+[E 2021-10-28 16:35:18,216 dataset.py 699] [Errno 13] Permission denied: 'D:\\Workspace\\RBC Recognition\\datasets\\20210902 BloodSmear01\\raw_images'
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 696, in <module>
+    with open(filename, "rb") as f:
+PermissionError: [Errno 13] Permission denied: 'D:\\Workspace\\RBC Recognition\\datasets\\20210902 BloodSmear01\\raw_images'
+[E 2021-10-29 10:55:42,946 dataset.py 749] operands could not be broadcast together with shapes (960,960) (1280,1024) (960,960) 
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 747, in <module>
+    get_original_modality_from_id("20210902-10037.jpg")
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 717, in get_original_modality_from_id
+    minus /=    bg_minus/np.mean(bg_minus)
+ValueError: operands could not be broadcast together with shapes (960,960) (1280,1024) (960,960) 
+[E 2021-10-29 11:30:04,730 dataset.py 750] Images of type float must be between -1 and 1.
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 748, in <module>
+    get_original_modality_from_id("20210902-10037.jpg")
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 729, in get_original_modality_from_id
+    phase_local_otsu = otsu(phase, disk(40))
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\filters\rank\generic.py", line 1395, in otsu
+    return _apply_scalar_per_pixel(generic_cy._otsu, image, selem,
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\filters\rank\generic.py", line 264, in _apply_scalar_per_pixel
+    image, selem, out, mask, n_bins = _preprocess_input(image, selem,
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\filters\rank\generic.py", line 112, in _preprocess_input
+    image = img_as_ubyte(image)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\util\dtype.py", line 531, in img_as_ubyte
+    return _convert(image, np.uint8, force_copy)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\util\dtype.py", line 283, in _convert
+    raise ValueError("Images of type float must be between -1 and 1.")
+ValueError: Images of type float must be between -1 and 1.
+[E 2021-10-30 10:47:44,507 dataset.py 783] [Errno 2] No such file or directory: 'D:\\Workspace\\RBC Recognition\\datasets\\20210902 BloodSmear01\\ndarrays\\20210902-10037.pkl'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 529, in get_original_modality_from_id
+    with open(cache_name, "rb") as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'D:\\Workspace\\RBC Recognition\\datasets\\20210902 BloodSmear01\\ndarrays\\20210902-10037.pkl'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 781, in <module>
+    get_original_modality_from_id("20210902-10037.jpg")
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 591, in get_original_modality_from_id
+    with open(cache_name, "wb") as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'D:\\Workspace\\RBC Recognition\\datasets\\20210902 BloodSmear01\\ndarrays\\20210902-10037.pkl'

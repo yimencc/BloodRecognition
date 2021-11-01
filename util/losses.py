@@ -1,5 +1,5 @@
 import os
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+from collections import namedtuple
 
 import torch
 import numpy as np
@@ -42,17 +42,52 @@ def cartesian_coordinate(batch_size, grid_size):
 
 
 class Prediction:
-    """ Comprehend the output of the model in the forward propagation."""
-    def __init__(self, outputs: torch.Tensor, grid_size, anchors, n_classes, device):
-        self.data      =   outputs
+    """ Comprehend the output of the model in the forward propagation.
+    Notice: All the operation here is based on torch module. """
+    def __init__(self, outputs: torch.Tensor, grid_size, anchors, n_class, device):
         self.device    =   device
-        self.n_class   =   n_classes
+        self.data      =   outputs
+        self.n_class   =   n_class
         self.grid_size =   grid_size
-        self.anchors   =   torch.tensor(anchors, dtype=torch.float32, device=self.device)
-        if len(self.anchors.shape) != 2:
+
+        self.xy = None
+        self.wh = None
+        self.conf = None
+        self.scores = None
+        self.samples = []
+
+        if not isinstance(anchors, torch.Tensor):
+            self.anchors = torch.tensor(anchors, dtype=torch.float32, device=self.device)
+        if len(self.anchors) != 2:
             self.anchors = self.anchors.view(-1, 2)
+        self.n_anchor = len(self.anchors)
 
         self.assertion()
+        self._properties_initializer()
+
+    def _properties_initializer(self):
+        # xy: (Batch, Grid_size, Grid_size, N_anchors, x-y)
+        xy = self.data[..., :2]
+        x_g, y_g = np.meshgrid(np.arange(xy.shape[1]), np.arange(xy.shape[2]))
+        # (Grid_size, Grid_size) + (Grid_size, Grid_size) -> (1, Grid_size, Grid_size, 1, 2)
+        xy_grid = torch.from_numpy(np.r_["4,5,1", x_g, y_g]).to(self.device)
+        # (b, gdsz, gdsz, N_anchors, x-y) + (1, gdsz, gdsz, 1, 2) -> (b, gdsz, gdsz, N_anchors, x-y)
+        self.xy = torch.sigmoid(xy) + xy_grid
+
+        # wh: (Batch, Grid_size, Grid_size, N_anchors, w-h)
+        self.wh = self.anchors * torch.exp(self.data[..., 2:4])
+
+        # conf: (Batch, Grid_size, Grid_size, N_anchors, conf)
+        self.conf = torch.sigmoid(self.data[..., 4])
+        # best_bbox: (Batch, Grid_size, Grid_size)
+        self.best_bbox = torch.argmax(self.conf, dim=-1)
+
+        # scores: (Batch, Grid_size, Grid_size, N_anchors, N_classes)
+        self.scores = torch.log_softmax(self.data[..., 5:], -1)
+
+    def decouple(self, properties=("xy", "wh", "conf", "scores")):
+        nmt = namedtuple("sample", properties)
+        self.samples = [nmt(*[self.__dict__[prop][i] for prop in properties]) for i in range(len(self.data))]
 
     def assertion(self):
         # Dimension assertions: (Batch, Grid_size, Grid_size, N_anchors, 4+1+n_classes)
@@ -61,31 +96,6 @@ class Prediction:
         assert self.data.shape[1:3] == (self.grid_size, self.grid_size)
         assert self.data.shape[3] == self.anchors.shape[0]
         assert self.data.shape[4] == 4 + 1 + self.n_class
-
-    @property
-    def xy(self):
-        # (Batch, Grid_size, Grid_size, N_anchors, x-y)
-        xy = self.data[..., :2]
-        x_g, y_g = np.meshgrid(np.arange(xy.shape[1]), np.arange(xy.shape[2]))
-        # (Grid_size, Grid_size) + (Grid_size, Grid_size) -> (1, Grid_size, Grid_size, 1, 2)
-        xy_grid = torch.from_numpy(np.r_["4,5,1", x_g, y_g]).to(self.device)
-        # (1, gdsz, gdsz, 1, 2) + (b, gdsz, gdsz, N_anchors, x-y) -> (b, gdsz, gdsz, N_anchors, x-y)
-        return torch.sigmoid(xy) + xy_grid
-
-    @ property
-    def wh(self):
-        # (Batch, Grid_size, Grid_size, N_anchors, w-h)
-        return self.anchors * torch.exp(self.data[..., 2:4])
-
-    @property
-    def conf(self):
-        # (Batch, Grid_size, Grid_size, N_anchors, conf)
-        return torch.sigmoid(self.data[..., 4:5])
-
-    @property
-    def class_scores(self):
-        # (Batch, Grid_size, Grid_size, N_anchors, N_classes)
-        return self.data[..., 5:]
 
 
 class YoloLoss:
@@ -109,19 +119,18 @@ class YoloLoss:
         # [b,GRIDSZ,GRIDSZ,N_anchors,2] - [b,GRIDSZ,GRIDSZ,N_anchors,2]
         wh_loss = truth_mask*torch.square(torch.sqrt(truth_wh)-torch.sqrt(pred_wh))
         wh_loss = torch.sum(wh_loss) / (truth_nobj + 1e-6)
-
         return xy_loss + wh_loss
 
     @staticmethod
-    def class_loss(truth_classes_oh, truth_mask, truth_nobj, pred_classes):
+    def class_loss(truth_classes_oh, truth_mask, truth_nobj, pred_scores):
         # truth_classes_oh: [b, GRID_SIZE, GRID_SIZE, N_anchor, n_classes] => [b, GRID_SIZE, GRID_SIZE, N_anchor]
-        true_box_class  =   torch.argmax(truth_classes_oh, -1)
+        true_scores = torch.argmax(truth_classes_oh, -1)
         # the input of CrossEntropyLoss should be (N, C, d1, d2, ...) vs (N, d1, d2, ...)
-        pred_classes    =   pred_classes.permute((0, 4, 1, 2, 3))
+        pred_scores = pred_scores.permute((0, 4, 1, 2, 3))
 
         loss = torch.nn.CrossEntropyLoss(reduction="none")
         # Compute loss: [b, Grid_size,Grid_size,N_anchors,n_classes] vs [b,GRID_SIZE,GRID_SIZE,N_anchor,n_classes]
-        class_loss = loss(pred_classes, true_box_class)
+        class_loss = loss(pred_scores, true_scores)
         # [b,GRIDSZ,GRIDSZ,N_anchors] => [b,GRIDSZ,GRIDSZ,N_anchors,1] * [b,GRIDSZ,GRIDSZ,N_anchors,1]
         class_loss = torch.unsqueeze(class_loss, -1) * truth_mask
         class_loss = torch.sum(class_loss) / (truth_nobj + 1e-6)
@@ -145,7 +154,7 @@ class YoloLoss:
         return obj_loss, accuracy
 
     @staticmethod
-    def non_object_loss(truth_boxes_grid, truth_mask, pred_xy, pred_wh, pred_conf):
+    def non_object_loss(truth_boxes_grid, truth_mask, pred_xy, pred_wh, pred_conf, nonobj_iou_thres=0.7):
         # Predictions
         # [b,GSZ,GSZ,N_anchor,2] => [b,GSZ,GSZ,N_anchor, 1, 2]
         pred_xy = torch.unsqueeze(pred_xy, dim=4)
@@ -185,12 +194,12 @@ class YoloLoss:
         # [b,GSZ,GSZ,N_anchor] => [b,GSZ,GSZ,N_anchor,1]
         best_iou = torch.amax(iou_score, dim=4).unsqueeze(-1)
 
-        nonobj_detection = (best_iou < 0.6).float()
+        nonobj_detection = (best_iou < nonobj_iou_thres).float()
         nonobj_mask = nonobj_detection * (1 - truth_mask)
 
         # nonobj counter
-        n_nonobj    =   torch.sum((nonobj_mask > 0.).to(torch.float32))
-        nonobj_loss =   (torch.sum(nonobj_mask * torch.square(-pred_conf)) / (n_nonobj + 1e-6))
+        n_nonobj = torch.sum((nonobj_mask > 0.).to(torch.float32))
+        nonobj_loss = (torch.sum(nonobj_mask * torch.square(-pred_conf)) / (n_nonobj + 1e-6))
         return nonobj_loss
 
     def __call__(self, y_pred, y_truth, w=None, *args, **kwargs):
@@ -212,7 +221,7 @@ class YoloLoss:
                 [b,N_labels,5] x-y-w-h-l
         """
         if w is None:
-            w = {"obj": 5, "non_obj": 1, "coord": 1, "cls": 1}
+            w = {"obj": 5, "non_obj": 1, "coord": 1, "cls": 2}
 
         # Ground Truth
         #       detect_mask           [[b, GRID_SIZE, GRID_SIZE, N_anchor, 1],
@@ -220,7 +229,7 @@ class YoloLoss:
         #       class_onehot           [b, GRID_SIZE, GRID_SIZE, N_anchor, n_classes],
         #       gTruth_boxes_grid      [b, N_labels,  x-y-w-h-l]]
         truth_mask, gTruth_boxes, truth_classes_oh, truth_boxes_grid = y_truth
-        truth_nObj  =   torch.sum(truth_mask)       # int
+        truth_n_obj  =   torch.sum(truth_mask)       # int
         truth_xy    =   gTruth_boxes[..., :2]       # [b, gsz, gsz, n_anc, 2]
         truth_wh    =   gTruth_boxes[..., 2:4]      # [b, gsz, gsz, n_anc, 2]
 
@@ -228,20 +237,20 @@ class YoloLoss:
         pred = Prediction(y_pred, self.grid_size, self.anchors, self.n_classes, self.device)
 
         # Losses
-        coord_loss  =   self.coordinate_loss(truth_xy=truth_xy, pred_xy=pred.xy, truth_wh=truth_wh,
-                                             pred_wh=pred.wh, truth_mask=truth_mask, truth_nobj=truth_nObj)
+        coord_loss = self.coordinate_loss(truth_xy=truth_xy, pred_xy=pred.xy, truth_wh=truth_wh,
+                                          pred_wh=pred.wh, truth_mask=truth_mask, truth_nobj=truth_n_obj)
 
-        class_loss  =   self.class_loss(truth_classes_oh=truth_classes_oh, truth_mask=truth_mask,
-                                        truth_nobj=truth_nObj, pred_classes=pred.class_scores)
+        class_loss = self.class_loss(truth_classes_oh=truth_classes_oh, truth_mask=truth_mask,
+                                     truth_nobj=truth_n_obj, pred_scores=pred.scores)
 
-        obj_loss, acc =   self.object_loss(gtruth_boxes=gTruth_boxes, truth_mask=truth_mask, truth_nobj=truth_nObj,
-                                           pred_xy=pred.xy, pred_wh=pred.wh, pred_conf=pred.conf)
+        obj_loss, accuracy = self.object_loss(gtruth_boxes=gTruth_boxes, truth_mask=truth_mask, truth_nobj=truth_n_obj,
+                                              pred_xy=pred.xy, pred_wh=pred.wh, pred_conf=pred.conf.unsqueeze(-1))
 
-        nonobj_loss =   self.non_object_loss(truth_boxes_grid=truth_boxes_grid, truth_mask=truth_mask,
-                                             pred_xy=pred.xy, pred_wh=pred.wh, pred_conf=pred.conf)
+        non_obj_loss = self.non_object_loss(truth_boxes_grid=truth_boxes_grid, truth_mask=truth_mask,
+                                            pred_xy=pred.xy, pred_wh=pred.wh, pred_conf=pred.conf.unsqueeze(-1))
 
-        self.accuracy = acc
-        self.loss = w["coord"]*coord_loss + w["cls"]*class_loss + w["obj"]*obj_loss + w["non_obj"]*nonobj_loss
+        self.loss = w["coord"]*coord_loss + w["cls"]*class_loss + w["obj"]*obj_loss + w["non_obj"]*non_obj_loss
+        self.accuracy = accuracy
         return self.loss
 
 

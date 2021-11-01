@@ -338,3 +338,81 @@ AttributeError: 'int' object has no attribute 'item'
 [I 2021-10-15 17:20:02,515 train.py 216] Loading data ...
 [I 2021-10-15 17:20:30,246 train.py 242] Training Start
 
+[I 2021-10-19 15:49:18,655 train.py 215] Loading data ...
+[I 2021-10-19 15:49:48,492 train.py 239] Training Start
+
+[E 2021-10-19 15:49:49,422 train.py 329] The size of tensor a (4) must match the size of tensor b (40) at non-singleton dimension 3
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 327, in <module>
+    trainer.training(100)
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 275, in training
+    tt_loss, md_loss, reg_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer,
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 128, in train_loop
+    total_loss = loss_fn(pred, y) + reg_loss
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\losses.py", line 247, in __call__
+    obj_loss, accuracy = self.object_loss(gtruth_boxes=gTruth_boxes, truth_mask=truth_mask, truth_nobj=truth_nObj,
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\losses.py", line 154, in object_loss
+    obj_loss = torch.sum(truth_mask*torch.square(ious-pred_conf))/(truth_nobj + 1e-6)
+RuntimeError: The size of tensor a (4) must match the size of tensor b (40) at non-singleton dimension 3
+[I 2021-10-19 15:54:43,084 train.py 215] Loading data ...
+[I 2021-10-19 15:55:12,626 train.py 239] Training Start
+
+[I 2021-10-19 16:00:17,484 train.py 215] Loading data ...
+[I 2021-10-19 16:00:47,742 train.py 239] Training Start
+
+[E 2021-10-19 16:00:48,917 train.py 329] CUDA out of memory. Tried to allocate 64.00 MiB (GPU 0; 4.00 GiB total capacity; 1.15 GiB already allocated; 3.55 MiB free; 1.19 GiB reserved in total by PyTorch)
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 327, in <module>
+    trainer.training(100)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 275, in training
+    tt_loss, md_loss, reg_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer,
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 128, in train_loop
+    total_loss = loss_fn(pred, y) + reg_loss
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\losses.py", line 250, in __call__
+    non_obj_loss = self.non_object_loss(truth_boxes_grid=truth_boxes_grid, truth_mask=truth_mask,
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\losses.py", line 192, in non_object_loss
+    union_area = pred_area + true_area - intersect_area
+RuntimeError: CUDA out of memory. Tried to allocate 64.00 MiB (GPU 0; 4.00 GiB total capacity; 1.15 GiB already allocated; 3.55 MiB free; 1.19 GiB reserved in total by PyTorch)
+[I 2021-10-19 16:01:41,052 train.py 215] Loading data ...
+[I 2021-10-19 16:02:11,102 train.py 239] Training Start
+
+[E 2021-10-19 16:02:40,763 train.py 329] list indices must be integers or slices, not str
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 327, in <module>
+    trainer.training(100)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 277, in training
+    val_loss, accuracy = valid_loop(self.valid_loader, self.model, self.loss_fn, self.device)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 163, in valid_loop
+    X, y = db_valid["modalities"].to(device), [item.to(device) for item in db_valid["labels"]]
+TypeError: list indices must be integers or slices, not str
+[I 2021-10-19 16:04:27,541 train.py 215] Loading data ...
+[I 2021-10-19 16:04:57,896 train.py 239] Training Start
+
+[I 2021-10-19 16:34:04,619 train.py 215] Loading data ...
+[I 2021-10-19 16:34:33,953 train.py 239] Training Start
+
+[I 2021-10-20 15:06:46,822 train.py 215] Loading data ...
+[I 2021-10-20 15:07:18,351 train.py 239] Training Start
+
+[I 2021-10-20 15:37:49,222 train.py 267] Early stopped at Accuracy 0.8079
+[E 2021-11-01 14:54:01,487 train.py 329] __init__() missing 1 required positional argument: 'kernel_size'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 326, in <module>
+    trainer = Trainer(".\\hypers.yaml")
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 200, in __init__
+    self.model          =   YoloV6Model(n_box, n_cls, grid_sz, attention).to(self.device)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\models.py", line 201, in __init__
+    self.conv_7 = nn.Conv2d(256, self.n_box*(5+self.n_cls), **conv2d_params)
+TypeError: __init__() missing 1 required positional argument: 'kernel_size'
+[E 2021-11-01 15:08:26,210 train.py 329] name 'attention_layer' is not defined
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 326, in <module>
+    trainer = Trainer(".\\hypers.yaml")
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 200, in __init__
+    self.model          =   YoloV6Model(n_box, n_cls, grid_sz).to(self.device)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\models.py", line 181, in __init__
+    self.attention_layer = attention_layer
+NameError: name 'attention_layer' is not defined
+[I 2021-11-01 15:12:39,888 train.py 215] Loading data ...
+[I 2021-11-01 15:13:08,915 train.py 239] Training Start
+

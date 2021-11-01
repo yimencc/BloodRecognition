@@ -12,7 +12,7 @@ class HyperSearchingPlan:
     Search the best parameters for model training, suitable for quickly
     finding super parameters after the model training process is stable.
     Notice: It is not recommended to use it when there are problems in the training process!!!
-    TODO: should be divided into two class_scores: Plan(For hyperParam searching) and Training(For training implementing)
+    TODO: should be divided into two scores: Plan(For hyperParam searching) and Training(For training implementing)
     TODO: For every group of parameters, save the trained model and parameters
     """
     def __init__(self, name, epochs, batch_size, train_set, valid_set, device,
