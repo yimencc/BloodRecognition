@@ -491,3 +491,1763 @@ Traceback (most recent call last):
   File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 591, in get_original_modality_from_id
     with open(cache_name, "wb") as f:
 FileNotFoundError: [Errno 2] No such file or directory: 'D:\\Workspace\\RBC Recognition\\datasets\\20210902 BloodSmear01\\ndarrays\\20210902-10037.pkl'
+[E 2021-11-02 11:25:07,983 dataset.py 871] 1
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 867, in <module>
+    loader = create_dataloader(SET202109_FILENAME, "valid", 2)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 852, in create_dataloader
+    return DataLoader(batch_size=batch_size, dataset=dataset_obj(**constructor), **loader_params)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 794, in __init__
+    self.dataset_scan()
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 802, in dataset_scan
+    self.max_boxes = length[("train", "valid", "test").index(self.training_stage)]
+KeyError: 1
+[E 2021-11-02 11:27:08,158 dataset.py 871] Cannot interpret '5' as a data type
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 868, in <module>
+    for mod, lbl in loader:
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\dataloader.py", line 517, in __next__
+    data = self._next_data()
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\dataloader.py", line 557, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\_utils\fetch.py", line 44, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\_utils\fetch.py", line 44, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 832, in __getitem__
+    labels = self.labels_loader(join(self.root, self.labels_folder, self.training_stage, self.label_fnames[idx]))
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 814, in labels_loader
+    boxes_array = np.zeros(self.max_boxes, 5)
+TypeError: Cannot interpret '5' as a data type
+[E 2021-11-02 11:27:42,086 dataset.py 871] 'list' object has no attribute 'shape'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 869, in <module>
+    print(mod.shape, lbl.shape)
+AttributeError: 'list' object has no attribute 'shape'
+[E 2021-11-06 14:08:20,762 dataset.py 802] [WinError 3] 系统找不到指定的路径。: '20210105 BloodSmear'
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 799, in <module>
+    ds = DatasetStructure(DATA_ROOT)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 784, in __init__
+    self.root = self.scan_directory(root)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 789, in scan_directory
+    "children": [join(fullpath, self.scan_directory(fp)) for fp in listdir(fullpath)]}
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 789, in <listcomp>
+    "children": [join(fullpath, self.scan_directory(fp)) for fp in listdir(fullpath)]}
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 789, in scan_directory
+    "children": [join(fullpath, self.scan_directory(fp)) for fp in listdir(fullpath)]}
+FileNotFoundError: [WinError 3] 系统找不到指定的路径。: '20210105 BloodSmear'
+[E 2021-11-06 14:27:22,237 dataset.py 814] argument of type 'NoneType' is not iterable
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 810, in <module>
+    ds = DatasetStructure(DATA_ROOT)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 784, in __init__
+    self.root = self.scan_directory(root, excludes)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 789, in scan_directory
+    "children": [self.scan_directory(join(fullpath, fp)) if isdir(join(fullpath, fp))
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 789, in <listcomp>
+    "children": [self.scan_directory(join(fullpath, fp)) if isdir(join(fullpath, fp))
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 789, in scan_directory
+    "children": [self.scan_directory(join(fullpath, fp)) if isdir(join(fullpath, fp))
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 790, in <listcomp>
+    else join(fullpath, fp) for fp in listdir(fullpath) if fp not in excludes]}
+TypeError: argument of type 'NoneType' is not iterable
+[E 2021-11-06 14:37:07,636 dataset.py 823] 'name'
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 821, in <module>
+    print(ds)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 808, in __repr__
+    return _presents(self.root)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 806, in _presents
+    str_body += _presents(child, indent+1)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 806, in _presents
+    str_body += _presents(child, indent+1)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 806, in _presents
+    str_body += _presents(child, indent+1)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 803, in _presents
+    str_body = "\t"*indent + elm["name"] + "\n"
+KeyError: 'name'
+[E 2021-11-06 14:37:48,397 dataset.py 821] object of type 'type' has no len()
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 819, in <module>
+    print(ds)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 808, in __repr__
+    return _presents(self.root)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 805, in _presents
+    if isinstance(child, dict) and len(dict):
+TypeError: object of type 'type' has no len()
+[E 2021-11-06 14:48:20,025 dataset.py 822] tuple index out of range
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 818, in <module>
+    ds = DatasetStructure(DATA_ROOT)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 784, in __init__
+    self.root = self.scan_directory(root, excludes, 3)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 797, in scan_directory
+    "children": [self.scan_directory(join(fullpath, fp), excludes[1], deeps)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 797, in <listcomp>
+    "children": [self.scan_directory(join(fullpath, fp), excludes[1], deeps)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 797, in scan_directory
+    "children": [self.scan_directory(join(fullpath, fp), excludes[1], deeps)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 799, in <listcomp>
+    for fp in listdir(fullpath) if fp not in excludes[0]]}
+IndexError: tuple index out of range
+[E 2021-11-06 15:26:30,008 dataset.py 822] can only concatenate str (not "dict") to str
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 820, in <module>
+    print(ds)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 809, in __repr__
+    return _presents(".\\" + self.root)
+TypeError: can only concatenate str (not "dict") to str
+[E 2021-11-06 15:53:29,286 dataset.py 823] startswith first arg must be str or a tuple of str, not list
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 818, in <module>
+    ds = DatasetStructure(DATA_ROOT)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 784, in __init__
+    excludes = ([fn for fn in listdir(root) if not fn.startswith(["202109", "Set-"])], excludes[1])
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 784, in <listcomp>
+    excludes = ([fn for fn in listdir(root) if not fn.startswith(["202109", "Set-"])], excludes[1])
+TypeError: startswith first arg must be str or a tuple of str, not list
+[E 2021-11-06 16:02:11,838 dataset.py 824] 'bool' object is not callable
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 819, in <module>
+    ds = DatasetStructure(DATA_ROOT)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 785, in __init__
+    excludes = (list(filter(not interest_fn, listdir(root))), children_excludes)
+TypeError: 'bool' object is not callable
+[E 2021-11-06 16:29:44,343 dataset.py 832] 'dict' object has no attribute 'getChild'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 827, in <module>
+    ds = DatasetStructure(DATA_ROOT)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 787, in __init__
+    self.root = self.scan_directory(root, excludes, 3)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 798, in scan_directory
+    children = [self.scan_directory(fp, excludes[1:], deeps) if isdir(fp) else fp
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 798, in <listcomp>
+    children = [self.scan_directory(fp, excludes[1:], deeps) if isdir(fp) else fp
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 798, in scan_directory
+    children = [self.scan_directory(fp, excludes[1:], deeps) if isdir(fp) else fp
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 798, in <listcomp>
+    children = [self.scan_directory(fp, excludes[1:], deeps) if isdir(fp) else fp
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 808, in scan_directory
+    body.getChild = types.MethodType(getChild, body)
+AttributeError: 'dict' object has no attribute 'getChild'
+[E 2021-11-06 16:34:10,624 dataset.py 832] 'dict' object has no attribute 'getChild'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 827, in <module>
+    ds = DatasetStructure(DATA_ROOT)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 787, in __init__
+    self.root = self.scan_directory(root, excludes, 3)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 798, in scan_directory
+    children = [self.scan_directory(fp, excludes[1:], deeps) if isdir(fp) else fp
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 798, in <listcomp>
+    children = [self.scan_directory(fp, excludes[1:], deeps) if isdir(fp) else fp
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 798, in scan_directory
+    children = [self.scan_directory(fp, excludes[1:], deeps) if isdir(fp) else fp
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 798, in <listcomp>
+    children = [self.scan_directory(fp, excludes[1:], deeps) if isdir(fp) else fp
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 808, in scan_directory
+    body.getChild = types.MethodType(_getChild, body)
+AttributeError: 'dict' object has no attribute 'getChild'
+[E 2021-11-07 21:24:00,010 dataset.py 829] expected str, bytes or os.PathLike object, not list
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 826, in <module>
+    ds = DatasetStructure(DATA_ROOT)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 787, in __init__
+    self.root = self.scan_tree(root,
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 799, in scan_tree
+    root =  self.scan_directory(root, scan_fn, lambda x: basename(x) in interest_subsets)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 806, in scan_directory
+    "children": [child_processor(join(fullpath, fn)) for fn in path_filter(listdir(fullpath))]})
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 799, in <lambda>
+    root =  self.scan_directory(root, scan_fn, lambda x: basename(x) in interest_subsets)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\ntpath.py", line 216, in basename
+    return split(p)[1]
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\ntpath.py", line 185, in split
+    p = os.fspath(p)
+TypeError: expected str, bytes or os.PathLike object, not list
+[E 2021-11-07 21:28:40,912 dataset.py 830] [WinError 267] 目录名称无效。: 'D:\\Workspace\\RBC Recognition\\datasets\\20210902 BloodSmear01\\annotations\\auto_0000.txt'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 827, in <module>
+    ds = DatasetStructure(DATA_ROOT)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 787, in __init__
+    self.root = self.scan_tree(root,
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 799, in scan_tree
+    root =  self.scan_directory(root, scan_fn, lambda x: basename(x) in interest_subsets)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 806, in scan_directory
+    "children": [child_processor(join(fullpath, fn)) for fn in
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 806, in <listcomp>
+    "children": [child_processor(join(fullpath, fn)) for fn in
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 806, in scan_directory
+    "children": [child_processor(join(fullpath, fn)) for fn in
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 806, in <listcomp>
+    "children": [child_processor(join(fullpath, fn)) for fn in
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 806, in scan_directory
+    "children": [child_processor(join(fullpath, fn)) for fn in
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 806, in <listcomp>
+    "children": [child_processor(join(fullpath, fn)) for fn in
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 807, in scan_directory
+    filter(path_filter, listdir(fullpath))]})
+NotADirectoryError: [WinError 267] 目录名称无效。: 'D:\\Workspace\\RBC Recognition\\datasets\\20210902 BloodSmear01\\annotations\\auto_0000.txt'
+[E 2021-11-08 10:38:49,306 dataset.py 841] 'str' object has no attribute 'get'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 838, in <module>
+    demo_img = next(iter(ds.getSubsetRawData('20210902 BloodSmear01')))
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 827, in getSubsetRawData
+    for filename in subset.getChild("raw_images")["children"]:
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 793, in _getChild
+    if child.get("name") == child_name:
+AttributeError: 'str' object has no attribute 'get'
+[E 2021-11-08 14:18:31,744 dataset.py 883] 'fullname'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 881, in <module>
+    ds.subsetPhaseReplacing(SOURCE_DATASETS[0])
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 857, in subsetPhaseReplacing
+    phase_path = subset.getChild("phase")["fullname"]
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\collections\__init__.py", line 1058, in __getitem__
+    raise KeyError(key)
+KeyError: 'fullname'
+[E 2021-11-08 14:19:45,912 dataset.py 883] unsupported operand type(s) for //: 'str' and 'int'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 881, in <module>
+    ds.subsetPhaseReplacing(SOURCE_DATASETS[0])
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 864, in subsetPhaseReplacing
+    error_fname = error_fname_pattern % img_id // 10
+TypeError: unsupported operand type(s) for //: 'str' and 'int'
+[E 2021-11-08 14:20:15,766 dataset.py 883] unsupported operand type(s) for //: 'str' and 'int'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 881, in <module>
+    ds.subsetPhaseReplacing(SOURCE_DATASETS[0])
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 864, in subsetPhaseReplacing
+    error_fname = error_fname_pattern % img_id // 10
+TypeError: unsupported operand type(s) for //: 'str' and 'int'
+[E 2021-11-08 14:21:03,854 dataset.py 883] __main__.BloodSmearImageHandel.align_fov_mismatch() argument after ** must be a mapping, not NoneType
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 881, in <module>
+    ds.subsetPhaseReplacing(SOURCE_DATASETS[0])
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 866, in subsetPhaseReplacing
+    phase_new = BloodSmearImageHandel.processing(fullname, background_fpath, error_fname)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 585, in processing
+    bs_handle.align_fov_mismatch(error_fname=error_fname, **align_params)
+TypeError: __main__.BloodSmearImageHandel.align_fov_mismatch() argument after ** must be a mapping, not NoneType
+[E 2021-11-08 14:29:36,177 dataset.py 886] __main__.BloodSmearImageHandel.solve_phase() argument after ** must be a mapping, not NoneType
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 884, in <module>
+    ds.subsetPhaseReplacing(SOURCE_DATASETS[0])
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 869, in subsetPhaseReplacing
+    phase_new = BloodSmearImageHandel.processing(fullname, background_fpath, error_fname)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 599, in processing
+    bs_handle.solve_phase(**tie_params)
+TypeError: __main__.BloodSmearImageHandel.solve_phase() argument after ** must be a mapping, not NoneType
+[E 2021-11-08 14:30:10,518 dataset.py 886] No such file: 'D:\Workspace\RBC Recognition\datasets\20210902 BloodSmear01\phase\0000.bmp'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 884, in <module>
+    ds.subsetPhaseReplacing(SOURCE_DATASETS[0])
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 871, in subsetPhaseReplacing
+    ck.img_show(imread(dst_phase_filename), phase_new, names=('old', 'new'))
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\io\_io.py", line 48, in imread
+    img = call_plugin('imread', fname, plugin=plugin, **plugin_args)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\io\manage_plugins.py", line 207, in call_plugin
+    return func(*args, **kwargs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\io\_plugins\imageio_plugin.py", line 10, in imread
+    return np.asarray(imageio_imread(*args, **kwargs))
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\imageio\core\functions.py", line 265, in imread
+    reader = read(uri, format, "i", **kwargs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\imageio\core\functions.py", line 172, in get_reader
+    request = Request(uri, "r" + mode, **kwargs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\imageio\core\request.py", line 124, in __init__
+    self._parse_uri(uri)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\imageio\core\request.py", line 260, in _parse_uri
+    raise FileNotFoundError("No such file: '%s'" % fn)
+FileNotFoundError: No such file: 'D:\Workspace\RBC Recognition\datasets\20210902 BloodSmear01\phase\0000.bmp'
+[E 2021-11-08 15:57:38,354 dataset.py 900] invalid literal for int() with base 10: 'mismatch_00'
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 898, in <module>
+    ds.subsetPhaseReplacing(SOURCE_DATASETS[0])
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 875, in subsetPhaseReplacing
+    img_id = int(splitext(img_name)[0])
+ValueError: invalid literal for int() with base 10: 'mismatch_00'
+[E 2021-11-08 16:07:40,110 dataset.py 900] [Errno 2] No such file or directory: 'D:\\Workspace\\RBC Recognition\\datasets\\20210902 BloodSmear02\\raw_images\\sparese_indexes.txt'
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 898, in <module>
+    ds.subsetPhaseReplacing(SOURCE_DATASETS[1])
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 872, in subsetPhaseReplacing
+    sparse_indexes = load_txt_list(join(subset.getChild("raw_images")["fullpath"], "sparese_indexes.txt"))
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\functions.py", line 15, in load_txt_list
+    with open(filename, "r") as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'D:\\Workspace\\RBC Recognition\\datasets\\20210902 BloodSmear02\\raw_images\\sparese_indexes.txt'
+[E 2021-11-08 16:19:17,094 dataset.py 900] [Errno 2] No such file or directory: 'D:\\Workspace\\RBC Recognition\\datasets\\20210914 BloodSmear01\\raw_images\\sparse_indexes.txt'
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 898, in <module>
+    ds.subsetPhaseReplacing(SOURCE_DATASETS[2])
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 872, in subsetPhaseReplacing
+    sparse_indexes = load_txt_list(join(subset.getChild("raw_images")["fullpath"], "sparse_indexes.txt"))
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\functions.py", line 15, in load_txt_list
+    with open(filename, "r") as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'D:\\Workspace\\RBC Recognition\\datasets\\20210914 BloodSmear01\\raw_images\\sparse_indexes.txt'
+[E 2021-11-09 09:56:08,651 dataset.py 949] %d format: a number is required, not str
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 947, in <module>
+    ds.datasetReproduce(SOURCE_DATASETS, join(DATA_ROOT, "CVAT Caches\\labels collection"), SET202109_FILENAME)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 921, in datasetReproduce
+    corr_subset, batch_id = _parse_label_batch_name(lbl_batch)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 910, in _parse_label_batch_name
+    return subset_pattern % (subset_date, subset_id), _batch_id
+TypeError: %d format: a number is required, not str
+[E 2021-11-09 11:05:51,979 dataset.py 973] 'int' object is not iterable
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 970, in <module>
+    ds.datasetReproduce(DATA_ROOT, SOURCE_DATASETS,
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 957, in datasetReproduce
+    _take_modalities_from_imid(source_images_container, subset, imid, mod_fullnames)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 947, in _take_modalities_from_imid
+    **{"used_id": set(_imid)})}
+TypeError: 'int' object is not iterable
+[D 2021-11-09 11:11:35,000 dataset.py 949] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_id'])
+[D 2021-11-09 11:37:20,765 dataset.py 952] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 11:51:28,709 dataset.py 953] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[E 2021-11-09 12:01:51,520 dataset.py 978] '0'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 975, in <module>
+    ds.datasetReproduce(DATA_ROOT, SOURCE_DATASETS,
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 962, in datasetReproduce
+    modality_chunks = _modality_chunks_from_imid(source_images_container, subset, imid, impt, mod_fullnames)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 945, in _modality_chunks_from_imid
+    img_dict.pop(str(_imid))
+KeyError: '0'
+[D 2021-11-09 12:02:37,527 dataset.py 953] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 12:03:46,808 dataset.py 953] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 12:04:09,620 dataset.py 953] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 13:44:46,939 dataset.py 954] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 13:45:11,707 dataset.py 954] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 13:45:11,949 dataset.py 954] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 13:45:12,203 dataset.py 954] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 13:45:12,447 dataset.py 954] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 13:45:12,697 dataset.py 954] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 13:45:12,961 dataset.py 954] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 13:45:13,215 dataset.py 954] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 13:45:13,467 dataset.py 954] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 13:45:13,711 dataset.py 954] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 13:45:13,963 dataset.py 954] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 13:45:14,211 dataset.py 954] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 13:45:14,471 dataset.py 954] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 13:45:14,711 dataset.py 954] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 13:45:14,965 dataset.py 954] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 13:45:23,313 dataset.py 954] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 13:48:57,521 dataset.py 954] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 13:51:28,896 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:28,898 dataset.py 947] Image 20210902 BloodSmear01-0 deleted
+[D 2021-11-09 13:51:28,994 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:28,994 dataset.py 947] Image 20210902 BloodSmear01-1 deleted
+[D 2021-11-09 13:51:29,088 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:29,088 dataset.py 947] Image 20210902 BloodSmear01-2 deleted
+[D 2021-11-09 13:51:29,184 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:29,184 dataset.py 947] Image 20210902 BloodSmear01-3 deleted
+[D 2021-11-09 13:51:29,284 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:29,286 dataset.py 947] Image 20210902 BloodSmear01-4 deleted
+[D 2021-11-09 13:51:29,378 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:29,380 dataset.py 947] Image 20210902 BloodSmear01-5 deleted
+[D 2021-11-09 13:51:29,488 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:29,490 dataset.py 947] Image 20210902 BloodSmear01-6 deleted
+[D 2021-11-09 13:51:29,592 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:29,592 dataset.py 947] Image 20210902 BloodSmear01-7 deleted
+[D 2021-11-09 13:51:29,692 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:29,694 dataset.py 947] Image 20210902 BloodSmear01-8 deleted
+[D 2021-11-09 13:51:29,804 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:29,806 dataset.py 947] Image 20210902 BloodSmear01-9 deleted
+[D 2021-11-09 13:51:29,916 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:29,918 dataset.py 947] Image 20210902 BloodSmear01-10 deleted
+[D 2021-11-09 13:51:30,014 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:30,016 dataset.py 947] Image 20210902 BloodSmear01-11 deleted
+[D 2021-11-09 13:51:30,108 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:30,108 dataset.py 947] Image 20210902 BloodSmear01-12 deleted
+[D 2021-11-09 13:51:30,210 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:30,212 dataset.py 947] Image 20210902 BloodSmear01-13 deleted
+[D 2021-11-09 13:51:30,432 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:30,434 dataset.py 947] Image 20210902 BloodSmear01-14 deleted
+[D 2021-11-09 13:51:30,680 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:30,680 dataset.py 947] Image 20210902 BloodSmear01-15 deleted
+[D 2021-11-09 13:51:30,950 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:30,952 dataset.py 947] Image 20210902 BloodSmear01-16 deleted
+[D 2021-11-09 13:51:31,226 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:31,228 dataset.py 947] Image 20210902 BloodSmear01-17 deleted
+[D 2021-11-09 13:51:31,510 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:31,512 dataset.py 947] Image 20210902 BloodSmear01-18 deleted
+[D 2021-11-09 13:51:31,774 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:31,776 dataset.py 947] Image 20210902 BloodSmear01-19 deleted
+[D 2021-11-09 13:51:32,062 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:32,064 dataset.py 947] Image 20210902 BloodSmear01-20 deleted
+[D 2021-11-09 13:51:32,318 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:32,318 dataset.py 947] Image 20210902 BloodSmear01-21 deleted
+[D 2021-11-09 13:51:32,562 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:32,564 dataset.py 947] Image 20210902 BloodSmear01-22 deleted
+[D 2021-11-09 13:51:32,816 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:32,816 dataset.py 947] Image 20210902 BloodSmear01-23 deleted
+[D 2021-11-09 13:51:33,064 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:33,064 dataset.py 947] Image 20210902 BloodSmear01-24 deleted
+[D 2021-11-09 13:51:33,308 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:33,310 dataset.py 947] Image 20210902 BloodSmear01-25 deleted
+[D 2021-11-09 13:51:33,562 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:33,564 dataset.py 947] Image 20210902 BloodSmear01-26 deleted
+[D 2021-11-09 13:51:33,810 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:33,810 dataset.py 947] Image 20210902 BloodSmear01-27 deleted
+[D 2021-11-09 13:51:34,050 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:34,052 dataset.py 947] Image 20210902 BloodSmear01-28 deleted
+[D 2021-11-09 13:51:34,300 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:34,302 dataset.py 947] Image 20210902 BloodSmear01-29 deleted
+[D 2021-11-09 13:51:34,550 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:34,550 dataset.py 947] Image 20210902 BloodSmear01-30 deleted
+[D 2021-11-09 13:51:34,800 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:34,800 dataset.py 947] Image 20210902 BloodSmear01-31 deleted
+[D 2021-11-09 13:51:35,052 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:35,054 dataset.py 947] Image 20210902 BloodSmear01-32 deleted
+[D 2021-11-09 13:51:35,280 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:35,280 dataset.py 947] Image 20210902 BloodSmear01-33 deleted
+[D 2021-11-09 13:51:35,510 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:35,510 dataset.py 947] Image 20210902 BloodSmear01-34 deleted
+[D 2021-11-09 13:51:35,744 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:35,746 dataset.py 947] Image 20210902 BloodSmear01-35 deleted
+[D 2021-11-09 13:51:35,982 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:35,982 dataset.py 947] Image 20210902 BloodSmear01-36 deleted
+[D 2021-11-09 13:51:36,204 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:36,206 dataset.py 947] Image 20210902 BloodSmear01-37 deleted
+[D 2021-11-09 13:51:36,428 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:36,428 dataset.py 947] Image 20210902 BloodSmear01-38 deleted
+[D 2021-11-09 13:51:36,652 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:36,654 dataset.py 947] Image 20210902 BloodSmear01-39 deleted
+[D 2021-11-09 13:51:36,882 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:36,884 dataset.py 947] Image 20210902 BloodSmear01-40 deleted
+[D 2021-11-09 13:51:37,134 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:37,136 dataset.py 947] Image 20210902 BloodSmear01-41 deleted
+[D 2021-11-09 13:51:37,398 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:37,400 dataset.py 947] Image 20210902 BloodSmear01-42 deleted
+[D 2021-11-09 13:51:37,660 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:37,662 dataset.py 947] Image 20210902 BloodSmear01-43 deleted
+[D 2021-11-09 13:51:38,126 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:38,128 dataset.py 947] Image 20210902 BloodSmear01-44 deleted
+[D 2021-11-09 13:51:38,376 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:38,378 dataset.py 947] Image 20210902 BloodSmear01-45 deleted
+[D 2021-11-09 13:51:38,628 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:38,630 dataset.py 947] Image 20210902 BloodSmear02-0 deleted
+[D 2021-11-09 13:51:38,882 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:38,882 dataset.py 947] Image 20210902 BloodSmear02-1 deleted
+[D 2021-11-09 13:51:39,132 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:39,134 dataset.py 947] Image 20210902 BloodSmear02-2 deleted
+[D 2021-11-09 13:51:39,390 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:39,392 dataset.py 947] Image 20210902 BloodSmear02-3 deleted
+[D 2021-11-09 13:51:39,662 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:39,664 dataset.py 947] Image 20210902 BloodSmear02-4 deleted
+[D 2021-11-09 13:51:39,956 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:39,956 dataset.py 947] Image 20210902 BloodSmear02-5 deleted
+[D 2021-11-09 13:51:40,192 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:40,194 dataset.py 947] Image 20210902 BloodSmear02-6 deleted
+[D 2021-11-09 13:51:40,426 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:40,428 dataset.py 947] Image 20210902 BloodSmear02-7 deleted
+[D 2021-11-09 13:51:40,672 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:40,672 dataset.py 947] Image 20210902 BloodSmear02-8 deleted
+[D 2021-11-09 13:51:40,908 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:40,908 dataset.py 947] Image 20210902 BloodSmear02-9 deleted
+[D 2021-11-09 13:51:41,150 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:41,150 dataset.py 947] Image 20210902 BloodSmear02-10 deleted
+[D 2021-11-09 13:51:41,392 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:41,394 dataset.py 947] Image 20210902 BloodSmear02-11 deleted
+[D 2021-11-09 13:51:41,626 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:41,626 dataset.py 947] Image 20210902 BloodSmear02-12 deleted
+[D 2021-11-09 13:51:41,858 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:41,860 dataset.py 947] Image 20210902 BloodSmear02-13 deleted
+[D 2021-11-09 13:51:42,092 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:42,094 dataset.py 947] Image 20210902 BloodSmear02-14 deleted
+[D 2021-11-09 13:51:42,332 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:42,334 dataset.py 947] Image 20210902 BloodSmear02-15 deleted
+[D 2021-11-09 13:51:42,564 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:42,566 dataset.py 947] Image 20210902 BloodSmear02-16 deleted
+[D 2021-11-09 13:51:42,800 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:42,802 dataset.py 947] Image 20210902 BloodSmear02-17 deleted
+[D 2021-11-09 13:51:43,032 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:43,034 dataset.py 947] Image 20210902 BloodSmear02-18 deleted
+[D 2021-11-09 13:51:43,276 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:43,276 dataset.py 947] Image 20210902 BloodSmear02-19 deleted
+[D 2021-11-09 13:51:43,510 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:43,510 dataset.py 947] Image 20210902 BloodSmear02-20 deleted
+[D 2021-11-09 13:51:43,744 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:43,746 dataset.py 947] Image 20210902 BloodSmear02-21 deleted
+[D 2021-11-09 13:51:43,976 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:43,978 dataset.py 947] Image 20210902 BloodSmear02-22 deleted
+[D 2021-11-09 13:51:44,208 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:44,210 dataset.py 947] Image 20210902 BloodSmear02-23 deleted
+[D 2021-11-09 13:51:44,444 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:44,444 dataset.py 947] Image 20210902 BloodSmear02-24 deleted
+[D 2021-11-09 13:51:44,676 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:44,676 dataset.py 947] Image 20210902 BloodSmear02-25 deleted
+[D 2021-11-09 13:51:44,938 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:44,938 dataset.py 947] Image 20210902 BloodSmear02-26 deleted
+[D 2021-11-09 13:51:45,176 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:45,178 dataset.py 947] Image 20210902 BloodSmear02-27 deleted
+[D 2021-11-09 13:51:45,440 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:45,440 dataset.py 947] Image 20210902 BloodSmear02-28 deleted
+[D 2021-11-09 13:51:45,682 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:45,682 dataset.py 947] Image 20210902 BloodSmear02-29 deleted
+[D 2021-11-09 13:51:45,918 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:45,920 dataset.py 947] Image 20210902 BloodSmear02-30 deleted
+[D 2021-11-09 13:51:46,512 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:46,514 dataset.py 947] Image 20210902 BloodSmear02-31 deleted
+[D 2021-11-09 13:51:47,184 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:47,186 dataset.py 947] Image 20210902 BloodSmear02-32 deleted
+[D 2021-11-09 13:51:48,020 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:48,020 dataset.py 947] Image 20210902 BloodSmear02-33 deleted
+[D 2021-11-09 13:51:48,918 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:48,922 dataset.py 947] Image 20210902 BloodSmear02-34 deleted
+[D 2021-11-09 13:51:49,158 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:51:49,158 dataset.py 947] Image 20210902 BloodSmear02-35 deleted
+[D 2021-11-09 13:52:36,984 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:36,984 dataset.py 947] Image 20210902 BloodSmear01-0 deleted
+[D 2021-11-09 13:52:37,244 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:37,244 dataset.py 947] Image 20210902 BloodSmear01-1 deleted
+[D 2021-11-09 13:52:37,480 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:37,480 dataset.py 947] Image 20210902 BloodSmear01-2 deleted
+[D 2021-11-09 13:52:37,730 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:37,730 dataset.py 947] Image 20210902 BloodSmear01-3 deleted
+[D 2021-11-09 13:52:38,020 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:38,020 dataset.py 947] Image 20210902 BloodSmear01-4 deleted
+[D 2021-11-09 13:52:38,268 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:38,268 dataset.py 947] Image 20210902 BloodSmear01-5 deleted
+[D 2021-11-09 13:52:38,522 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:38,522 dataset.py 947] Image 20210902 BloodSmear01-6 deleted
+[D 2021-11-09 13:52:38,768 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:38,768 dataset.py 947] Image 20210902 BloodSmear01-7 deleted
+[D 2021-11-09 13:52:39,020 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:39,020 dataset.py 947] Image 20210902 BloodSmear01-8 deleted
+[D 2021-11-09 13:52:39,274 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:39,274 dataset.py 947] Image 20210902 BloodSmear01-9 deleted
+[D 2021-11-09 13:52:39,520 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:39,520 dataset.py 947] Image 20210902 BloodSmear01-10 deleted
+[D 2021-11-09 13:52:39,768 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:39,768 dataset.py 947] Image 20210902 BloodSmear01-11 deleted
+[D 2021-11-09 13:52:40,012 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:40,012 dataset.py 947] Image 20210902 BloodSmear01-12 deleted
+[D 2021-11-09 13:52:40,270 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:40,270 dataset.py 947] Image 20210902 BloodSmear01-13 deleted
+[D 2021-11-09 13:52:40,530 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:40,530 dataset.py 947] Image 20210902 BloodSmear01-14 deleted
+[D 2021-11-09 13:52:40,810 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:40,810 dataset.py 947] Image 20210902 BloodSmear01-15 deleted
+[D 2021-11-09 13:52:41,080 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:41,082 dataset.py 947] Image 20210902 BloodSmear01-16 deleted
+[D 2021-11-09 13:52:41,348 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:41,348 dataset.py 947] Image 20210902 BloodSmear01-17 deleted
+[D 2021-11-09 13:52:41,612 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:41,614 dataset.py 947] Image 20210902 BloodSmear01-18 deleted
+[D 2021-11-09 13:52:41,896 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:41,896 dataset.py 947] Image 20210902 BloodSmear01-19 deleted
+[D 2021-11-09 13:52:42,150 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:42,150 dataset.py 947] Image 20210902 BloodSmear01-20 deleted
+[D 2021-11-09 13:52:42,398 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:42,398 dataset.py 947] Image 20210902 BloodSmear01-21 deleted
+[D 2021-11-09 13:52:42,636 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:42,638 dataset.py 947] Image 20210902 BloodSmear01-22 deleted
+[D 2021-11-09 13:52:42,888 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:42,888 dataset.py 947] Image 20210902 BloodSmear01-23 deleted
+[D 2021-11-09 13:52:43,156 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:43,156 dataset.py 947] Image 20210902 BloodSmear01-24 deleted
+[D 2021-11-09 13:52:43,390 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:43,390 dataset.py 947] Image 20210902 BloodSmear01-25 deleted
+[D 2021-11-09 13:52:43,630 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:43,630 dataset.py 947] Image 20210902 BloodSmear01-26 deleted
+[D 2021-11-09 13:52:43,882 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:43,884 dataset.py 947] Image 20210902 BloodSmear01-27 deleted
+[D 2021-11-09 13:52:44,116 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:44,116 dataset.py 947] Image 20210902 BloodSmear01-28 deleted
+[D 2021-11-09 13:52:44,362 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:44,364 dataset.py 947] Image 20210902 BloodSmear01-29 deleted
+[D 2021-11-09 13:52:44,600 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:44,600 dataset.py 947] Image 20210902 BloodSmear01-30 deleted
+[D 2021-11-09 13:52:44,828 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:44,828 dataset.py 947] Image 20210902 BloodSmear01-31 deleted
+[D 2021-11-09 13:52:45,074 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:45,074 dataset.py 947] Image 20210902 BloodSmear01-32 deleted
+[D 2021-11-09 13:52:45,326 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:45,326 dataset.py 947] Image 20210902 BloodSmear01-33 deleted
+[D 2021-11-09 13:52:45,572 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:45,572 dataset.py 947] Image 20210902 BloodSmear01-34 deleted
+[D 2021-11-09 13:52:45,830 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:45,830 dataset.py 947] Image 20210902 BloodSmear01-35 deleted
+[D 2021-11-09 13:52:46,084 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:46,086 dataset.py 947] Image 20210902 BloodSmear01-36 deleted
+[D 2021-11-09 13:52:46,334 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:46,336 dataset.py 947] Image 20210902 BloodSmear01-37 deleted
+[D 2021-11-09 13:52:46,582 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:46,582 dataset.py 947] Image 20210902 BloodSmear01-38 deleted
+[D 2021-11-09 13:52:46,834 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:46,834 dataset.py 947] Image 20210902 BloodSmear01-39 deleted
+[D 2021-11-09 13:52:47,094 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:47,094 dataset.py 947] Image 20210902 BloodSmear01-40 deleted
+[D 2021-11-09 13:52:47,228 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:47,228 dataset.py 947] Image 20210902 BloodSmear01-41 deleted
+[D 2021-11-09 13:52:47,324 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:47,324 dataset.py 947] Image 20210902 BloodSmear01-42 deleted
+[D 2021-11-09 13:52:47,420 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:47,420 dataset.py 947] Image 20210902 BloodSmear01-43 deleted
+[D 2021-11-09 13:52:47,514 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:47,514 dataset.py 947] Image 20210902 BloodSmear01-44 deleted
+[D 2021-11-09 13:52:47,622 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:47,622 dataset.py 947] Image 20210902 BloodSmear01-45 deleted
+[D 2021-11-09 13:52:47,724 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:47,724 dataset.py 947] Image 20210902 BloodSmear02-0 deleted
+[D 2021-11-09 13:52:47,834 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:47,834 dataset.py 947] Image 20210902 BloodSmear02-1 deleted
+[D 2021-11-09 13:52:47,940 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:47,940 dataset.py 947] Image 20210902 BloodSmear02-2 deleted
+[D 2021-11-09 13:52:48,034 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:48,034 dataset.py 947] Image 20210902 BloodSmear02-3 deleted
+[D 2021-11-09 13:52:48,134 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:48,134 dataset.py 947] Image 20210902 BloodSmear02-4 deleted
+[D 2021-11-09 13:52:48,230 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:48,232 dataset.py 947] Image 20210902 BloodSmear02-5 deleted
+[D 2021-11-09 13:52:48,330 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:48,330 dataset.py 947] Image 20210902 BloodSmear02-6 deleted
+[D 2021-11-09 13:52:48,438 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:48,438 dataset.py 947] Image 20210902 BloodSmear02-7 deleted
+[D 2021-11-09 13:52:48,542 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:48,542 dataset.py 947] Image 20210902 BloodSmear02-8 deleted
+[D 2021-11-09 13:52:48,640 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:48,642 dataset.py 947] Image 20210902 BloodSmear02-9 deleted
+[D 2021-11-09 13:52:48,748 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:48,748 dataset.py 947] Image 20210902 BloodSmear02-10 deleted
+[D 2021-11-09 13:52:48,854 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:48,854 dataset.py 947] Image 20210902 BloodSmear02-11 deleted
+[D 2021-11-09 13:52:48,948 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:48,950 dataset.py 947] Image 20210902 BloodSmear02-12 deleted
+[D 2021-11-09 13:52:49,048 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:49,048 dataset.py 947] Image 20210902 BloodSmear02-13 deleted
+[D 2021-11-09 13:52:49,154 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:49,156 dataset.py 947] Image 20210902 BloodSmear02-14 deleted
+[D 2021-11-09 13:52:49,262 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:49,262 dataset.py 947] Image 20210902 BloodSmear02-15 deleted
+[D 2021-11-09 13:52:49,364 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:49,366 dataset.py 947] Image 20210902 BloodSmear02-16 deleted
+[D 2021-11-09 13:52:49,472 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:49,472 dataset.py 947] Image 20210902 BloodSmear02-17 deleted
+[D 2021-11-09 13:52:49,582 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:49,582 dataset.py 947] Image 20210902 BloodSmear02-18 deleted
+[D 2021-11-09 13:52:49,688 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:49,688 dataset.py 947] Image 20210902 BloodSmear02-19 deleted
+[D 2021-11-09 13:52:49,784 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:49,786 dataset.py 947] Image 20210902 BloodSmear02-20 deleted
+[D 2021-11-09 13:52:49,890 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:49,890 dataset.py 947] Image 20210902 BloodSmear02-21 deleted
+[D 2021-11-09 13:52:49,990 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:49,990 dataset.py 947] Image 20210902 BloodSmear02-22 deleted
+[D 2021-11-09 13:52:50,088 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:50,088 dataset.py 947] Image 20210902 BloodSmear02-23 deleted
+[D 2021-11-09 13:52:50,194 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:50,194 dataset.py 947] Image 20210902 BloodSmear02-24 deleted
+[D 2021-11-09 13:52:50,294 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:50,294 dataset.py 947] Image 20210902 BloodSmear02-25 deleted
+[D 2021-11-09 13:52:50,408 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:50,410 dataset.py 947] Image 20210902 BloodSmear02-26 deleted
+[D 2021-11-09 13:52:50,512 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:50,512 dataset.py 947] Image 20210902 BloodSmear02-27 deleted
+[D 2021-11-09 13:52:50,622 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:50,622 dataset.py 947] Image 20210902 BloodSmear02-28 deleted
+[D 2021-11-09 13:52:50,732 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:50,732 dataset.py 947] Image 20210902 BloodSmear02-29 deleted
+[D 2021-11-09 13:52:50,844 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:50,846 dataset.py 947] Image 20210902 BloodSmear02-30 deleted
+[D 2021-11-09 13:52:50,964 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:50,964 dataset.py 947] Image 20210902 BloodSmear02-31 deleted
+[D 2021-11-09 13:52:51,066 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:51,066 dataset.py 947] Image 20210902 BloodSmear02-32 deleted
+[D 2021-11-09 13:52:51,168 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:51,168 dataset.py 947] Image 20210902 BloodSmear02-33 deleted
+[D 2021-11-09 13:52:51,326 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:51,326 dataset.py 947] Image 20210902 BloodSmear02-34 deleted
+[D 2021-11-09 13:52:51,570 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:51,570 dataset.py 947] Image 20210902 BloodSmear02-35 deleted
+[D 2021-11-09 13:52:51,872 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:51,872 dataset.py 947] Image 20210902 BloodSmear02-36 deleted
+[D 2021-11-09 13:52:52,126 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:52,128 dataset.py 947] Image 20210902 BloodSmear02-37 deleted
+[D 2021-11-09 13:52:52,410 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:52,410 dataset.py 947] Image 20210902 BloodSmear02-38 deleted
+[D 2021-11-09 13:52:52,666 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:52,666 dataset.py 947] Image 20210902 BloodSmear02-39 deleted
+[D 2021-11-09 13:52:52,960 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:52,960 dataset.py 947] Image 20210902 BloodSmear02-40 deleted
+[D 2021-11-09 13:52:53,210 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:53,210 dataset.py 947] Image 20210902 BloodSmear02-41 deleted
+[D 2021-11-09 13:52:53,462 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:53,462 dataset.py 947] Image 20210902 BloodSmear02-42 deleted
+[D 2021-11-09 13:52:53,728 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:53,728 dataset.py 947] Image 20210902 BloodSmear02-43 deleted
+[D 2021-11-09 13:52:53,980 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:53,980 dataset.py 947] Image 20210902 BloodSmear02-44 deleted
+[D 2021-11-09 13:52:54,356 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:54,358 dataset.py 947] Image 20210902 BloodSmear02-45 deleted
+[D 2021-11-09 13:52:54,762 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:54,762 dataset.py 947] Image 20210902 BloodSmear02-46 deleted
+[D 2021-11-09 13:52:55,056 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:55,058 dataset.py 947] Image 20210914 BloodSmear01-0 deleted
+[D 2021-11-09 13:52:55,902 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:55,902 dataset.py 947] Image 20210914 BloodSmear01-1 deleted
+[D 2021-11-09 13:52:56,158 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:56,160 dataset.py 947] Image 20210914 BloodSmear01-2 deleted
+[D 2021-11-09 13:52:56,420 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:56,420 dataset.py 947] Image 20210914 BloodSmear01-3 deleted
+[D 2021-11-09 13:52:56,672 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:56,672 dataset.py 947] Image 20210914 BloodSmear01-4 deleted
+[D 2021-11-09 13:52:56,936 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:56,936 dataset.py 947] Image 20210914 BloodSmear01-5 deleted
+[D 2021-11-09 13:52:57,546 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:57,580 dataset.py 947] Image 20210914 BloodSmear01-6 deleted
+[D 2021-11-09 13:52:58,110 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:58,112 dataset.py 947] Image 20210914 BloodSmear01-7 deleted
+[D 2021-11-09 13:52:58,516 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:58,516 dataset.py 947] Image 20210914 BloodSmear01-8 deleted
+[D 2021-11-09 13:52:58,756 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:58,756 dataset.py 947] Image 20210914 BloodSmear01-9 deleted
+[D 2021-11-09 13:52:59,006 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:59,006 dataset.py 947] Image 20210914 BloodSmear01-10 deleted
+[D 2021-11-09 13:52:59,264 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:59,264 dataset.py 947] Image 20210914 BloodSmear01-11 deleted
+[D 2021-11-09 13:52:59,516 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:59,516 dataset.py 947] Image 20210914 BloodSmear01-12 deleted
+[D 2021-11-09 13:52:59,768 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:52:59,768 dataset.py 947] Image 20210914 BloodSmear01-13 deleted
+[D 2021-11-09 13:53:00,032 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:00,032 dataset.py 947] Image 20210914 BloodSmear01-14 deleted
+[D 2021-11-09 13:53:00,280 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:00,280 dataset.py 947] Image 20210914 BloodSmear01-15 deleted
+[D 2021-11-09 13:53:00,530 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:00,530 dataset.py 947] Image 20210914 BloodSmear01-16 deleted
+[D 2021-11-09 13:53:00,788 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:00,788 dataset.py 947] Image 20210914 BloodSmear01-17 deleted
+[D 2021-11-09 13:53:01,066 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:01,066 dataset.py 947] Image 20210914 BloodSmear01-18 deleted
+[D 2021-11-09 13:53:01,320 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:01,320 dataset.py 947] Image 20210914 BloodSmear01-19 deleted
+[D 2021-11-09 13:53:01,580 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:01,580 dataset.py 947] Image 20210914 BloodSmear01-20 deleted
+[D 2021-11-09 13:53:01,832 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:01,832 dataset.py 947] Image 20210914 BloodSmear01-21 deleted
+[D 2021-11-09 13:53:02,108 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:02,110 dataset.py 947] Image 20210914 BloodSmear01-22 deleted
+[D 2021-11-09 13:53:02,658 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:02,660 dataset.py 947] Image 20210914 BloodSmear01-23 deleted
+[D 2021-11-09 13:53:03,060 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:03,064 dataset.py 947] Image 20210914 BloodSmear01-24 deleted
+[D 2021-11-09 13:53:03,316 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:03,316 dataset.py 947] Image 20210914 BloodSmear01-25 deleted
+[D 2021-11-09 13:53:03,906 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:03,908 dataset.py 947] Image 20210914 BloodSmear01-26 deleted
+[D 2021-11-09 13:53:04,176 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:04,178 dataset.py 947] Image 20210914 BloodSmear01-27 deleted
+[D 2021-11-09 13:53:04,440 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:04,440 dataset.py 947] Image 20210914 BloodSmear01-28 deleted
+[D 2021-11-09 13:53:04,846 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:04,846 dataset.py 947] Image 20210914 BloodSmear01-29 deleted
+[D 2021-11-09 13:53:05,114 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:05,114 dataset.py 947] Image 20210914 BloodSmear01-30 deleted
+[D 2021-11-09 13:53:05,360 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:05,360 dataset.py 947] Image 20210914 BloodSmear01-31 deleted
+[D 2021-11-09 13:53:05,618 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:05,620 dataset.py 947] Image 20210914 BloodSmear01-32 deleted
+[D 2021-11-09 13:53:05,902 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:05,902 dataset.py 947] Image 20210914 BloodSmear01-33 deleted
+[D 2021-11-09 13:53:06,234 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:06,234 dataset.py 947] Image 20210914 BloodSmear01-34 deleted
+[D 2021-11-09 13:53:06,662 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:06,662 dataset.py 947] Image 20210914 BloodSmear01-35 deleted
+[D 2021-11-09 13:53:07,000 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:07,002 dataset.py 947] Image 20210914 BloodSmear01-36 deleted
+[D 2021-11-09 13:53:07,286 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:07,286 dataset.py 947] Image 20210914 BloodSmear02-0 deleted
+[D 2021-11-09 13:53:07,534 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:07,536 dataset.py 947] Image 20210914 BloodSmear02-1 deleted
+[D 2021-11-09 13:53:07,784 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:07,784 dataset.py 947] Image 20210914 BloodSmear02-2 deleted
+[D 2021-11-09 13:53:08,044 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:08,044 dataset.py 947] Image 20210914 BloodSmear02-3 deleted
+[D 2021-11-09 13:53:08,314 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:08,314 dataset.py 947] Image 20210914 BloodSmear02-4 deleted
+[D 2021-11-09 13:53:08,560 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:08,560 dataset.py 947] Image 20210914 BloodSmear02-5 deleted
+[D 2021-11-09 13:53:08,806 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:08,806 dataset.py 947] Image 20210914 BloodSmear02-6 deleted
+[D 2021-11-09 13:53:09,050 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:09,052 dataset.py 947] Image 20210914 BloodSmear02-7 deleted
+[D 2021-11-09 13:53:09,490 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:09,492 dataset.py 947] Image 20210914 BloodSmear02-8 deleted
+[D 2021-11-09 13:53:09,736 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:09,736 dataset.py 947] Image 20210914 BloodSmear02-9 deleted
+[D 2021-11-09 13:53:09,990 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:09,990 dataset.py 947] Image 20210914 BloodSmear02-10 deleted
+[D 2021-11-09 13:53:10,236 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:10,236 dataset.py 947] Image 20210914 BloodSmear02-11 deleted
+[D 2021-11-09 13:53:10,486 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:10,486 dataset.py 947] Image 20210914 BloodSmear02-12 deleted
+[D 2021-11-09 13:53:10,740 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:10,740 dataset.py 947] Image 20210914 BloodSmear02-13 deleted
+[D 2021-11-09 13:53:10,992 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:10,992 dataset.py 947] Image 20210914 BloodSmear02-14 deleted
+[D 2021-11-09 13:53:11,250 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:11,250 dataset.py 947] Image 20210914 BloodSmear02-15 deleted
+[D 2021-11-09 13:53:11,498 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:11,500 dataset.py 947] Image 20210914 BloodSmear02-16 deleted
+[D 2021-11-09 13:53:11,742 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:11,742 dataset.py 947] Image 20210914 BloodSmear02-17 deleted
+[D 2021-11-09 13:53:11,992 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:11,992 dataset.py 947] Image 20210914 BloodSmear02-18 deleted
+[D 2021-11-09 13:53:12,238 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:12,238 dataset.py 947] Image 20210914 BloodSmear02-19 deleted
+[D 2021-11-09 13:53:26,928 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:26,930 dataset.py 947] Image 20210902 BloodSmear01-0 deleted
+[D 2021-11-09 13:53:27,164 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:27,166 dataset.py 947] Image 20210902 BloodSmear01-1 deleted
+[D 2021-11-09 13:53:27,396 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:27,398 dataset.py 947] Image 20210902 BloodSmear01-2 deleted
+[D 2021-11-09 13:53:27,626 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:27,628 dataset.py 947] Image 20210902 BloodSmear01-3 deleted
+[D 2021-11-09 13:53:27,862 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:27,862 dataset.py 947] Image 20210902 BloodSmear01-4 deleted
+[D 2021-11-09 13:53:28,092 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:28,094 dataset.py 947] Image 20210902 BloodSmear01-5 deleted
+[D 2021-11-09 13:53:28,330 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:28,330 dataset.py 947] Image 20210902 BloodSmear01-6 deleted
+[D 2021-11-09 13:53:28,574 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:28,576 dataset.py 947] Image 20210902 BloodSmear01-7 deleted
+[D 2021-11-09 13:53:28,810 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:28,810 dataset.py 947] Image 20210902 BloodSmear01-8 deleted
+[D 2021-11-09 13:53:29,044 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:29,044 dataset.py 947] Image 20210902 BloodSmear01-9 deleted
+[D 2021-11-09 13:53:29,276 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:29,278 dataset.py 947] Image 20210902 BloodSmear01-10 deleted
+[D 2021-11-09 13:53:29,512 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:29,512 dataset.py 947] Image 20210902 BloodSmear01-11 deleted
+[D 2021-11-09 13:53:29,752 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:29,752 dataset.py 947] Image 20210902 BloodSmear01-12 deleted
+[D 2021-11-09 13:53:29,980 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:29,982 dataset.py 947] Image 20210902 BloodSmear01-13 deleted
+[D 2021-11-09 13:53:30,216 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:30,216 dataset.py 947] Image 20210902 BloodSmear01-14 deleted
+[D 2021-11-09 13:53:30,458 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:30,460 dataset.py 947] Image 20210902 BloodSmear01-15 deleted
+[D 2021-11-09 13:53:30,720 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:30,720 dataset.py 947] Image 20210902 BloodSmear01-16 deleted
+[D 2021-11-09 13:53:30,984 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:30,986 dataset.py 947] Image 20210902 BloodSmear01-17 deleted
+[D 2021-11-09 13:53:31,234 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:31,234 dataset.py 947] Image 20210902 BloodSmear01-18 deleted
+[D 2021-11-09 13:53:31,478 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:31,478 dataset.py 947] Image 20210902 BloodSmear01-19 deleted
+[D 2021-11-09 13:53:31,712 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:31,714 dataset.py 947] Image 20210902 BloodSmear01-20 deleted
+[D 2021-11-09 13:53:31,950 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:31,952 dataset.py 947] Image 20210902 BloodSmear01-21 deleted
+[D 2021-11-09 13:53:32,184 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:32,186 dataset.py 947] Image 20210902 BloodSmear01-22 deleted
+[D 2021-11-09 13:53:32,422 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:32,424 dataset.py 947] Image 20210902 BloodSmear01-23 deleted
+[D 2021-11-09 13:53:32,656 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:32,658 dataset.py 947] Image 20210902 BloodSmear01-24 deleted
+[D 2021-11-09 13:53:32,892 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:32,892 dataset.py 947] Image 20210902 BloodSmear01-25 deleted
+[D 2021-11-09 13:53:33,152 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:33,152 dataset.py 947] Image 20210902 BloodSmear01-26 deleted
+[D 2021-11-09 13:53:33,388 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:33,390 dataset.py 947] Image 20210902 BloodSmear01-27 deleted
+[D 2021-11-09 13:53:33,616 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:33,616 dataset.py 947] Image 20210902 BloodSmear01-28 deleted
+[D 2021-11-09 13:53:33,866 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:33,866 dataset.py 947] Image 20210902 BloodSmear01-29 deleted
+[D 2021-11-09 13:53:34,104 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:34,106 dataset.py 947] Image 20210902 BloodSmear01-30 deleted
+[D 2021-11-09 13:53:34,346 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:34,346 dataset.py 947] Image 20210902 BloodSmear01-31 deleted
+[D 2021-11-09 13:53:34,592 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:34,592 dataset.py 947] Image 20210902 BloodSmear01-32 deleted
+[D 2021-11-09 13:53:34,838 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:34,838 dataset.py 947] Image 20210902 BloodSmear01-33 deleted
+[D 2021-11-09 13:53:35,084 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:35,084 dataset.py 947] Image 20210902 BloodSmear01-34 deleted
+[D 2021-11-09 13:53:35,338 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:35,340 dataset.py 947] Image 20210902 BloodSmear01-35 deleted
+[D 2021-11-09 13:53:35,614 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:35,616 dataset.py 947] Image 20210902 BloodSmear01-36 deleted
+[D 2021-11-09 13:53:35,850 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:35,850 dataset.py 947] Image 20210902 BloodSmear01-37 deleted
+[D 2021-11-09 13:53:36,096 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:36,096 dataset.py 947] Image 20210902 BloodSmear01-38 deleted
+[D 2021-11-09 13:53:36,344 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:36,344 dataset.py 947] Image 20210902 BloodSmear01-39 deleted
+[D 2021-11-09 13:53:36,618 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:36,620 dataset.py 947] Image 20210902 BloodSmear01-40 deleted
+[D 2021-11-09 13:53:36,890 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:36,892 dataset.py 947] Image 20210902 BloodSmear01-41 deleted
+[D 2021-11-09 13:53:37,152 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:37,154 dataset.py 947] Image 20210902 BloodSmear01-42 deleted
+[D 2021-11-09 13:53:37,430 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:37,432 dataset.py 947] Image 20210902 BloodSmear01-43 deleted
+[D 2021-11-09 13:53:37,688 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:37,690 dataset.py 947] Image 20210902 BloodSmear01-44 deleted
+[D 2021-11-09 13:53:37,940 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:37,940 dataset.py 947] Image 20210902 BloodSmear01-45 deleted
+[D 2021-11-09 13:53:38,200 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:38,202 dataset.py 947] Image 20210902 BloodSmear02-0 deleted
+[D 2021-11-09 13:53:38,456 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:38,458 dataset.py 947] Image 20210902 BloodSmear02-1 deleted
+[D 2021-11-09 13:53:38,706 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:38,708 dataset.py 947] Image 20210902 BloodSmear02-2 deleted
+[D 2021-11-09 13:53:38,960 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:38,962 dataset.py 947] Image 20210902 BloodSmear02-3 deleted
+[D 2021-11-09 13:53:39,236 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:39,238 dataset.py 947] Image 20210902 BloodSmear02-4 deleted
+[D 2021-11-09 13:53:39,486 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:39,488 dataset.py 947] Image 20210902 BloodSmear02-5 deleted
+[D 2021-11-09 13:53:39,744 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:39,744 dataset.py 947] Image 20210902 BloodSmear02-6 deleted
+[D 2021-11-09 13:53:39,992 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:39,994 dataset.py 947] Image 20210902 BloodSmear02-7 deleted
+[D 2021-11-09 13:53:40,240 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:40,240 dataset.py 947] Image 20210902 BloodSmear02-8 deleted
+[D 2021-11-09 13:53:40,488 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:40,490 dataset.py 947] Image 20210902 BloodSmear02-9 deleted
+[D 2021-11-09 13:53:40,736 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:40,738 dataset.py 947] Image 20210902 BloodSmear02-10 deleted
+[D 2021-11-09 13:53:40,988 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:40,990 dataset.py 947] Image 20210902 BloodSmear02-11 deleted
+[D 2021-11-09 13:53:41,242 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:41,242 dataset.py 947] Image 20210902 BloodSmear02-12 deleted
+[D 2021-11-09 13:53:41,510 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:41,510 dataset.py 947] Image 20210902 BloodSmear02-13 deleted
+[D 2021-11-09 13:53:41,764 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:41,766 dataset.py 947] Image 20210902 BloodSmear02-14 deleted
+[D 2021-11-09 13:53:42,036 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:42,038 dataset.py 947] Image 20210902 BloodSmear02-15 deleted
+[D 2021-11-09 13:53:42,302 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:42,302 dataset.py 947] Image 20210902 BloodSmear02-16 deleted
+[D 2021-11-09 13:53:42,554 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:42,556 dataset.py 947] Image 20210902 BloodSmear02-17 deleted
+[D 2021-11-09 13:53:42,804 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:42,804 dataset.py 947] Image 20210902 BloodSmear02-18 deleted
+[D 2021-11-09 13:53:43,056 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:43,056 dataset.py 947] Image 20210902 BloodSmear02-19 deleted
+[D 2021-11-09 13:53:43,302 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:43,302 dataset.py 947] Image 20210902 BloodSmear02-20 deleted
+[D 2021-11-09 13:53:43,550 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:43,552 dataset.py 947] Image 20210902 BloodSmear02-21 deleted
+[D 2021-11-09 13:53:43,802 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:43,802 dataset.py 947] Image 20210902 BloodSmear02-22 deleted
+[D 2021-11-09 13:53:44,074 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:44,076 dataset.py 947] Image 20210902 BloodSmear02-23 deleted
+[D 2021-11-09 13:53:44,324 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:44,324 dataset.py 947] Image 20210902 BloodSmear02-24 deleted
+[D 2021-11-09 13:53:44,574 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:44,576 dataset.py 947] Image 20210902 BloodSmear02-25 deleted
+[D 2021-11-09 13:53:44,826 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:44,828 dataset.py 947] Image 20210902 BloodSmear02-26 deleted
+[D 2021-11-09 13:53:45,070 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:45,070 dataset.py 947] Image 20210902 BloodSmear02-27 deleted
+[D 2021-11-09 13:53:45,318 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:45,320 dataset.py 947] Image 20210902 BloodSmear02-28 deleted
+[D 2021-11-09 13:53:45,574 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:45,574 dataset.py 947] Image 20210902 BloodSmear02-29 deleted
+[D 2021-11-09 13:53:45,852 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:45,854 dataset.py 947] Image 20210902 BloodSmear02-30 deleted
+[D 2021-11-09 13:53:46,118 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:46,120 dataset.py 947] Image 20210902 BloodSmear02-31 deleted
+[D 2021-11-09 13:53:46,352 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:46,354 dataset.py 947] Image 20210902 BloodSmear02-32 deleted
+[D 2021-11-09 13:53:46,590 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:46,590 dataset.py 947] Image 20210902 BloodSmear02-33 deleted
+[D 2021-11-09 13:53:46,864 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:46,864 dataset.py 947] Image 20210902 BloodSmear02-34 deleted
+[D 2021-11-09 13:53:47,118 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:47,120 dataset.py 947] Image 20210902 BloodSmear02-35 deleted
+[D 2021-11-09 13:53:47,382 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:47,384 dataset.py 947] Image 20210902 BloodSmear02-36 deleted
+[D 2021-11-09 13:53:47,628 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:47,630 dataset.py 947] Image 20210902 BloodSmear02-37 deleted
+[D 2021-11-09 13:53:47,880 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:47,882 dataset.py 947] Image 20210902 BloodSmear02-38 deleted
+[D 2021-11-09 13:53:48,138 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:48,140 dataset.py 947] Image 20210902 BloodSmear02-39 deleted
+[D 2021-11-09 13:53:48,370 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:48,370 dataset.py 947] Image 20210902 BloodSmear02-40 deleted
+[D 2021-11-09 13:53:48,612 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:48,612 dataset.py 947] Image 20210902 BloodSmear02-41 deleted
+[D 2021-11-09 13:53:48,844 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:48,846 dataset.py 947] Image 20210902 BloodSmear02-42 deleted
+[D 2021-11-09 13:53:49,080 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:49,082 dataset.py 947] Image 20210902 BloodSmear02-43 deleted
+[D 2021-11-09 13:53:49,328 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:49,330 dataset.py 947] Image 20210902 BloodSmear02-44 deleted
+[D 2021-11-09 13:53:49,580 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:49,582 dataset.py 947] Image 20210902 BloodSmear02-45 deleted
+[D 2021-11-09 13:53:49,828 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:49,830 dataset.py 947] Image 20210902 BloodSmear02-46 deleted
+[D 2021-11-09 13:53:50,102 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:50,104 dataset.py 947] Image 20210914 BloodSmear01-0 deleted
+[D 2021-11-09 13:53:50,364 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:50,364 dataset.py 947] Image 20210914 BloodSmear01-1 deleted
+[D 2021-11-09 13:53:50,614 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:50,616 dataset.py 947] Image 20210914 BloodSmear01-2 deleted
+[D 2021-11-09 13:53:50,864 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:50,866 dataset.py 947] Image 20210914 BloodSmear01-3 deleted
+[D 2021-11-09 13:53:51,116 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:51,118 dataset.py 947] Image 20210914 BloodSmear01-4 deleted
+[D 2021-11-09 13:53:51,366 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:51,368 dataset.py 947] Image 20210914 BloodSmear01-5 deleted
+[D 2021-11-09 13:53:51,616 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:51,618 dataset.py 947] Image 20210914 BloodSmear01-6 deleted
+[D 2021-11-09 13:53:51,870 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:51,870 dataset.py 947] Image 20210914 BloodSmear01-7 deleted
+[D 2021-11-09 13:53:52,162 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:52,164 dataset.py 947] Image 20210914 BloodSmear01-8 deleted
+[D 2021-11-09 13:53:52,424 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:52,426 dataset.py 947] Image 20210914 BloodSmear01-9 deleted
+[D 2021-11-09 13:53:52,674 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:52,674 dataset.py 947] Image 20210914 BloodSmear01-10 deleted
+[D 2021-11-09 13:53:52,922 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:52,922 dataset.py 947] Image 20210914 BloodSmear01-11 deleted
+[D 2021-11-09 13:53:53,286 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:53,286 dataset.py 947] Image 20210914 BloodSmear01-12 deleted
+[D 2021-11-09 13:53:53,628 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:53,630 dataset.py 947] Image 20210914 BloodSmear01-13 deleted
+[D 2021-11-09 13:53:53,998 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:54,000 dataset.py 947] Image 20210914 BloodSmear01-14 deleted
+[D 2021-11-09 13:53:54,862 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:54,864 dataset.py 947] Image 20210914 BloodSmear01-15 deleted
+[D 2021-11-09 13:53:55,160 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:55,160 dataset.py 947] Image 20210914 BloodSmear01-16 deleted
+[D 2021-11-09 13:53:55,422 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:55,422 dataset.py 947] Image 20210914 BloodSmear01-17 deleted
+[D 2021-11-09 13:53:55,684 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:55,686 dataset.py 947] Image 20210914 BloodSmear01-18 deleted
+[D 2021-11-09 13:53:55,970 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:55,970 dataset.py 947] Image 20210914 BloodSmear01-19 deleted
+[D 2021-11-09 13:53:56,256 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:56,258 dataset.py 947] Image 20210914 BloodSmear01-20 deleted
+[D 2021-11-09 13:53:56,492 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:56,494 dataset.py 947] Image 20210914 BloodSmear01-21 deleted
+[D 2021-11-09 13:53:56,744 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:56,744 dataset.py 947] Image 20210914 BloodSmear01-22 deleted
+[D 2021-11-09 13:53:56,990 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:56,992 dataset.py 947] Image 20210914 BloodSmear01-23 deleted
+[D 2021-11-09 13:53:57,294 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:57,294 dataset.py 947] Image 20210914 BloodSmear01-24 deleted
+[D 2021-11-09 13:53:57,576 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:57,576 dataset.py 947] Image 20210914 BloodSmear01-25 deleted
+[D 2021-11-09 13:53:57,838 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:57,840 dataset.py 947] Image 20210914 BloodSmear01-26 deleted
+[D 2021-11-09 13:53:58,146 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:58,148 dataset.py 947] Image 20210914 BloodSmear01-27 deleted
+[D 2021-11-09 13:53:58,524 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:58,526 dataset.py 947] Image 20210914 BloodSmear01-28 deleted
+[D 2021-11-09 13:53:58,780 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:58,780 dataset.py 947] Image 20210914 BloodSmear01-29 deleted
+[D 2021-11-09 13:53:59,036 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:59,038 dataset.py 947] Image 20210914 BloodSmear01-30 deleted
+[D 2021-11-09 13:53:59,284 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:59,286 dataset.py 947] Image 20210914 BloodSmear01-31 deleted
+[D 2021-11-09 13:53:59,546 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:59,548 dataset.py 947] Image 20210914 BloodSmear01-32 deleted
+[D 2021-11-09 13:53:59,794 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:53:59,794 dataset.py 947] Image 20210914 BloodSmear01-33 deleted
+[D 2021-11-09 13:54:00,046 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:00,046 dataset.py 947] Image 20210914 BloodSmear01-34 deleted
+[D 2021-11-09 13:54:00,310 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:00,310 dataset.py 947] Image 20210914 BloodSmear01-35 deleted
+[D 2021-11-09 13:54:00,564 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:00,564 dataset.py 947] Image 20210914 BloodSmear01-36 deleted
+[D 2021-11-09 13:54:00,814 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:00,816 dataset.py 947] Image 20210914 BloodSmear02-0 deleted
+[D 2021-11-09 13:54:01,078 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:01,080 dataset.py 947] Image 20210914 BloodSmear02-1 deleted
+[D 2021-11-09 13:54:01,336 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:01,338 dataset.py 947] Image 20210914 BloodSmear02-2 deleted
+[D 2021-11-09 13:54:01,600 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:01,600 dataset.py 947] Image 20210914 BloodSmear02-3 deleted
+[D 2021-11-09 13:54:01,870 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:01,870 dataset.py 947] Image 20210914 BloodSmear02-4 deleted
+[D 2021-11-09 13:54:02,174 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:02,174 dataset.py 947] Image 20210914 BloodSmear02-5 deleted
+[D 2021-11-09 13:54:02,434 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:02,434 dataset.py 947] Image 20210914 BloodSmear02-6 deleted
+[D 2021-11-09 13:54:02,688 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:02,688 dataset.py 947] Image 20210914 BloodSmear02-7 deleted
+[D 2021-11-09 13:54:02,936 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:02,938 dataset.py 947] Image 20210914 BloodSmear02-8 deleted
+[D 2021-11-09 13:54:03,276 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:03,278 dataset.py 947] Image 20210914 BloodSmear02-9 deleted
+[D 2021-11-09 13:54:03,544 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:03,546 dataset.py 947] Image 20210914 BloodSmear02-10 deleted
+[D 2021-11-09 13:54:03,812 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:03,812 dataset.py 947] Image 20210914 BloodSmear02-11 deleted
+[D 2021-11-09 13:54:04,062 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:04,064 dataset.py 947] Image 20210914 BloodSmear02-12 deleted
+[D 2021-11-09 13:54:04,328 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:04,328 dataset.py 947] Image 20210914 BloodSmear02-13 deleted
+[D 2021-11-09 13:54:04,578 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:04,580 dataset.py 947] Image 20210914 BloodSmear02-14 deleted
+[D 2021-11-09 13:54:04,836 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:04,836 dataset.py 947] Image 20210914 BloodSmear02-15 deleted
+[D 2021-11-09 13:54:05,088 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:05,144 dataset.py 947] Image 20210914 BloodSmear02-16 deleted
+[D 2021-11-09 13:54:05,410 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:05,412 dataset.py 947] Image 20210914 BloodSmear02-17 deleted
+[D 2021-11-09 13:54:05,690 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:05,692 dataset.py 947] Image 20210914 BloodSmear02-18 deleted
+[D 2021-11-09 13:54:06,000 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 13:54:06,000 dataset.py 947] Image 20210914 BloodSmear02-19 deleted
+[D 2021-11-09 14:05:05,703 dataset.py 955] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 14:45:25,883 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:25,885 dataset.py 949] Image 20210902 BloodSmear01-0 deleted
+[D 2021-11-09 14:45:26,139 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:26,141 dataset.py 949] Image 20210902 BloodSmear01-1 deleted
+[D 2021-11-09 14:45:26,383 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:26,385 dataset.py 949] Image 20210902 BloodSmear01-2 deleted
+[D 2021-11-09 14:45:26,617 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:26,617 dataset.py 949] Image 20210902 BloodSmear01-3 deleted
+[D 2021-11-09 14:45:26,851 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:26,853 dataset.py 949] Image 20210902 BloodSmear01-4 deleted
+[D 2021-11-09 14:45:27,093 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:27,093 dataset.py 949] Image 20210902 BloodSmear01-5 deleted
+[D 2021-11-09 14:45:27,359 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:27,359 dataset.py 949] Image 20210902 BloodSmear01-6 deleted
+[D 2021-11-09 14:45:27,593 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:27,595 dataset.py 949] Image 20210902 BloodSmear01-7 deleted
+[D 2021-11-09 14:45:27,843 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:27,843 dataset.py 949] Image 20210902 BloodSmear01-8 deleted
+[D 2021-11-09 14:45:28,095 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:28,095 dataset.py 949] Image 20210902 BloodSmear01-9 deleted
+[D 2021-11-09 14:45:28,361 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:28,363 dataset.py 949] Image 20210902 BloodSmear01-10 deleted
+[D 2021-11-09 14:45:28,609 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:28,609 dataset.py 949] Image 20210902 BloodSmear01-11 deleted
+[D 2021-11-09 14:45:28,863 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:28,865 dataset.py 949] Image 20210902 BloodSmear01-12 deleted
+[D 2021-11-09 14:45:29,127 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:29,129 dataset.py 949] Image 20210902 BloodSmear01-13 deleted
+[D 2021-11-09 14:45:29,399 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:29,399 dataset.py 949] Image 20210902 BloodSmear01-14 deleted
+[D 2021-11-09 14:45:29,667 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:29,669 dataset.py 949] Image 20210902 BloodSmear01-15 deleted
+[D 2021-11-09 14:45:29,927 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:29,927 dataset.py 949] Image 20210902 BloodSmear01-16 deleted
+[D 2021-11-09 14:45:30,195 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:30,197 dataset.py 949] Image 20210902 BloodSmear01-17 deleted
+[D 2021-11-09 14:45:30,487 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:30,487 dataset.py 949] Image 20210902 BloodSmear01-18 deleted
+[D 2021-11-09 14:45:30,749 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:30,749 dataset.py 949] Image 20210902 BloodSmear01-19 deleted
+[D 2021-11-09 14:45:30,995 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:30,995 dataset.py 949] Image 20210902 BloodSmear01-20 deleted
+[D 2021-11-09 14:45:31,253 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:31,255 dataset.py 949] Image 20210902 BloodSmear01-21 deleted
+[D 2021-11-09 14:45:31,509 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:31,509 dataset.py 949] Image 20210902 BloodSmear01-22 deleted
+[D 2021-11-09 14:45:31,761 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:31,761 dataset.py 949] Image 20210902 BloodSmear01-23 deleted
+[D 2021-11-09 14:45:32,009 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:32,011 dataset.py 949] Image 20210902 BloodSmear01-24 deleted
+[D 2021-11-09 14:45:32,263 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:32,263 dataset.py 949] Image 20210902 BloodSmear01-25 deleted
+[D 2021-11-09 14:45:32,527 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:32,529 dataset.py 949] Image 20210902 BloodSmear01-26 deleted
+[D 2021-11-09 14:45:32,771 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:32,771 dataset.py 949] Image 20210902 BloodSmear01-27 deleted
+[D 2021-11-09 14:45:33,033 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:33,033 dataset.py 949] Image 20210902 BloodSmear01-28 deleted
+[D 2021-11-09 14:45:33,289 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:33,291 dataset.py 949] Image 20210902 BloodSmear01-29 deleted
+[D 2021-11-09 14:45:33,563 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:33,563 dataset.py 949] Image 20210902 BloodSmear01-30 deleted
+[D 2021-11-09 14:45:33,809 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:33,811 dataset.py 949] Image 20210902 BloodSmear01-31 deleted
+[D 2021-11-09 14:45:34,063 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:34,065 dataset.py 949] Image 20210902 BloodSmear01-32 deleted
+[D 2021-11-09 14:45:34,337 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:34,339 dataset.py 949] Image 20210902 BloodSmear01-33 deleted
+[D 2021-11-09 14:45:34,593 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:34,595 dataset.py 949] Image 20210902 BloodSmear01-34 deleted
+[D 2021-11-09 14:45:34,843 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:34,843 dataset.py 949] Image 20210902 BloodSmear01-35 deleted
+[D 2021-11-09 14:45:35,093 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:35,095 dataset.py 949] Image 20210902 BloodSmear01-36 deleted
+[D 2021-11-09 14:45:35,339 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:35,339 dataset.py 949] Image 20210902 BloodSmear01-37 deleted
+[D 2021-11-09 14:45:35,605 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:35,607 dataset.py 949] Image 20210902 BloodSmear01-38 deleted
+[D 2021-11-09 14:45:35,847 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:35,847 dataset.py 949] Image 20210902 BloodSmear01-39 deleted
+[D 2021-11-09 14:45:36,127 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:36,129 dataset.py 949] Image 20210902 BloodSmear01-40 deleted
+[D 2021-11-09 14:45:36,381 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:36,383 dataset.py 949] Image 20210902 BloodSmear01-41 deleted
+[D 2021-11-09 14:45:36,659 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:36,661 dataset.py 949] Image 20210902 BloodSmear01-42 deleted
+[D 2021-11-09 14:45:36,935 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:36,937 dataset.py 949] Image 20210902 BloodSmear01-43 deleted
+[D 2021-11-09 14:45:37,191 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:37,191 dataset.py 949] Image 20210902 BloodSmear01-44 deleted
+[D 2021-11-09 14:45:37,455 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:37,457 dataset.py 949] Image 20210902 BloodSmear01-45 deleted
+[D 2021-11-09 14:45:37,709 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:37,711 dataset.py 949] Image 20210902 BloodSmear02-0 deleted
+[D 2021-11-09 14:45:37,973 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:37,975 dataset.py 949] Image 20210902 BloodSmear02-1 deleted
+[D 2021-11-09 14:45:38,243 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:38,245 dataset.py 949] Image 20210902 BloodSmear02-2 deleted
+[D 2021-11-09 14:45:38,513 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:38,515 dataset.py 949] Image 20210902 BloodSmear02-3 deleted
+[D 2021-11-09 14:45:38,773 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:38,773 dataset.py 949] Image 20210902 BloodSmear02-4 deleted
+[D 2021-11-09 14:45:39,033 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:39,035 dataset.py 949] Image 20210902 BloodSmear02-5 deleted
+[D 2021-11-09 14:45:39,295 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:39,297 dataset.py 949] Image 20210902 BloodSmear02-6 deleted
+[D 2021-11-09 14:45:39,567 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:39,569 dataset.py 949] Image 20210902 BloodSmear02-7 deleted
+[D 2021-11-09 14:45:39,813 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:39,813 dataset.py 949] Image 20210902 BloodSmear02-8 deleted
+[D 2021-11-09 14:45:40,085 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:40,087 dataset.py 949] Image 20210902 BloodSmear02-9 deleted
+[D 2021-11-09 14:45:40,373 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:40,375 dataset.py 949] Image 20210902 BloodSmear02-10 deleted
+[D 2021-11-09 14:45:40,635 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:40,637 dataset.py 949] Image 20210902 BloodSmear02-11 deleted
+[D 2021-11-09 14:45:40,905 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:40,907 dataset.py 949] Image 20210902 BloodSmear02-12 deleted
+[D 2021-11-09 14:45:41,183 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:41,183 dataset.py 949] Image 20210902 BloodSmear02-13 deleted
+[D 2021-11-09 14:45:41,453 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:41,453 dataset.py 949] Image 20210902 BloodSmear02-14 deleted
+[D 2021-11-09 14:45:41,711 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:41,713 dataset.py 949] Image 20210902 BloodSmear02-15 deleted
+[D 2021-11-09 14:45:41,963 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:41,965 dataset.py 949] Image 20210902 BloodSmear02-16 deleted
+[D 2021-11-09 14:45:42,225 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:42,227 dataset.py 949] Image 20210902 BloodSmear02-17 deleted
+[D 2021-11-09 14:45:42,483 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:42,485 dataset.py 949] Image 20210902 BloodSmear02-18 deleted
+[D 2021-11-09 14:45:42,753 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:42,753 dataset.py 949] Image 20210902 BloodSmear02-19 deleted
+[D 2021-11-09 14:45:43,009 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:43,009 dataset.py 949] Image 20210902 BloodSmear02-20 deleted
+[D 2021-11-09 14:45:43,269 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:43,271 dataset.py 949] Image 20210902 BloodSmear02-21 deleted
+[D 2021-11-09 14:45:43,523 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:43,525 dataset.py 949] Image 20210902 BloodSmear02-22 deleted
+[D 2021-11-09 14:45:43,771 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:43,771 dataset.py 949] Image 20210902 BloodSmear02-23 deleted
+[D 2021-11-09 14:45:44,021 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:44,023 dataset.py 949] Image 20210902 BloodSmear02-24 deleted
+[D 2021-11-09 14:45:44,283 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:44,285 dataset.py 949] Image 20210902 BloodSmear02-25 deleted
+[D 2021-11-09 14:45:44,659 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:44,659 dataset.py 949] Image 20210902 BloodSmear02-26 deleted
+[D 2021-11-09 14:45:44,917 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:44,917 dataset.py 949] Image 20210902 BloodSmear02-27 deleted
+[D 2021-11-09 14:45:45,165 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:45,167 dataset.py 949] Image 20210902 BloodSmear02-28 deleted
+[D 2021-11-09 14:45:45,423 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:45,425 dataset.py 949] Image 20210902 BloodSmear02-29 deleted
+[D 2021-11-09 14:45:45,701 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:45,703 dataset.py 949] Image 20210902 BloodSmear02-30 deleted
+[D 2021-11-09 14:45:45,959 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:45,961 dataset.py 949] Image 20210902 BloodSmear02-31 deleted
+[D 2021-11-09 14:45:46,207 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:46,207 dataset.py 949] Image 20210902 BloodSmear02-32 deleted
+[D 2021-11-09 14:45:46,457 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:46,459 dataset.py 949] Image 20210902 BloodSmear02-33 deleted
+[D 2021-11-09 14:45:46,709 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:46,711 dataset.py 949] Image 20210902 BloodSmear02-34 deleted
+[D 2021-11-09 14:45:46,947 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:46,947 dataset.py 949] Image 20210902 BloodSmear02-35 deleted
+[D 2021-11-09 14:45:47,211 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:47,211 dataset.py 949] Image 20210902 BloodSmear02-36 deleted
+[D 2021-11-09 14:45:47,477 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:47,479 dataset.py 949] Image 20210902 BloodSmear02-37 deleted
+[D 2021-11-09 14:45:47,731 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:47,733 dataset.py 949] Image 20210902 BloodSmear02-38 deleted
+[D 2021-11-09 14:45:47,979 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:47,981 dataset.py 949] Image 20210902 BloodSmear02-39 deleted
+[D 2021-11-09 14:45:48,229 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:48,229 dataset.py 949] Image 20210902 BloodSmear02-40 deleted
+[D 2021-11-09 14:45:48,475 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:48,477 dataset.py 949] Image 20210902 BloodSmear02-41 deleted
+[D 2021-11-09 14:45:48,749 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:48,751 dataset.py 949] Image 20210902 BloodSmear02-42 deleted
+[D 2021-11-09 14:45:49,005 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:49,007 dataset.py 949] Image 20210902 BloodSmear02-43 deleted
+[D 2021-11-09 14:45:49,261 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:49,263 dataset.py 949] Image 20210902 BloodSmear02-44 deleted
+[D 2021-11-09 14:45:49,513 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:49,513 dataset.py 949] Image 20210902 BloodSmear02-45 deleted
+[D 2021-11-09 14:45:49,785 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:49,787 dataset.py 949] Image 20210902 BloodSmear02-46 deleted
+[D 2021-11-09 14:45:50,067 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:50,069 dataset.py 949] Image 20210914 BloodSmear01-0 deleted
+[D 2021-11-09 14:45:50,331 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:50,331 dataset.py 949] Image 20210914 BloodSmear01-1 deleted
+[D 2021-11-09 14:45:50,569 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:50,571 dataset.py 949] Image 20210914 BloodSmear01-2 deleted
+[D 2021-11-09 14:45:50,827 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:50,827 dataset.py 949] Image 20210914 BloodSmear01-3 deleted
+[D 2021-11-09 14:45:51,109 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:51,111 dataset.py 949] Image 20210914 BloodSmear01-4 deleted
+[D 2021-11-09 14:45:51,389 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:51,389 dataset.py 949] Image 20210914 BloodSmear01-5 deleted
+[D 2021-11-09 14:45:51,653 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:51,653 dataset.py 949] Image 20210914 BloodSmear01-6 deleted
+[D 2021-11-09 14:45:52,077 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:52,077 dataset.py 949] Image 20210914 BloodSmear01-7 deleted
+[D 2021-11-09 14:45:52,417 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:52,419 dataset.py 949] Image 20210914 BloodSmear01-8 deleted
+[D 2021-11-09 14:45:52,691 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:52,691 dataset.py 949] Image 20210914 BloodSmear01-9 deleted
+[D 2021-11-09 14:45:52,969 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:52,971 dataset.py 949] Image 20210914 BloodSmear01-10 deleted
+[D 2021-11-09 14:45:53,231 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:53,231 dataset.py 949] Image 20210914 BloodSmear01-11 deleted
+[D 2021-11-09 14:45:53,659 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:53,659 dataset.py 949] Image 20210914 BloodSmear01-12 deleted
+[D 2021-11-09 14:45:53,971 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:53,973 dataset.py 949] Image 20210914 BloodSmear01-13 deleted
+[D 2021-11-09 14:45:54,233 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:54,235 dataset.py 949] Image 20210914 BloodSmear01-14 deleted
+[D 2021-11-09 14:45:54,513 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:54,515 dataset.py 949] Image 20210914 BloodSmear01-15 deleted
+[D 2021-11-09 14:45:54,767 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:54,767 dataset.py 949] Image 20210914 BloodSmear01-16 deleted
+[D 2021-11-09 14:45:55,015 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:55,017 dataset.py 949] Image 20210914 BloodSmear01-17 deleted
+[D 2021-11-09 14:45:55,271 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:55,273 dataset.py 949] Image 20210914 BloodSmear01-18 deleted
+[D 2021-11-09 14:45:55,545 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:55,545 dataset.py 949] Image 20210914 BloodSmear01-19 deleted
+[D 2021-11-09 14:45:55,797 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:55,799 dataset.py 949] Image 20210914 BloodSmear01-20 deleted
+[D 2021-11-09 14:45:56,051 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:56,051 dataset.py 949] Image 20210914 BloodSmear01-21 deleted
+[D 2021-11-09 14:45:56,307 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:56,309 dataset.py 949] Image 20210914 BloodSmear01-22 deleted
+[D 2021-11-09 14:45:56,565 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:56,565 dataset.py 949] Image 20210914 BloodSmear01-23 deleted
+[D 2021-11-09 14:45:56,821 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:56,821 dataset.py 949] Image 20210914 BloodSmear01-24 deleted
+[D 2021-11-09 14:45:57,067 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:57,069 dataset.py 949] Image 20210914 BloodSmear01-25 deleted
+[D 2021-11-09 14:45:57,297 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:57,299 dataset.py 949] Image 20210914 BloodSmear01-26 deleted
+[D 2021-11-09 14:45:57,549 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:57,551 dataset.py 949] Image 20210914 BloodSmear01-27 deleted
+[D 2021-11-09 14:45:57,797 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:57,799 dataset.py 949] Image 20210914 BloodSmear01-28 deleted
+[D 2021-11-09 14:45:58,093 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:58,095 dataset.py 949] Image 20210914 BloodSmear01-29 deleted
+[D 2021-11-09 14:45:58,367 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:58,369 dataset.py 949] Image 20210914 BloodSmear01-30 deleted
+[D 2021-11-09 14:45:58,657 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:58,659 dataset.py 949] Image 20210914 BloodSmear01-31 deleted
+[D 2021-11-09 14:45:58,917 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:58,919 dataset.py 949] Image 20210914 BloodSmear01-32 deleted
+[D 2021-11-09 14:45:59,173 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:59,175 dataset.py 949] Image 20210914 BloodSmear01-33 deleted
+[D 2021-11-09 14:45:59,447 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:59,449 dataset.py 949] Image 20210914 BloodSmear01-34 deleted
+[D 2021-11-09 14:45:59,743 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:45:59,743 dataset.py 949] Image 20210914 BloodSmear01-35 deleted
+[D 2021-11-09 14:46:00,017 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:00,017 dataset.py 949] Image 20210914 BloodSmear01-36 deleted
+[D 2021-11-09 14:46:00,363 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:00,365 dataset.py 949] Image 20210914 BloodSmear02-0 deleted
+[D 2021-11-09 14:46:00,617 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:00,619 dataset.py 949] Image 20210914 BloodSmear02-1 deleted
+[D 2021-11-09 14:46:00,871 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:00,873 dataset.py 949] Image 20210914 BloodSmear02-2 deleted
+[D 2021-11-09 14:46:01,141 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:01,143 dataset.py 949] Image 20210914 BloodSmear02-3 deleted
+[D 2021-11-09 14:46:01,427 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:01,429 dataset.py 949] Image 20210914 BloodSmear02-4 deleted
+[D 2021-11-09 14:46:01,705 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:01,707 dataset.py 949] Image 20210914 BloodSmear02-5 deleted
+[D 2021-11-09 14:46:01,969 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:01,969 dataset.py 949] Image 20210914 BloodSmear02-6 deleted
+[D 2021-11-09 14:46:02,341 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:02,343 dataset.py 949] Image 20210914 BloodSmear02-7 deleted
+[D 2021-11-09 14:46:02,635 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:02,637 dataset.py 949] Image 20210914 BloodSmear02-8 deleted
+[D 2021-11-09 14:46:02,883 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:02,883 dataset.py 949] Image 20210914 BloodSmear02-9 deleted
+[D 2021-11-09 14:46:03,163 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:03,163 dataset.py 949] Image 20210914 BloodSmear02-10 deleted
+[D 2021-11-09 14:46:03,421 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:03,421 dataset.py 949] Image 20210914 BloodSmear02-11 deleted
+[D 2021-11-09 14:46:03,673 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:03,675 dataset.py 949] Image 20210914 BloodSmear02-12 deleted
+[D 2021-11-09 14:46:03,947 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:03,947 dataset.py 949] Image 20210914 BloodSmear02-13 deleted
+[D 2021-11-09 14:46:04,203 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:04,205 dataset.py 949] Image 20210914 BloodSmear02-14 deleted
+[D 2021-11-09 14:46:04,631 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:04,633 dataset.py 949] Image 20210914 BloodSmear02-15 deleted
+[D 2021-11-09 14:46:04,911 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:04,913 dataset.py 949] Image 20210914 BloodSmear02-16 deleted
+[D 2021-11-09 14:46:05,171 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:05,171 dataset.py 949] Image 20210914 BloodSmear02-17 deleted
+[D 2021-11-09 14:46:05,421 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:05,423 dataset.py 949] Image 20210914 BloodSmear02-18 deleted
+[D 2021-11-09 14:46:05,677 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:46:05,679 dataset.py 949] Image 20210914 BloodSmear02-19 deleted
+[E 2021-11-09 14:46:32,227 dataset.py 1016] too many values to unpack (expected 2)
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 1012, in <module>
+    ds.datasetReproduce(DATA_ROOT, SOURCE_DATASETS,
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 989, in datasetReproduce
+    for key, val in sp:
+ValueError: too many values to unpack (expected 2)
+[D 2021-11-09 14:47:14,398 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[E 2021-11-09 14:47:14,400 dataset.py 1016] [WinError 183] 当文件已存在时，无法创建该文件。: 'D:\\Workspace\\RBC Recognition\\datasets\\Set-202109-1\\focus'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 1012, in <module>
+    ds.datasetReproduce(DATA_ROOT, SOURCE_DATASETS,
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 982, in datasetReproduce
+    os.mkdir(join(dst_dataset, mod))
+FileExistsError: [WinError 183] 当文件已存在时，无法创建该文件。: 'D:\\Workspace\\RBC Recognition\\datasets\\Set-202109-1\\focus'
+[D 2021-11-09 14:48:45,488 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 14:51:14,305 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[D 2021-11-09 14:54:18,280 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:18,280 dataset.py 949] Image 20210902 BloodSmear01-0 deleted
+[D 2021-11-09 14:54:18,554 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:18,554 dataset.py 949] Image 20210902 BloodSmear01-1 deleted
+[D 2021-11-09 14:54:18,814 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:18,814 dataset.py 949] Image 20210902 BloodSmear01-2 deleted
+[D 2021-11-09 14:54:19,056 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:19,056 dataset.py 949] Image 20210902 BloodSmear01-3 deleted
+[D 2021-11-09 14:54:19,306 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:19,306 dataset.py 949] Image 20210902 BloodSmear01-4 deleted
+[D 2021-11-09 14:54:19,550 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:19,550 dataset.py 949] Image 20210902 BloodSmear01-5 deleted
+[D 2021-11-09 14:54:19,804 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:19,804 dataset.py 949] Image 20210902 BloodSmear01-6 deleted
+[D 2021-11-09 14:54:20,054 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:20,056 dataset.py 949] Image 20210902 BloodSmear01-7 deleted
+[D 2021-11-09 14:54:20,310 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:20,312 dataset.py 949] Image 20210902 BloodSmear01-8 deleted
+[D 2021-11-09 14:54:20,554 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:20,554 dataset.py 949] Image 20210902 BloodSmear01-9 deleted
+[D 2021-11-09 14:54:20,802 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:20,802 dataset.py 949] Image 20210902 BloodSmear01-10 deleted
+[D 2021-11-09 14:54:21,056 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:21,056 dataset.py 949] Image 20210902 BloodSmear01-11 deleted
+[D 2021-11-09 14:54:21,312 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:21,312 dataset.py 949] Image 20210902 BloodSmear01-12 deleted
+[D 2021-11-09 14:54:21,572 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:21,572 dataset.py 949] Image 20210902 BloodSmear01-13 deleted
+[D 2021-11-09 14:54:21,838 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:21,838 dataset.py 949] Image 20210902 BloodSmear01-14 deleted
+[D 2021-11-09 14:54:22,112 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:22,112 dataset.py 949] Image 20210902 BloodSmear01-15 deleted
+[D 2021-11-09 14:54:22,370 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:22,370 dataset.py 949] Image 20210902 BloodSmear01-16 deleted
+[D 2021-11-09 14:54:22,650 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:22,652 dataset.py 949] Image 20210902 BloodSmear01-17 deleted
+[D 2021-11-09 14:54:22,924 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:22,924 dataset.py 949] Image 20210902 BloodSmear01-18 deleted
+[D 2021-11-09 14:54:23,180 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:23,180 dataset.py 949] Image 20210902 BloodSmear01-19 deleted
+[D 2021-11-09 14:54:23,426 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:23,426 dataset.py 949] Image 20210902 BloodSmear01-20 deleted
+[D 2021-11-09 14:54:23,668 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:23,670 dataset.py 949] Image 20210902 BloodSmear01-21 deleted
+[D 2021-11-09 14:54:23,908 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:23,908 dataset.py 949] Image 20210902 BloodSmear01-22 deleted
+[D 2021-11-09 14:54:24,152 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:24,152 dataset.py 949] Image 20210902 BloodSmear01-23 deleted
+[D 2021-11-09 14:54:24,398 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:24,398 dataset.py 949] Image 20210902 BloodSmear01-24 deleted
+[D 2021-11-09 14:54:24,644 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:24,644 dataset.py 949] Image 20210902 BloodSmear01-25 deleted
+[D 2021-11-09 14:54:24,898 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:24,898 dataset.py 949] Image 20210902 BloodSmear01-26 deleted
+[D 2021-11-09 14:54:25,146 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:25,146 dataset.py 949] Image 20210902 BloodSmear01-27 deleted
+[D 2021-11-09 14:54:25,422 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:25,422 dataset.py 949] Image 20210902 BloodSmear01-28 deleted
+[D 2021-11-09 14:54:25,692 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:25,692 dataset.py 949] Image 20210902 BloodSmear01-29 deleted
+[D 2021-11-09 14:54:25,952 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:25,952 dataset.py 949] Image 20210902 BloodSmear01-30 deleted
+[D 2021-11-09 14:54:26,204 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:26,206 dataset.py 949] Image 20210902 BloodSmear01-31 deleted
+[D 2021-11-09 14:54:26,484 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:26,484 dataset.py 949] Image 20210902 BloodSmear01-32 deleted
+[D 2021-11-09 14:54:26,730 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:26,732 dataset.py 949] Image 20210902 BloodSmear01-33 deleted
+[D 2021-11-09 14:54:26,984 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:26,984 dataset.py 949] Image 20210902 BloodSmear01-34 deleted
+[D 2021-11-09 14:54:27,232 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:27,232 dataset.py 949] Image 20210902 BloodSmear01-35 deleted
+[D 2021-11-09 14:54:27,502 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:27,502 dataset.py 949] Image 20210902 BloodSmear01-36 deleted
+[D 2021-11-09 14:54:27,742 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:27,744 dataset.py 949] Image 20210902 BloodSmear01-37 deleted
+[D 2021-11-09 14:54:28,002 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:28,004 dataset.py 949] Image 20210902 BloodSmear01-38 deleted
+[D 2021-11-09 14:54:28,248 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:28,250 dataset.py 949] Image 20210902 BloodSmear01-39 deleted
+[D 2021-11-09 14:54:28,536 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:28,536 dataset.py 949] Image 20210902 BloodSmear01-40 deleted
+[D 2021-11-09 14:54:28,786 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:28,786 dataset.py 949] Image 20210902 BloodSmear01-41 deleted
+[D 2021-11-09 14:54:29,028 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:29,028 dataset.py 949] Image 20210902 BloodSmear01-42 deleted
+[D 2021-11-09 14:54:29,280 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:29,282 dataset.py 949] Image 20210902 BloodSmear01-43 deleted
+[D 2021-11-09 14:54:29,552 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:29,552 dataset.py 949] Image 20210902 BloodSmear01-44 deleted
+[D 2021-11-09 14:54:29,800 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:29,800 dataset.py 949] Image 20210902 BloodSmear01-45 deleted
+[D 2021-11-09 14:54:30,050 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:30,050 dataset.py 949] Image 20210902 BloodSmear02-0 deleted
+[D 2021-11-09 14:54:30,306 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:30,306 dataset.py 949] Image 20210902 BloodSmear02-1 deleted
+[D 2021-11-09 14:54:30,584 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:30,584 dataset.py 949] Image 20210902 BloodSmear02-2 deleted
+[D 2021-11-09 14:54:30,830 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:30,832 dataset.py 949] Image 20210902 BloodSmear02-3 deleted
+[D 2021-11-09 14:54:31,082 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:31,082 dataset.py 949] Image 20210902 BloodSmear02-4 deleted
+[D 2021-11-09 14:54:31,372 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:31,372 dataset.py 949] Image 20210902 BloodSmear02-5 deleted
+[D 2021-11-09 14:54:31,618 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:31,618 dataset.py 949] Image 20210902 BloodSmear02-6 deleted
+[D 2021-11-09 14:54:31,888 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:31,888 dataset.py 949] Image 20210902 BloodSmear02-7 deleted
+[D 2021-11-09 14:54:32,142 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:32,142 dataset.py 949] Image 20210902 BloodSmear02-8 deleted
+[D 2021-11-09 14:54:32,408 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:32,410 dataset.py 949] Image 20210902 BloodSmear02-9 deleted
+[D 2021-11-09 14:54:32,652 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:32,652 dataset.py 949] Image 20210902 BloodSmear02-10 deleted
+[D 2021-11-09 14:54:32,900 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:32,900 dataset.py 949] Image 20210902 BloodSmear02-11 deleted
+[D 2021-11-09 14:54:33,172 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:33,174 dataset.py 949] Image 20210902 BloodSmear02-12 deleted
+[D 2021-11-09 14:54:33,440 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:33,440 dataset.py 949] Image 20210902 BloodSmear02-13 deleted
+[D 2021-11-09 14:54:33,692 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:33,692 dataset.py 949] Image 20210902 BloodSmear02-14 deleted
+[D 2021-11-09 14:54:33,948 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:33,948 dataset.py 949] Image 20210902 BloodSmear02-15 deleted
+[D 2021-11-09 14:54:34,206 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:34,206 dataset.py 949] Image 20210902 BloodSmear02-16 deleted
+[D 2021-11-09 14:54:34,492 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:34,492 dataset.py 949] Image 20210902 BloodSmear02-17 deleted
+[D 2021-11-09 14:54:34,736 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:34,736 dataset.py 949] Image 20210902 BloodSmear02-18 deleted
+[D 2021-11-09 14:54:34,994 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:34,994 dataset.py 949] Image 20210902 BloodSmear02-19 deleted
+[D 2021-11-09 14:54:35,232 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:35,232 dataset.py 949] Image 20210902 BloodSmear02-20 deleted
+[D 2021-11-09 14:54:35,462 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:35,462 dataset.py 949] Image 20210902 BloodSmear02-21 deleted
+[D 2021-11-09 14:54:35,704 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:35,704 dataset.py 949] Image 20210902 BloodSmear02-22 deleted
+[D 2021-11-09 14:54:35,960 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:35,960 dataset.py 949] Image 20210902 BloodSmear02-23 deleted
+[D 2021-11-09 14:54:36,210 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:36,210 dataset.py 949] Image 20210902 BloodSmear02-24 deleted
+[D 2021-11-09 14:54:36,462 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:36,462 dataset.py 949] Image 20210902 BloodSmear02-25 deleted
+[D 2021-11-09 14:54:36,704 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:36,706 dataset.py 949] Image 20210902 BloodSmear02-26 deleted
+[D 2021-11-09 14:54:36,960 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:36,962 dataset.py 949] Image 20210902 BloodSmear02-27 deleted
+[D 2021-11-09 14:54:37,218 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:37,218 dataset.py 949] Image 20210902 BloodSmear02-28 deleted
+[D 2021-11-09 14:54:37,492 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:37,494 dataset.py 949] Image 20210902 BloodSmear02-29 deleted
+[D 2021-11-09 14:54:37,744 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:37,744 dataset.py 949] Image 20210902 BloodSmear02-30 deleted
+[D 2021-11-09 14:54:38,010 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:38,010 dataset.py 949] Image 20210902 BloodSmear02-31 deleted
+[D 2021-11-09 14:54:38,262 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:38,262 dataset.py 949] Image 20210902 BloodSmear02-32 deleted
+[D 2021-11-09 14:54:38,498 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:38,498 dataset.py 949] Image 20210902 BloodSmear02-33 deleted
+[D 2021-11-09 14:54:38,732 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:38,734 dataset.py 949] Image 20210902 BloodSmear02-34 deleted
+[D 2021-11-09 14:54:38,966 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:38,966 dataset.py 949] Image 20210902 BloodSmear02-35 deleted
+[D 2021-11-09 14:54:39,212 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:39,212 dataset.py 949] Image 20210902 BloodSmear02-36 deleted
+[D 2021-11-09 14:54:39,470 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:39,470 dataset.py 949] Image 20210902 BloodSmear02-37 deleted
+[D 2021-11-09 14:54:39,720 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:39,720 dataset.py 949] Image 20210902 BloodSmear02-38 deleted
+[D 2021-11-09 14:54:39,970 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:39,972 dataset.py 949] Image 20210902 BloodSmear02-39 deleted
+[D 2021-11-09 14:54:40,226 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:40,226 dataset.py 949] Image 20210902 BloodSmear02-40 deleted
+[D 2021-11-09 14:54:40,476 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:40,476 dataset.py 949] Image 20210902 BloodSmear02-41 deleted
+[D 2021-11-09 14:54:40,742 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:40,742 dataset.py 949] Image 20210902 BloodSmear02-42 deleted
+[D 2021-11-09 14:54:41,012 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:41,014 dataset.py 949] Image 20210902 BloodSmear02-43 deleted
+[D 2021-11-09 14:54:41,288 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:41,288 dataset.py 949] Image 20210902 BloodSmear02-44 deleted
+[D 2021-11-09 14:54:41,532 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:41,534 dataset.py 949] Image 20210902 BloodSmear02-45 deleted
+[D 2021-11-09 14:54:41,782 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:41,782 dataset.py 949] Image 20210902 BloodSmear02-46 deleted
+[D 2021-11-09 14:54:42,036 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:42,038 dataset.py 949] Image 20210914 BloodSmear01-0 deleted
+[D 2021-11-09 14:54:42,294 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:42,296 dataset.py 949] Image 20210914 BloodSmear01-1 deleted
+[D 2021-11-09 14:54:42,582 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:42,584 dataset.py 949] Image 20210914 BloodSmear01-2 deleted
+[D 2021-11-09 14:54:42,848 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:42,848 dataset.py 949] Image 20210914 BloodSmear01-3 deleted
+[D 2021-11-09 14:54:43,086 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:43,086 dataset.py 949] Image 20210914 BloodSmear01-4 deleted
+[D 2021-11-09 14:54:43,336 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:43,336 dataset.py 949] Image 20210914 BloodSmear01-5 deleted
+[D 2021-11-09 14:54:43,586 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:43,586 dataset.py 949] Image 20210914 BloodSmear01-6 deleted
+[D 2021-11-09 14:54:43,840 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:43,840 dataset.py 949] Image 20210914 BloodSmear01-7 deleted
+[D 2021-11-09 14:54:44,094 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:44,094 dataset.py 949] Image 20210914 BloodSmear01-8 deleted
+[D 2021-11-09 14:54:44,356 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:44,356 dataset.py 949] Image 20210914 BloodSmear01-9 deleted
+[D 2021-11-09 14:54:44,806 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:44,808 dataset.py 949] Image 20210914 BloodSmear01-10 deleted
+[D 2021-11-09 14:54:45,048 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:45,048 dataset.py 949] Image 20210914 BloodSmear01-11 deleted
+[D 2021-11-09 14:54:45,310 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:45,310 dataset.py 949] Image 20210914 BloodSmear01-12 deleted
+[D 2021-11-09 14:54:45,584 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:45,586 dataset.py 949] Image 20210914 BloodSmear01-13 deleted
+[D 2021-11-09 14:54:45,844 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:45,844 dataset.py 949] Image 20210914 BloodSmear01-14 deleted
+[D 2021-11-09 14:54:46,092 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:46,092 dataset.py 949] Image 20210914 BloodSmear01-15 deleted
+[D 2021-11-09 14:54:46,350 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:46,350 dataset.py 949] Image 20210914 BloodSmear01-16 deleted
+[D 2021-11-09 14:54:46,642 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:46,644 dataset.py 949] Image 20210914 BloodSmear01-17 deleted
+[D 2021-11-09 14:54:46,904 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:46,904 dataset.py 949] Image 20210914 BloodSmear01-18 deleted
+[D 2021-11-09 14:54:47,154 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:47,154 dataset.py 949] Image 20210914 BloodSmear01-19 deleted
+[D 2021-11-09 14:54:47,404 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:47,404 dataset.py 949] Image 20210914 BloodSmear01-20 deleted
+[D 2021-11-09 14:54:47,680 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:47,680 dataset.py 949] Image 20210914 BloodSmear01-21 deleted
+[D 2021-11-09 14:54:47,926 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:47,928 dataset.py 949] Image 20210914 BloodSmear01-22 deleted
+[D 2021-11-09 14:54:48,190 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:48,190 dataset.py 949] Image 20210914 BloodSmear01-23 deleted
+[D 2021-11-09 14:54:48,446 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:48,448 dataset.py 949] Image 20210914 BloodSmear01-24 deleted
+[D 2021-11-09 14:54:48,710 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:48,710 dataset.py 949] Image 20210914 BloodSmear01-25 deleted
+[D 2021-11-09 14:54:48,962 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:48,964 dataset.py 949] Image 20210914 BloodSmear01-26 deleted
+[D 2021-11-09 14:54:49,228 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:49,228 dataset.py 949] Image 20210914 BloodSmear01-27 deleted
+[D 2021-11-09 14:54:49,502 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:49,502 dataset.py 949] Image 20210914 BloodSmear01-28 deleted
+[D 2021-11-09 14:54:49,760 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:49,760 dataset.py 949] Image 20210914 BloodSmear01-29 deleted
+[D 2021-11-09 14:54:50,024 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:50,026 dataset.py 949] Image 20210914 BloodSmear01-30 deleted
+[D 2021-11-09 14:54:50,298 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:50,298 dataset.py 949] Image 20210914 BloodSmear01-31 deleted
+[D 2021-11-09 14:54:50,560 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:50,562 dataset.py 949] Image 20210914 BloodSmear01-32 deleted
+[D 2021-11-09 14:54:50,816 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:50,816 dataset.py 949] Image 20210914 BloodSmear01-33 deleted
+[D 2021-11-09 14:54:51,072 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:51,072 dataset.py 949] Image 20210914 BloodSmear01-34 deleted
+[D 2021-11-09 14:54:51,352 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:51,352 dataset.py 949] Image 20210914 BloodSmear01-35 deleted
+[D 2021-11-09 14:54:51,602 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:51,602 dataset.py 949] Image 20210914 BloodSmear01-36 deleted
+[D 2021-11-09 14:54:51,840 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:51,840 dataset.py 949] Image 20210914 BloodSmear02-0 deleted
+[D 2021-11-09 14:54:52,070 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:52,070 dataset.py 949] Image 20210914 BloodSmear02-1 deleted
+[D 2021-11-09 14:54:52,330 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:52,330 dataset.py 949] Image 20210914 BloodSmear02-2 deleted
+[D 2021-11-09 14:54:52,588 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:52,590 dataset.py 949] Image 20210914 BloodSmear02-3 deleted
+[D 2021-11-09 14:54:52,842 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:52,842 dataset.py 949] Image 20210914 BloodSmear02-4 deleted
+[D 2021-11-09 14:54:53,156 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:53,156 dataset.py 949] Image 20210914 BloodSmear02-5 deleted
+[D 2021-11-09 14:54:53,516 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:53,518 dataset.py 949] Image 20210914 BloodSmear02-6 deleted
+[D 2021-11-09 14:54:53,766 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:53,766 dataset.py 949] Image 20210914 BloodSmear02-7 deleted
+[D 2021-11-09 14:54:54,000 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:54,000 dataset.py 949] Image 20210914 BloodSmear02-8 deleted
+[D 2021-11-09 14:54:54,232 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:54,232 dataset.py 949] Image 20210914 BloodSmear02-9 deleted
+[D 2021-11-09 14:54:54,512 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:54,512 dataset.py 949] Image 20210914 BloodSmear02-10 deleted
+[D 2021-11-09 14:54:54,786 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:54,786 dataset.py 949] Image 20210914 BloodSmear02-11 deleted
+[D 2021-11-09 14:54:55,034 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:55,034 dataset.py 949] Image 20210914 BloodSmear02-12 deleted
+[D 2021-11-09 14:54:55,284 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:55,284 dataset.py 949] Image 20210914 BloodSmear02-13 deleted
+[D 2021-11-09 14:54:55,542 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:55,544 dataset.py 949] Image 20210914 BloodSmear02-14 deleted
+[D 2021-11-09 14:54:55,796 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:55,796 dataset.py 949] Image 20210914 BloodSmear02-15 deleted
+[D 2021-11-09 14:54:56,052 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:56,052 dataset.py 949] Image 20210914 BloodSmear02-16 deleted
+[D 2021-11-09 14:54:56,292 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:56,292 dataset.py 949] Image 20210914 BloodSmear02-17 deleted
+[D 2021-11-09 14:54:56,520 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:56,520 dataset.py 949] Image 20210914 BloodSmear02-18 deleted
+[D 2021-11-09 14:54:56,754 dataset.py 957] dict_keys(['focus', 'phase', 'minus', 'plus', 'used_ids'])
+[I 2021-11-09 14:54:56,754 dataset.py 949] Image 20210914 BloodSmear02-19 deleted
+[E 2021-11-09 15:14:45,215 dataset.py 1016] [WinError 3] 系统找不到指定的路径。: 'D:\\Workspace\\RBC Recognition\\datasets\\Set-202109-1\\amp\\train'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 1013, in <module>
+    temp_train_load = create_dataloader(SET202109_1_FILENAME, "train", 4)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 1004, in create_dataloader
+    return DataLoader(batch_size=batch_size, dataset=dataset_obj(**constructor), **loader_params)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 934, in __init__
+    self.dataset_scan()
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 938, in dataset_scan
+    self.modality_dict = {mod: listdir(join(self.root, mod, self.training_stage)) for mod in self.read_modalities}
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 938, in <dictcomp>
+    self.modality_dict = {mod: listdir(join(self.root, mod, self.training_stage)) for mod in self.read_modalities}
+FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\Workspace\\RBC Recognition\\datasets\\Set-202109-1\\amp\\train'
+[E 2021-11-09 15:15:45,047 dataset.py 1017] [Errno 2] No such file or directory: 'D:\\Workspace\\RBC Recognition\\datasets\\Set-202109-1\\label\\max_bboxes.yaml'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 1014, in <module>
+    temp_train_load = create_dataloader(SET202109_1_FILENAME, "train", 4)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 1005, in create_dataloader
+    return DataLoader(batch_size=batch_size, dataset=dataset_obj(**constructor), **loader_params)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 934, in __init__
+    self.dataset_scan()
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 940, in dataset_scan
+    with open(join(self.root, self.labels_folder, "max_bboxes.yaml"), "r") as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'D:\\Workspace\\RBC Recognition\\datasets\\Set-202109-1\\label\\max_bboxes.yaml'
+[E 2021-11-09 15:34:08,386 dataset.py 1039] 'NoneType' object has no attribute 'get'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 1036, in <module>
+    temp_train_load = create_dataloader(SET202109_1_FILENAME, "train", 4)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 1027, in create_dataloader
+    return DataLoader(batch_size=batch_size, dataset=dataset_obj(**constructor), **loader_params)
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 934, in __init__
+    self.dataset_scan()
+  File "D:/Workspace/RBC Recognition/Deeplearning/util/dataset.py", line 964, in dataset_scan
+    self.max_boxes = length.get("length")[("train", "valid", "test").index(self.training_stage)]
+AttributeError: 'NoneType' object has no attribute 'get'

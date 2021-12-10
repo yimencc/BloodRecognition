@@ -416,3 +416,291 @@ NameError: name 'attention_layer' is not defined
 [I 2021-11-01 15:12:39,888 train.py 215] Loading data ...
 [I 2021-11-01 15:13:08,915 train.py 239] Training Start
 
+[I 2021-11-01 15:18:08,787 train.py 215] Loading data ...
+[I 2021-11-01 15:18:36,643 train.py 239] Training Start
+
+[I 2021-11-01 15:57:39,933 train.py 167] Loading data ...
+[I 2021-11-01 16:01:18,164 train.py 167] Loading data ...
+[E 2021-11-01 16:01:46,841 train.py 281] Given groups=1, weight of size [8, 1, 3, 3], expected input[2, 4, 320, 320] to have 1 channels, but got 4 channels instead
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 279, in <module>
+    trainer.training(100)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 223, in training
+    self.on_train_begin(model_info=True)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 188, in on_train_begin
+    summary(self.model, (4, 320, 320))
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torchsummary\torchsummary.py", line 72, in summary
+    model(*x)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\models.py", line 94, in forward
+    x = self.conv_blocks(x)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\container.py", line 119, in forward
+    input = module(input)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\models.py", line 50, in forward
+    x = self.conv(x)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\conv.py", line 399, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\conv.py", line 395, in _conv_forward
+    return F.conv2d(input, weight, bias, self.stride,
+RuntimeError: Given groups=1, weight of size [8, 1, 3, 3], expected input[2, 4, 320, 320] to have 1 channels, but got 4 channels instead
+[I 2021-11-01 16:03:06,603 train.py 167] Loading data ...
+[I 2021-11-01 16:03:20,670 train.py 191] Training Start
+
+[I 2021-11-01 16:04:12,628 train.py 167] Loading data ...
+[I 2021-11-01 16:04:19,355 train.py 191] Training Start
+
+[I 2021-11-01 16:04:58,216 train.py 167] Loading data ...
+[I 2021-11-01 16:05:04,646 train.py 191] Training Start
+
+[I 2021-11-01 16:20:52,145 train.py 219] Early stopped at Accuracy 0.7965
+[I 2021-11-02 11:24:41,733 train.py 167] Loading data ...
+[E 2021-11-02 11:24:41,750 train.py 281] 0
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 278, in <module>
+    trainer = Trainer(".\\hypers.yaml")
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 168, in __init__
+    self.train_loader = create_dataloader(**hyp.get("train_loader_params")) if not train_loader else train_loader
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 852, in create_dataloader
+    return DataLoader(batch_size=batch_size, dataset=dataset_obj(**constructor), **loader_params)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 794, in __init__
+    self.dataset_scan()
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\dataset.py", line 802, in dataset_scan
+    self.max_boxes = length[("train", "valid", "test").index(self.training_stage)]
+KeyError: 0
+[I 2021-11-02 11:30:36,524 train.py 167] Loading data ...
+[I 2021-11-02 11:30:39,921 train.py 191] Training Start
+
+[I 2021-11-02 15:50:36,124 train.py 168] Loading data ...
+[E 2021-11-02 15:50:36,350 train.py 282] Given groups=1, weight of size [8, 4, 3, 3], expected input[2, 1, 320, 320] to have 4 channels, but got 1 channels instead
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 280, in <module>
+    trainer.training(100)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 224, in training
+    self.on_train_begin(model_info=True)
+  File "D:/Workspace/RBC Recognition/Deeplearning/train.py", line 189, in on_train_begin
+    summary(self.model, (1, 320, 320))
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torchsummary\torchsummary.py", line 72, in summary
+    model(*x)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\models.py", line 94, in forward
+    x = self.conv_blocks(x)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\container.py", line 119, in forward
+    input = module(input)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\models.py", line 50, in forward
+    x = self.conv(x)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\conv.py", line 399, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\conv.py", line 395, in _conv_forward
+    return F.conv2d(input, weight, bias, self.stride,
+RuntimeError: Given groups=1, weight of size [8, 4, 3, 3], expected input[2, 1, 320, 320] to have 4 channels, but got 1 channels instead
+[I 2021-11-02 15:53:31,935 train.py 168] Loading data ...
+[I 2021-11-02 15:53:34,871 train.py 192] Training Start
+
+[I 2021-11-02 16:01:35,067 train.py 168] Loading data ...
+[I 2021-11-02 16:01:36,185 train.py 192] Training Start
+
+[I 2021-11-02 16:54:05,869 train.py 220] Early stopped at Accuracy 0.8066
+[I 2021-11-03 11:15:12,523 train.py 168] Loading data ...
+[I 2021-11-03 11:15:13,811 train.py 192] Training Start
+
+[I 2021-11-03 11:15:46,100 train.py 168] Loading data ...
+[I 2021-11-03 11:15:47,242 train.py 192] Training Start
+
+[E 2021-11-03 11:15:47,869 train.py 282] Expected object of device type cuda but got device type cpu for argument #3 'weight' in call to _thnn_nll_loss2d_forward
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 280, in <module>
+    trainer.training(100)
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 228, in training
+    tt_loss, md_loss, reg_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer,
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 82, in train_loop
+    total_loss = loss_fn(pred, y) + reg_loss
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\losses.py", line 288, in __call__
+    class_loss = self.class_loss(truth_classes_oh=truth_classes_oh, truth_mask=truth_mask,
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\losses.py", line 178, in class_loss
+    class_loss = loss(pred_scores, true_scores)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\loss.py", line 1047, in forward
+    return F.cross_entropy(input, target, weight=self.weight,
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\functional.py", line 2693, in cross_entropy
+    return nll_loss(log_softmax(input, 1), target, weight, None, ignore_index, None, reduction)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\functional.py", line 2413, in nll_loss
+    out = torch._C._nn.nll_loss2d(input, target, weight, reduction_enum, ignore_index)
+RuntimeError: Expected object of device type cuda but got device type cpu for argument #3 'weight' in call to _thnn_nll_loss2d_forward
+[I 2021-11-03 11:16:34,005 train.py 168] Loading data ...
+[I 2021-11-03 11:16:35,296 train.py 192] Training Start
+
+[E 2021-11-03 11:16:35,850 train.py 282] Expected object of scalar type Float but got scalar type Long for argument #3 'weight' in call to _thnn_nll_loss2d_forward
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 280, in <module>
+    trainer.training(100)
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 228, in training
+    tt_loss, md_loss, reg_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer,
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 82, in train_loop
+    total_loss = loss_fn(pred, y) + reg_loss
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\losses.py", line 287, in __call__
+    class_loss = self.class_loss(truth_classes_oh=truth_classes_oh, truth_mask=truth_mask,
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\losses.py", line 177, in class_loss
+    class_loss = loss(pred_scores, true_scores)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\loss.py", line 1047, in forward
+    return F.cross_entropy(input, target, weight=self.weight,
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\functional.py", line 2693, in cross_entropy
+    return nll_loss(log_softmax(input, 1), target, weight, None, ignore_index, None, reduction)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\functional.py", line 2413, in nll_loss
+    out = torch._C._nn.nll_loss2d(input, target, weight, reduction_enum, ignore_index)
+RuntimeError: Expected object of scalar type Float but got scalar type Long for argument #3 'weight' in call to _thnn_nll_loss2d_forward
+[I 2021-11-03 11:16:53,405 train.py 168] Loading data ...
+[I 2021-11-03 11:16:54,585 train.py 192] Training Start
+
+[I 2021-11-03 11:17:30,003 train.py 168] Loading data ...
+[I 2021-11-03 11:17:31,117 train.py 192] Training Start
+
+[I 2021-11-03 11:17:50,324 train.py 168] Loading data ...
+[I 2021-11-03 11:17:51,438 train.py 192] Training Start
+
+[I 2021-11-03 12:05:42,839 train.py 220] Early stopped at Accuracy 0.8020
+[I 2021-11-03 12:45:25,468 train.py 168] Loading data ...
+[I 2021-11-03 12:45:26,630 train.py 192] Training Start
+
+[I 2021-11-03 12:47:57,295 train.py 169] Loading data ...
+[I 2021-11-03 12:47:58,420 train.py 193] Training Start
+
+[I 2021-11-03 13:40:51,029 train.py 221] Early stopped at Accuracy 0.8065
+[I 2021-11-09 15:39:30,378 train.py 169] Loading data ...
+[I 2021-11-09 15:39:33,344 train.py 193] Training Start
+
+[I 2021-11-09 16:38:12,640 train.py 221] Early stopped at Accuracy 0.8041
+[I 2021-11-20 12:27:04,455 train.py 172] Loading data ...
+[I 2021-11-20 12:29:08,187 train.py 172] Loading data ...
+[E 2021-11-20 12:29:11,383 train.py 301] shape '[-1, 4, 8, 40, 40]' is invalid for input of size 112896
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 290, in <module>
+    modelFilename = trainer.training(100)
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 232, in training
+    self.on_train_begin(model_info=True)
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 197, in on_train_begin
+    summary(self.model, self.input_shape)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torchsummary\torchsummary.py", line 72, in summary
+    model(*x)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "D:\Workspace\RBC Recognition\Deeplearning\util\models.py", line 93, in forward
+    x = x.reshape(-1, self.n_box, self.n_cls+5, self.gridsz, self.gridsz)
+RuntimeError: shape '[-1, 4, 8, 40, 40]' is invalid for input of size 112896
+[I 2021-11-20 12:30:27,367 train.py 172] Loading data ...
+[I 2021-11-20 12:31:42,660 train.py 172] Loading data ...
+[I 2021-11-20 12:37:05,174 train.py 172] Loading data ...
+[I 2021-11-20 12:37:06,349 train.py 200] Training Start
+
+[I 2021-11-20 12:37:41,024 train.py 172] Loading data ...
+[I 2021-11-20 12:37:42,140 train.py 200] Training Start
+
+[I 2021-11-20 13:47:36,001 train.py 228] Early stopped at Accuracy 0.7851
+[E 2021-11-20 13:47:36,090 train.py 301] name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\train.py", line 299, in <module>
+    set2021091.auto_verse_dl(modelFilename, predParams)
+  File "D:\Workspace\RBC Recognition\Deeplearning\evaluate.py", line 338, in auto_verse_dl
+    previous = self.dataset_predict(model_fpath, pred_params)
+  File "D:\Workspace\RBC Recognition\Deeplearning\evaluate.py", line 328, in dataset_predict
+    logger.info(f"Loading Model: {model_fpath} and Proceeding data ...")
+NameError: name 'logger' is not defined
+[I 2021-12-09 16:25:21,454 train.py 168] Loading data ...
+[E 2021-12-09 16:25:21,454 train.py 298] [WinError 3] 系统找不到指定的路径。: 'D:\\Workspace\\RBC Recognition\\datasets\\Set-202109-1\\focus\\train'
+Traceback (most recent call last):
+  File "D:/Workspace/Whole Blood Recognition/Deeplearning/train.py", line 286, in <module>
+    trainer = Trainer(".\\train_hypers.yaml", model_fpath=modelFpath)
+  File "D:/Workspace/Whole Blood Recognition/Deeplearning/train.py", line 170, in __init__
+    train_loader = create_dataloader(**self.hyp.get("train_loader_params"))
+  File "D:\Workspace\Whole Blood Recognition\Deeplearning\util\dataset.py", line 1078, in create_dataloader
+    return DataLoader(batch_size=batch_size, dataset=dataset_obj(**constructor), **loader_params)
+  File "D:\Workspace\Whole Blood Recognition\Deeplearning\util\dataset.py", line 964, in __init__
+    self.dataset_scan()
+  File "D:\Workspace\Whole Blood Recognition\Deeplearning\util\dataset.py", line 989, in dataset_scan
+    self.modality_dict = {mod: [f for f in listdir(join(self.root, mod, self.training_stage))
+  File "D:\Workspace\Whole Blood Recognition\Deeplearning\util\dataset.py", line 989, in <dictcomp>
+    self.modality_dict = {mod: [f for f in listdir(join(self.root, mod, self.training_stage))
+FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\Workspace\\RBC Recognition\\datasets\\Set-202109-1\\focus\\train'
+[I 2021-12-09 16:40:12,468 train.py 168] Loading data ...
+[E 2021-12-09 16:40:12,468 train.py 298] [WinError 3] 系统找不到指定的路径。: 'D:\\Workspace\\Blood \\datasets\\Set-202109-1\\focus\\train'
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 286, in <module>
+    trainer = Trainer(".\\train_hypers.yaml", model_fpath=modelFpath)
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 170, in __init__
+    train_loader = create_dataloader(**self.hyp.get("train_loader_params"))
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\dataset.py", line 1078, in create_dataloader
+    return DataLoader(batch_size=batch_size, dataset=dataset_obj(**constructor), **loader_params)
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\dataset.py", line 964, in __init__
+    self.dataset_scan()
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\dataset.py", line 989, in dataset_scan
+    self.modality_dict = {mod: [f for f in listdir(join(self.root, mod, self.training_stage))
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\dataset.py", line 989, in <dictcomp>
+    self.modality_dict = {mod: [f for f in listdir(join(self.root, mod, self.training_stage))
+FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\Workspace\\Blood \\datasets\\Set-202109-1\\focus\\train'
+[I 2021-12-09 16:41:08,056 train.py 168] Loading data ...
+[I 2021-12-09 16:41:11,976 train.py 196] Training Start
+
+[E 2021-12-09 16:41:13,756 train.py 298] 
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 287, in <module>
+    modelFilename = trainer.training(100)
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 232, in training
+    tt_loss, md_loss, reg_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer,
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 82, in train_loop
+    total_loss = loss_fn(pred, y)
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\losses.py", line 279, in __call__
+    pred = FeatureTranslator(y_pred, self.grid_size, self.anchors, self.n_classes, self.device)
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\losses.py", line 108, in __init__
+    self.assertion()
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\losses.py", line 116, in assertion
+    assert self.data.shape[3] == self.anchors.shape[0]
+AssertionError
+[I 2021-12-09 16:42:17,202 train.py 168] Loading data ...
+[I 2021-12-09 16:42:19,221 train.py 196] Training Start
+
+[I 2021-12-09 16:43:19,037 train.py 168] Loading data ...
+[I 2021-12-09 16:43:20,433 train.py 196] Training Start
+
+[E 2021-12-09 16:43:30,815 train.py 298] Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 287, in <module>
+    modelFilename = trainer.training(100)
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 232, in training
+    tt_loss, md_loss, reg_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer,
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 82, in train_loop
+    total_loss = loss_fn(pred, y)
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\losses.py", line 279, in __call__
+    pred = FeatureTranslator(y_pred, self.grid_size, self.anchors, self.n_classes, self.device)
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\losses.py", line 109, in __init__
+    self._properties_translate()
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\losses.py", line 129, in _properties_translate
+    self.wh = self.anchors * torch.exp(self.data[..., 2:4])
+RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
+[I 2021-12-09 16:44:22,109 train.py 168] Loading data ...
+[I 2021-12-09 16:44:23,523 train.py 196] Training Start
+
+[I 2021-12-09 16:47:39,164 train.py 168] Loading data ...
+[I 2021-12-09 16:47:40,502 train.py 196] Training Start
+
+[I 2021-12-09 21:09:25,350 train.py 168] Loading data ...
+[I 2021-12-09 21:09:28,862 train.py 196] Training Start
+
+[I 2021-12-09 21:27:44,567 train.py 168] Loading data ...
+[I 2021-12-09 21:27:47,555 train.py 196] Training Start
+

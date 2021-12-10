@@ -18176,3 +18176,499 @@ AttributeError: 'Text' object has no property 'rotate'
 [I 2021-11-01 11:30:47,287 evaluate.py 439] Loading Cached files
 [I 2021-11-01 11:32:33,413 evaluate.py 439] Loading Cached files
 [I 2021-11-01 11:32:49,141 evaluate.py 439] Loading Cached files
+[I 2021-11-02 15:44:26,263 evaluate.py 450] Loading Cached files
+[E 2021-11-02 15:44:26,393 evaluate.py 508] need at least one array to concatenate
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\evaluate.py", line 505, in <module>
+    image_recognition(testLoader, modelName, pred_params=predParams)
+  File "D:\Workspace\RBC Recognition\Deeplearning\evaluate.py", line 477, in image_recognition
+    Figures.fig1a(region_properties)
+  File "D:\Workspace\RBC Recognition\Deeplearning\evaluate.py", line 359, in fig1a
+    gathered_properties_table = {
+  File "D:\Workspace\RBC Recognition\Deeplearning\evaluate.py", line 360, in <dictcomp>
+    key: np.concatenate([prop_table.get(key) for prop_table in region_properties_tables])
+  File "<__array_function__ internals>", line 5, in concatenate
+ValueError: need at least one array to concatenate
+[I 2021-11-02 15:45:07,455 evaluate.py 454] Loading Model
+[E 2021-11-02 15:45:07,461 evaluate.py 508] Can't get attribute 'YoloV5Model' on <module 'Deeplearning.util.models' from 'D:\\Workspace\\RBC Recognition\\Deeplearning\\util\\models.py'>
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 505, in <module>
+    image_recognition(testLoader, modelName, pred_params=predParams, reproduce=True)
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 455, in image_recognition
+    yolo_model = torch.load(model_fpath).to("cuda")
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\serialization.py", line 592, in load
+    return _load(opened_zipfile, map_location, pickle_module, **pickle_load_args)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\serialization.py", line 851, in _load
+    result = unpickler.load()
+AttributeError: Can't get attribute 'YoloV5Model' on <module 'Deeplearning.util.models' from 'D:\\Workspace\\RBC Recognition\\Deeplearning\\util\\models.py'>
+[I 2021-11-02 16:57:24,831 evaluate.py 454] Loading Model
+[E 2021-11-02 16:57:24,831 evaluate.py 508] unpickling stack underflow
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\evaluate.py", line 505, in <module>
+    image_recognition(testLoader, modelName, pred_params=predParams, reproduce=True)
+  File "D:\Workspace\RBC Recognition\Deeplearning\evaluate.py", line 455, in image_recognition
+    yolo_model = torch.load(model_fpath).to("cuda")
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\serialization.py", line 593, in load
+    return _legacy_load(opened_file, map_location, pickle_module, **pickle_load_args)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\serialization.py", line 762, in _legacy_load
+    magic_number = pickle_module.load(f, **pickle_load_args)
+_pickle.UnpicklingError: unpickling stack underflow
+[I 2021-11-02 16:59:01,874 evaluate.py 454] Loading Model
+[E 2021-11-02 16:59:01,874 evaluate.py 508] [Errno 2] No such file or directory: '..\\models\\plan_8.1\\losses_1102-165405.pth'
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\evaluate.py", line 505, in <module>
+    image_recognition(testLoader, modelName, pred_params=predParams, reproduce=True)
+  File "D:\Workspace\RBC Recognition\Deeplearning\evaluate.py", line 455, in image_recognition
+    yolo_model = torch.load(model_fpath).to("cuda")
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\serialization.py", line 579, in load
+    with _open_file_like(f, 'rb') as opened_file:
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\serialization.py", line 230, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\serialization.py", line 211, in __init__
+    super(_open_file, self).__init__(open(name, mode))
+FileNotFoundError: [Errno 2] No such file or directory: '..\\models\\plan_8.1\\losses_1102-165405.pth'
+[I 2021-11-02 16:59:31,182 evaluate.py 454] Loading Model
+[E 2021-11-02 16:59:32,766 evaluate.py 508] 'RealPhaseDataset' object has no attribute 'labels'
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\evaluate.py", line 505, in <module>
+    image_recognition(testLoader, modelName, pred_params=predParams, reproduce=True)
+  File "D:\Workspace\RBC Recognition\Deeplearning\evaluate.py", line 457, in image_recognition
+    for modalities, labels in tqdm.tqdm(dataloader):
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\tqdm\std.py", line 1178, in __iter__
+    for obj in iterable:
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\dataloader.py", line 517, in __next__
+    data = self._next_data()
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\dataloader.py", line 557, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\_utils\fetch.py", line 44, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\utils\data\_utils\fetch.py", line 44, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "D:\Workspace\RBC Recognition\Deeplearning\evaluate.py", line 333, in __getitem__
+    labels = self.labels[idx]
+AttributeError: 'RealPhaseDataset' object has no attribute 'labels'
+[I 2021-11-02 17:02:12,616 evaluate.py 454] Loading Model
+[I 2021-11-02 17:14:05,772 evaluate.py 455] Loading Model
+[I 2021-11-02 17:21:47,159 evaluate.py 456] Loading Model
+[I 2021-11-02 17:23:47,825 evaluate.py 455] Loading Model
+[I 2021-11-03 10:05:03,543 evaluate.py 463] Loading Model
+[E 2021-11-03 10:05:47,042 evaluate.py 516] Shape of passed values is (2, 3), indices imply (3, 2)
+Traceback (most recent call last):
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\pandas\core\internals\managers.py", line 1675, in create_block_manager_from_blocks
+    make_block(
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\pandas\core\internals\blocks.py", line 2732, in make_block
+    return klass(values, ndim=ndim, placement=placement)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\pandas\core\internals\blocks.py", line 142, in __init__
+    raise ValueError(
+ValueError: Wrong number of items passed 3, placement implies 2
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 513, in <module>
+    image_recognition(testLoader, modelName, pred_params=predParams, reproduce=False)
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 487, in image_recognition
+    Figures.fig1b(cells_num_preds, torch.cat([lbl[3] for lbl in y_data], dim=0))
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 404, in fig1b
+    df = DataFrame(data=np.stack((truths, predictions)),
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\pandas\core\frame.py", line 558, in __init__
+    mgr = init_ndarray(data, index, columns, dtype=dtype, copy=copy)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\pandas\core\internals\construction.py", line 238, in init_ndarray
+    return create_block_manager_from_blocks(block_values, [columns, index])
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\pandas\core\internals\managers.py", line 1687, in create_block_manager_from_blocks
+    raise construction_error(tot_items, blocks[0].shape[1:], axes, e)
+ValueError: Shape of passed values is (2, 3), indices imply (3, 2)
+[I 2021-11-03 10:06:19,914 evaluate.py 459] Loading Cached files
+[I 2021-11-03 10:19:24,294 evaluate.py 449] Loading Cached files
+[I 2021-11-03 10:20:06,112 evaluate.py 448] Loading Cached files
+[I 2021-11-03 10:24:01,711 evaluate.py 449] Loading Cached files
+[I 2021-11-03 10:26:22,819 evaluate.py 449] Loading Cached files
+[I 2021-11-03 10:31:38,751 evaluate.py 446] Loading Cached files
+[E 2021-11-03 10:31:39,128 evaluate.py 503] 'area'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 500, in <module>
+    image_recognition(testLoader, modelName, pred_params=predParams, reproduce=False)
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 473, in image_recognition
+    Figures.fig1a(region_properties)
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 368, in fig1a
+    ax.scatter(gathered_properties.loc["area"], gathered_properties.loc["volume"], s=0.5, c="blue")
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\pandas\core\indexing.py", line 895, in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\pandas\core\indexing.py", line 1124, in _getitem_axis
+    return self._get_label(key, axis=axis)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\pandas\core\indexing.py", line 1073, in _get_label
+    return self.obj.xs(label, axis=axis)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\pandas\core\generic.py", line 3739, in xs
+    loc = index.get_loc(key)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\pandas\core\indexes\range.py", line 354, in get_loc
+    raise KeyError(key)
+KeyError: 'area'
+[I 2021-11-03 10:32:07,587 evaluate.py 446] Loading Cached files
+[I 2021-11-03 10:32:46,435 evaluate.py 446] Loading Cached files
+[I 2021-11-03 10:36:58,515 evaluate.py 446] Loading Cached files
+[E 2021-11-03 10:37:34,339 evaluate.py 503] [Errno 2] No such file or directory: 'figures\\Area-Volume_and_Eccentricity-FF.csv'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 500, in <module>
+    image_recognition(testLoader, modelName, pred_params=predParams, reproduce=False)
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 473, in image_recognition
+    Figures.fig1a(region_properties)
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 384, in fig1a
+    gathered_properties[saved_properties].to_csv(save_fpath)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\pandas\core\generic.py", line 3387, in to_csv
+    return DataFrameRenderer(formatter).to_csv(
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\pandas\io\formats\format.py", line 1083, in to_csv
+    csv_formatter.save()
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\pandas\io\formats\csvs.py", line 228, in save
+    with get_handle(
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\pandas\io\common.py", line 642, in get_handle
+    handle = open(
+FileNotFoundError: [Errno 2] No such file or directory: 'figures\\Area-Volume_and_Eccentricity-FF.csv'
+[I 2021-11-03 10:37:47,899 evaluate.py 446] Loading Cached files
+[I 2021-11-03 10:55:35,974 evaluate.py 446] Loading Cached files
+[I 2021-11-03 10:56:44,864 evaluate.py 446] Loading Cached files
+[I 2021-11-03 11:06:14,679 evaluate.py 445] Loading Cached files
+[I 2021-11-03 11:06:34,378 evaluate.py 449] Loading Model
+[I 2021-11-03 12:40:22,012 evaluate.py 452] Loading Cached files
+[I 2021-11-03 12:42:48,131 evaluate.py 456] Loading Model
+[I 2021-11-03 13:42:27,981 evaluate.py 456] Loading Model
+[I 2021-11-03 13:47:18,134 evaluate.py 456] Loading Model
+[I 2021-11-03 13:47:33,059 evaluate.py 456] Loading Model
+[I 2021-11-03 13:48:27,076 evaluate.py 456] Loading Model
+[I 2021-11-04 14:30:37,850 evaluate.py 372] Loading Model
+[I 2021-11-04 14:33:59,635 evaluate.py 372] Loading Model
+[I 2021-11-09 16:42:42,447 evaluate.py 372] Loading Model
+[E 2021-11-09 16:46:20,441 evaluate.py 426] index 2 is out of bounds for axis 0 with size 2
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\evaluate.py", line 423, in <module>
+    image_collection_recognition(testLoader, modelName, pred_params=predParams, reproduce=True)
+  File "D:\Workspace\RBC Recognition\Deeplearning\evaluate.py", line 387, in image_collection_recognition
+    pred_handle.predict_collection_show(modalities)
+  File "D:\Workspace\RBC Recognition\Deeplearning\evaluate.py", line 318, in predict_collection_show
+    ax = axis[divmod(i, n_col)]
+IndexError: index 2 is out of bounds for axis 0 with size 2
+[I 2021-11-11 09:48:59,140 evaluate.py 372] Loading Model
+[I 2021-11-11 10:32:35,446 evaluate.py 364] Loading Model
+[I 2021-11-11 10:39:22,263 evaluate.py 365] Loading Model
+[I 2021-11-11 10:49:48,936 evaluate.py 372] Loading Model
+[I 2021-11-11 10:53:06,821 evaluate.py 373] Loading Model
+[I 2021-11-11 14:33:01,630 evaluate.py 226] Loading Model
+[E 2021-11-11 14:33:09,961 evaluate.py 257] 'method' object is not subscriptable
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 252, in <module>
+    image_collection_recognition(SET202109_1_FILENAME, model_fpath=modelName,
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 229, in image_collection_recognition
+    predictions = PredHandle.iterate_dataset(yolo_model, dataloader, **pred_params)
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 200, in iterate_dataset
+    coordinates = [torch.cat([xy, wh], dim=-1) for xy, wh in zip(pred_handle.get["xy"], pred_handle.get["wh"])]
+TypeError: 'method' object is not subscriptable
+[I 2021-11-11 14:35:09,388 evaluate.py 226] Loading Model
+[I 2021-11-11 15:21:55,089 evaluate.py 228] Loading Model
+[E 2021-11-11 15:22:27,716 evaluate.py 266] expected str, bytes or os.PathLike object, not Tensor
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 261, in <module>
+    image_collection_recognition(SET202109_1_FILENAME, model_fpath=modelName,
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 236, in image_collection_recognition
+    source_fname = find_source_from_sample_id(basename(phase_fname), "phase_matrix")
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\ntpath.py", line 216, in basename
+    return split(p)[1]
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\ntpath.py", line 185, in split
+    p = os.fspath(p)
+TypeError: expected str, bytes or os.PathLike object, not Tensor
+[I 2021-11-11 15:22:53,427 evaluate.py 228] Loading Model
+[I 2021-11-11 15:23:55,290 evaluate.py 228] Loading Model
+[I 2021-11-11 15:26:03,499 evaluate.py 228] Loading Model
+[I 2021-11-11 15:40:55,257 evaluate.py 227] Loading Model
+[E 2021-11-11 15:48:39,185 evaluate.py 273] [Errno 2] No such file or directory: 'D:\\Workspace\\RBC Recognition\\Deeplearning\\caches\\predictions_caches.pkl'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 268, in <module>
+    image_collection_recognition(SET202109_1_FILENAME, model_fpath=modelName,
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 231, in image_collection_recognition
+    with open(temp_cache, "r") as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'D:\\Workspace\\RBC Recognition\\Deeplearning\\caches\\predictions_caches.pkl'
+[I 2021-11-11 15:49:10,033 evaluate.py 234] Loading Model
+[E 2021-11-11 15:49:21,407 evaluate.py 273] write() argument must be str, not bytes
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 231, in image_collection_recognition
+    with open(temp_cache, "r") as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'D:\\Workspace\\RBC Recognition\\Deeplearning\\caches\\predictions_caches.pkl'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 268, in <module>
+    image_collection_recognition(SET202109_1_FILENAME, model_fpath=modelName,
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 240, in image_collection_recognition
+    pickle.dump(predictions, f)
+TypeError: write() argument must be str, not bytes
+[I 2021-11-11 15:50:01,861 evaluate.py 234] Loading Model
+[E 2021-11-11 16:41:33,722 evaluate.py 273] zeros_like(): argument 'input' (position 1) must be Tensor, not numpy.ndarray
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 268, in <module>
+    image_collection_recognition(SET202109_1_FILENAME, model_fpath=modelName,
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 245, in image_collection_recognition
+    rbc_area_properties(source_phase, coordinates, labels)
+  File "D:\Workspace\RBC Recognition\Deeplearning\bloodsmear.py", line 98, in rbc_area_properties
+    outlier_rbc_area = area_extract(modality, coordinates[outlier_rbc_indexes], otsu_bins)
+  File "D:\Workspace\RBC Recognition\Deeplearning\bloodsmear.py", line 19, in area_extract
+    labeled_area = torch.zeros_like(img)
+TypeError: zeros_like(): argument 'input' (position 1) must be Tensor, not numpy.ndarray
+[E 2021-11-12 09:54:48,758 evaluate.py 273] too many values to unpack (expected 2)
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 268, in <module>
+    image_collection_recognition(SET202109_1_FILENAME, model_fpath=modelName,
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 245, in image_collection_recognition
+    rbc_area_properties(source_phase, coordinates, labels)
+  File "D:\Workspace\RBC Recognition\Deeplearning\bloodsmear.py", line 95, in rbc_area_properties
+    rbc_fore_labels, _      =   area_extract(torch.tensor(modality), coordinates[outlier_rbc_indexes], otsu_bins)
+ValueError: too many values to unpack (expected 2)
+[E 2021-11-12 10:00:27,727 evaluate.py 273] Cannot interpret 'torch.float32' as a data type
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 268, in <module>
+    image_collection_recognition(SET202109_1_FILENAME, model_fpath=modelName,
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 245, in image_collection_recognition
+    rbc_area_properties(source_phase, coordinates, labels)
+  File "D:\Workspace\RBC Recognition\Deeplearning\bloodsmear.py", line 95, in rbc_area_properties
+    rbc_labels              =   area_extract(torch.tensor(modality), coordinates[outlier_rbc_indexes], otsu_bins)
+  File "D:\Workspace\RBC Recognition\Deeplearning\bloodsmear.py", line 40, in area_extract
+    regions  =   np.digitize(lbl_area, bins=threshold_multiotsu(lbl_area))
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\filters\thresholding.py", line 1203, in threshold_multiotsu
+    prob, bin_centers = histogram(image.ravel(),
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\skimage\exposure\exposure.py", line 130, in histogram
+    if np.issubdtype(image.dtype, np.integer):
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\numpy\core\numerictypes.py", line 419, in issubdtype
+    arg1 = dtype(arg1).type
+TypeError: Cannot interpret 'torch.float32' as a data type
+[E 2021-11-12 10:10:11,101 evaluate.py 273] _amin_dispatcher() got an unexpected keyword argument 'dim'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 268, in <module>
+    image_collection_recognition(SET202109_1_FILENAME, model_fpath=modelName,
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 245, in image_collection_recognition
+    rbc_area_properties(source_phase, coordinates, labels)
+  File "D:\Workspace\RBC Recognition\Deeplearning\bloodsmear.py", line 92, in rbc_area_properties
+    _, mini_distances, _    =   cross_minimal_euclidean_distance(coordinates[:, :2])
+  File "D:\Workspace\RBC Recognition\Deeplearning\bloodsmear.py", line 59, in cross_minimal_euclidean_distance
+    minimal_distances, closest_indexes = np.min(distances, dim=-1)
+  File "<__array_function__ internals>", line 4, in amin
+TypeError: _amin_dispatcher() got an unexpected keyword argument 'dim'
+[E 2021-11-12 10:10:57,974 evaluate.py 273] _amin_dispatcher() got an unexpected keyword argument 'dim'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 268, in <module>
+    image_collection_recognition(SET202109_1_FILENAME, model_fpath=modelName,
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 245, in image_collection_recognition
+    rbc_area_properties(source_phase, coordinates, labels)
+  File "D:\Workspace\RBC Recognition\Deeplearning\bloodsmear.py", line 92, in rbc_area_properties
+    _, mini_distances    =   cross_minimal_euclidean_distance(coordinates[:, :2])
+  File "D:\Workspace\RBC Recognition\Deeplearning\bloodsmear.py", line 59, in cross_minimal_euclidean_distance
+    minimal_distances = np.min(distances, dim=-1)
+  File "<__array_function__ internals>", line 4, in amin
+TypeError: _amin_dispatcher() got an unexpected keyword argument 'dim'
+[E 2021-11-12 10:11:36,386 evaluate.py 273] module 'numpy' has no attribute 'clamp'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 268, in <module>
+    image_collection_recognition(SET202109_1_FILENAME, model_fpath=modelName,
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 245, in image_collection_recognition
+    rbc_area_properties(source_phase, coordinates, labels)
+  File "D:\Workspace\RBC Recognition\Deeplearning\bloodsmear.py", line 95, in rbc_area_properties
+    rbc_labels           =   area_extract(phase, coordinates[outlier_rbc_indexes], otsu_bins)
+  File "D:\Workspace\RBC Recognition\Deeplearning\bloodsmear.py", line 23, in area_extract
+    box_xrange = np.clamp(x-w/2, 0).int(), np.clamp(x+w/2, max=w_upper).int()
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\numpy\__init__.py", line 303, in __getattr__
+    raise AttributeError("module {!r} has no attribute "
+AttributeError: module 'numpy' has no attribute 'clamp'
+[E 2021-11-12 10:13:10,164 evaluate.py 273] only integer tensors of a single element can be converted to an index
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 268, in <module>
+    image_collection_recognition(SET202109_1_FILENAME, model_fpath=modelName,
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 245, in image_collection_recognition
+    rbc_area_properties(source_phase, coordinates, labels)
+  File "D:\Workspace\RBC Recognition\Deeplearning\bloodsmear.py", line 95, in rbc_area_properties
+    rbc_labels           =   area_extract(phase, coordinates[outlier_rbc_indexes], otsu_bins)
+  File "D:\Workspace\RBC Recognition\Deeplearning\bloodsmear.py", line 28, in area_extract
+    strict_area = array[slice(*box_yrange), slice(*box_xrange)]
+TypeError: only integer tensors of a single element can be converted to an index
+[E 2021-11-12 10:18:17,451 evaluate.py 273] 'Tensor' object has no attribute 'astype'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 268, in <module>
+    image_collection_recognition(SET202109_1_FILENAME, model_fpath=modelName,
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 245, in image_collection_recognition
+    rbc_area_properties(source_phase, coordinates, labels)
+  File "D:\Workspace\RBC Recognition\Deeplearning\bloodsmear.py", line 94, in rbc_area_properties
+    rbc_labels           =   area_extract(phase, coordinates[outlier_rbc_indexes], otsu_bins)
+  File "D:\Workspace\RBC Recognition\Deeplearning\bloodsmear.py", line 23, in area_extract
+    xmin, xmax = np.clip(x-w/2, 0, None).astype(int), np.clip(x+w/2, 0, w_upper).astype(int)
+AttributeError: 'Tensor' object has no attribute 'astype'
+[E 2021-11-12 10:23:00,541 evaluate.py 273] index 320 is out of bounds for axis 0 with size 320
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 268, in <module>
+    image_collection_recognition(SET202109_1_FILENAME, model_fpath=modelName,
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 245, in image_collection_recognition
+    rbc_area_properties(source_phase, coordinates.numpy(), labels.numpy())
+  File "D:\Workspace\RBC Recognition\Deeplearning\bloodsmear.py", line 94, in rbc_area_properties
+    rbc_labels           =   area_extract(phase, coordinates[outlier_rbc_indexes], otsu_bins)
+  File "D:\Workspace\RBC Recognition\Deeplearning\bloodsmear.py", line 32, in area_extract
+    labeled_area[y_index+xmin, x_index+xmin] = lbl + 1
+IndexError: index 320 is out of bounds for axis 0 with size 320
+[E 2021-11-12 15:42:20,397 evaluate.py 280] The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 275, in <module>
+    image_collection_recognition(SET202109_1_FILENAME, model_fpath=modelName,
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 250, in image_collection_recognition
+    rbc_props = extract_cell_region_properties(source_phase, coordinates.numpy(), outlier_rbc_indexes)
+  File "D:\Workspace\RBC Recognition\Deeplearning\bloodsmear.py", line 99, in extract_cell_region_properties
+    if indexes:
+ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+[E 2021-11-12 16:06:23,214 evaluate.py 278] index 1 is out of bounds for axis 0 with size 1
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 273, in <module>
+    image_collection_recognition(SET202109_1_FILENAME, model_fpath=modelName,
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 250, in image_collection_recognition
+    rbc_props = [rbc_analysis(*args) for args in zip(*dataset_predictions.values())]
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 250, in <listcomp>
+    rbc_props = [rbc_analysis(*args) for args in zip(*dataset_predictions.values())]
+  File "D:\Workspace\RBC Recognition\Deeplearning\bloodsmear.py", line 118, in rbc_analysis
+    outlier_rbc_indexes = select_outlier_cells(coordinates, labels, specified_cell_type="rbc")
+  File "D:\Workspace\RBC Recognition\Deeplearning\bloodsmear.py", line 79, in select_outlier_cells
+    return outlier_indexes[correct_celltype]
+IndexError: index 1 is out of bounds for axis 0 with size 1
+[I 2021-11-12 16:40:40,204 evaluate.py 237] Loading Model
+[I 2021-11-12 16:42:42,969 evaluate.py 237] Loading Model
+[I 2021-11-12 16:49:21,560 evaluate.py 237] Loading Model
+[E 2021-11-12 16:49:35,486 evaluate.py 279] all the input arrays must have same number of dimensions, but the array at index 0 has 1 dimension(s) and the array at index 1 has 3 dimension(s)
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 234, in image_collection_recognition
+    with open(temp_cache, "rb") as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'D:\\Workspace\\RBC Recognition\\Deeplearning\\caches\\predictions_caches.pkl'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 274, in <module>
+    image_collection_recognition(SET202109_1_FILENAME, model_fpath=modelName,
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 240, in image_collection_recognition
+    dataset_predictions = PredHandle.iterate_dataset(yolo_model, dataloader, **pred_params)
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 209, in iterate_dataset
+    predictions["truths"] = np.concatenate([predictions["truths"], label[3].numpy()], axis=0)
+  File "<__array_function__ internals>", line 5, in concatenate
+ValueError: all the input arrays must have same number of dimensions, but the array at index 0 has 1 dimension(s) and the array at index 1 has 3 dimension(s)
+[I 2021-11-12 16:51:04,477 evaluate.py 238] Loading Model
+[E 2021-11-12 16:51:11,344 evaluate.py 280] operands could not be broadcast together with shapes (0,) (8,304,5) 
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 235, in image_collection_recognition
+    with open(temp_cache, "rb") as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'D:\\Workspace\\RBC Recognition\\Deeplearning\\caches\\predictions_caches.pkl'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 275, in <module>
+    image_collection_recognition(SET202109_1_FILENAME, model_fpath=modelName,
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 241, in image_collection_recognition
+    dataset_predictions = PredHandle.iterate_dataset(yolo_model, dataloader, **pred_params)
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 209, in iterate_dataset
+    predictions["truths"]           +=  label[3].numpy()
+ValueError: operands could not be broadcast together with shapes (0,) (8,304,5) 
+[I 2021-11-12 16:51:39,671 evaluate.py 238] Loading Model
+[I 2021-11-12 16:53:14,671 evaluate.py 238] Loading Model
+[I 2021-11-12 18:26:53,471 evaluate.py 237] Loading Model
+[I 2021-11-13 16:16:58,927 evaluate.py 236] Loading Model
+[E 2021-11-13 16:17:15,345 evaluate.py 282] 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 277, in <module>
+    automatic_verse_deeplearning(SET202109_1_FILENAME, model_fpath=modelName,
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 245, in automatic_verse_deeplearning
+    for fname in predictions.get("phase_fname"):
+TypeError: 'NoneType' object is not iterable
+[E 2021-11-14 13:11:42,170 evaluate.py 304] 'source_fname'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 302, in <module>
+    auto_verse_dl_for_set202109_1(SET202109_1_FILENAME, predParams)
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 271, in auto_verse_dl_for_set202109_1
+    comparison["source_fname"].append(fname)
+KeyError: 'source_fname'
+[E 2021-11-14 20:20:25,343 evaluate.py 345] 'NoneType' object is not subscriptable
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 342, in <module>
+    set2021091 = Set2021091Metadata()
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 249, in __init__
+    self.available_truth_indexes, = (self["truth"][:, 2] != 0).nonzero()
+TypeError: 'NoneType' object is not subscriptable
+[E 2021-11-15 10:31:51,090 evaluate.py 361] too many indices for array: array is 1-dimensional, but 2 were indexed
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 359, in <module>
+    set2021091.calc_accuracy()
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 291, in calc_accuracy
+    available_indexes = np.array([self._available_indexes(coord) for coord in self[idx]], dtype=object)
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 291, in <listcomp>
+    available_indexes = np.array([self._available_indexes(coord) for coord in self[idx]], dtype=object)
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 282, in _available_indexes
+    indexes, = (np.mean(sample_coordinates[:, :4], axis=1) != 0).nonzero()
+IndexError: too many indices for array: array is 1-dimensional, but 2 were indexed
+[I 2021-11-16 14:26:05,221 evaluate.py 316] Loading Model and Proceeding data ...
+[I 2021-11-16 14:29:13,979 evaluate.py 316] Loading Model and Proceeding data ...
+[I 2021-11-16 14:33:28,489 evaluate.py 319] Loading Model and Proceeding data ...
+[I 2021-11-16 14:36:25,429 evaluate.py 319] Loading Model and Proceeding data ...
+[I 2021-11-16 14:42:45,335 evaluate.py 319] Loading Model and Proceeding data ...
+[E 2021-11-16 15:22:04,774 evaluate.py 373] too many indices for array: array is 1-dimensional, but 2 were indexed
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 371, in <module>
+    set2021091.calc_accuracy()
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 299, in calc_accuracy
+    available_labels = [coord[indexes][:, 4] for coord, indexes in zip(self[col], available_indexes)]
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 299, in <listcomp>
+    available_labels = [coord[indexes][:, 4] for coord, indexes in zip(self[col], available_indexes)]
+IndexError: too many indices for array: array is 1-dimensional, but 2 were indexed
+[I 2021-11-16 16:20:18,146 evaluate.py 316] Loading Model and Proceeding data ...
+[I 2021-11-16 16:23:33,652 evaluate.py 316] Loading Model and Proceeding data ...
+[I 2021-11-16 16:32:13,352 evaluate.py 313] Loading Model and Proceeding data ...
+[I 2021-11-16 16:36:16,292 evaluate.py 313] Loading Model and Proceeding data ...
+[E 2021-11-16 16:52:33,941 evaluate.py 371] 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 369, in <module>
+    set2021091.calc_accuracy()
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 295, in calc_accuracy
+    available_indexes = np.array([self._available_indexes(coord) for coord in self[col]], dtype=object)
+TypeError: 'NoneType' object is not iterable
+[E 2021-11-16 16:53:06,992 evaluate.py 370] 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 368, in <module>
+    set2021091.calc_accuracy()
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 295, in calc_accuracy
+    available_indexes = np.array([self._available_indexes(coord) for coord in self[col]], dtype=object)
+TypeError: 'NoneType' object is not iterable
+[E 2021-11-16 16:58:24,103 evaluate.py 369] 'DataFrame' object has no attribute 'columes'
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 367, in <module>
+    set2021091.calc_accuracy()
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 294, in calc_accuracy
+    for col in self.data["counter"].columes:
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\pandas\core\generic.py", line 5465, in __getattr__
+    return object.__getattribute__(self, name)
+AttributeError: 'DataFrame' object has no attribute 'columes'
+[E 2021-11-17 15:04:15,563 evaluate.py 374] Length of values (2) does not match length of index (3)
+Traceback (most recent call last):
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 372, in <module>
+    set2021091.calc_accuracy()
+  File "D:/Workspace/RBC Recognition/Deeplearning/evaluate.py", line 299, in calc_accuracy
+    self["counter"][col] = {
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\pandas\core\frame.py", line 3163, in __setitem__
+    self._set_item(key, value)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\pandas\core\frame.py", line 3242, in _set_item
+    value = self._sanitize_column(key, value)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\pandas\core\frame.py", line 3899, in _sanitize_column
+    value = sanitize_index(value, self.index)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\pandas\core\internals\construction.py", line 751, in sanitize_index
+    raise ValueError(
+ValueError: Length of values (2) does not match length of index (3)
+[E 2021-11-17 15:29:02,963 evaluate.py 372] 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "D:\Workspace\RBC Recognition\Deeplearning\evaluate.py", line 369, in <module>
+    set2021091.average_mini_distances()
+  File "D:\Workspace\RBC Recognition\Deeplearning\evaluate.py", line 306, in average_mini_distances
+    for truth in tqdm(self.get("truths")):    # estimate average mini_distances
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\tqdm\std.py", line 1178, in __iter__
+    for obj in iterable:
+TypeError: 'NoneType' object is not iterable
+[I 2021-11-17 15:29:32,004 evaluate.py 316] Loading Model and Proceeding data ...
+[I 2021-11-19 15:23:08,350 evaluate.py 323] Loading Model: ..\models\plan_8.2\yolov5_1109-163812.pth and Proceeding data ...
+[I 2021-11-19 16:20:21,080 evaluate.py 322] Loading Model: ..\models\plan_8.2\yolov5_1109-163812.pth and Proceeding data ...
+[I 2021-11-22 10:15:31,532 evaluate.py 330] Loading Model: ..\models\plan_8.2\yolov5_1109-163812.pth and Proceeding data ...

@@ -1,76 +1,32 @@
 import os
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 import time
 import logging
 from logging import config
+from collections import ChainMap
 from os.path import join, abspath
 
 import yaml
 import torch
-import numpy as np
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
-from Deeplearning.util.losses   import YoloLoss
-from Deeplearning.util.models   import YoloV6Model
-from Deeplearning.util.dataset  import create_dataloader
+from Deeplearning.evaluate import Set2021091Metadata
+from Deeplearning.util.models import YoloV6Model
+from Deeplearning.util.dataset import create_dataloader, ANCHORS, GRIDSZ
+from Deeplearning.util.losses import YoloLoss, TracerMini, Tracer
 
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 # Meta-Parameters
-CLASS_LOC   =   0
-N_CLASSES   =   3
-DST_IMGSZ   =   320
-SEED        =   123456
-IMG_PLUGIN  =   "simpleitk"
-MODEL_PATH  =   "..\\models"
-DEVICE      =   "cuda" if torch.cuda.is_available() else "cpu"
+CLASS_LOC = 0
+N_CLASSES = 3
+DST_IMGSZ = 320
+SEED = 123456
+IMG_PLUGIN = "simpleitk"
+MODEL_PATH = "..\\models"
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 # Fixed the random states
 torch.manual_seed(SEED)
 torch.cuda.manual_seed(SEED)
-
-
-class _LossTracer:
-    def __init__(self, name: str):
-        self.name = name
-        self.box = []
-        self.counter = 0
-
-    def track(self, value, c=None):
-        self.box.append(value)
-        if c is not None:
-            self.counter += c
-
-    def sum(self):
-        return sum(self.box)
-
-    def mean(self):
-        if self.counter != 0:
-            return np.mean(self.box)
-        else:
-            return self.sum()/self.counter
-
-    def update_state(self):
-        self.box = []
-
-    def __getitem__(self, item):
-        return self.box[item]
-
-
-class Tracer:
-    def __init__(self, name):
-        self.name = name
-        self.boxes = {}
-
-    def register_box(self, name=""):
-        self.boxes[name] = _LossTracer(name)
-
-    def track(self, value, name, c=None):
-        self.boxes[name].track(value, c)
-
-    def update_state(self, name):
-        self.boxes[name].update_state()
-
-    def get(self, name, idx):
-        return self.boxes[name][idx]
 
 
 class EarlyStopping:
@@ -94,7 +50,7 @@ class EarlyStopping:
         if self.best_acc is None:
             self.best_acc = val_acc
         else:
-            equation = self.best_acc-val_acc-self.min_delta
+            equation = self.best_acc - val_acc - self.min_delta
             if self.mode == "min":
                 expression = equation > 0
             elif self.mode == "max":
@@ -118,14 +74,12 @@ def train_loop(dataloader, model, loss_fn, optimizer, device, decay_rate=0):
     train_loss, model_loss, regula_loss, n_current = 0, 0, 0, 0
     for batch, (modalities, labels) in enumerate(dataloader):
         # Transfer data to gpu
-        X, y = modalities.to(device), [item.to(device) for item in labels]
-
+        x, y = modalities.to(device), [item.to(device) for item in labels]
         # Forward propagation
-        pred = model(X)
-
+        pred = model(x)
         # Compute training loss
-        reg_loss = decay_rate * sum([torch.sum(param.data) for param in model.parameters()])
-        total_loss = loss_fn(pred, y) + reg_loss
+        reg_loss = decay_rate * sum([torch.square(torch.sum(param.data)) for param in model.parameters()])
+        total_loss = loss_fn(pred, y)
 
         # Backpropagation
         optimizer.zero_grad()
@@ -133,47 +87,46 @@ def train_loop(dataloader, model, loss_fn, optimizer, device, decay_rate=0):
         optimizer.step()
 
         # Batch loss
-        n_current   +=  len(X)
-        cur_loss    =   total_loss.item()
-        reg_loss    =   reg_loss.item()
+        n_current += len(x)
+        cur_loss = total_loss.item()
+        mod_loss = cur_loss
+        reg_loss = reg_loss.item()
 
         # Epoch loss update
-        train_loss  +=  cur_loss*len(X)
-        model_loss  +=  (cur_loss-reg_loss)*len(X)
-        regula_loss +=  reg_loss*len(X)
+        train_loss += cur_loss * len(x)
+        model_loss += cur_loss * len(x)
+        regula_loss += reg_loss * len(x)
 
-        if (batch+1) % 10 == 0:
-            print(f"Total: {cur_loss:>7f}   Model: {cur_loss-reg_loss:>7f}   "
+        if (batch + 1) % 10 == 0:
+            print(f"Total: {cur_loss:>7f}   Model: {mod_loss:>7f}   "
                   f"Regula: {reg_loss:>7f}   [{n_current:>5d}/{size:>5d}]")
 
-    avg_train_loss = train_loss/size
-    avg_model_loss = model_loss/size
-    avg_regula_loss = regula_loss/size
+    avg_train_loss = train_loss / size
+    avg_model_loss = model_loss / size
+    avg_regula_loss = regula_loss / size
     print(f"Train Error: [Avg Loss {avg_train_loss:>8f}, Avg Model {avg_model_loss:>8f}, "
           f"Avg Regula {avg_regula_loss:>8f}]")
     return avg_train_loss, avg_model_loss, avg_regula_loss
 
 
 def valid_loop(dataloader, model, loss_fn, device):
-    print("\nTest\n"+"-"*30)
+    print("\nTest\n" + "-" * 30)
     test_loss, accuracy, n_current, size = 0, 0, 0, len(dataloader.dataset)
     with torch.no_grad():
         for batch, (modalities, labels) in enumerate(dataloader):
             # Transfer data to gpu
-            X, y = modalities.to(device), [item.to(device) for item in labels]
-
+            x, y = modalities.to(device), [item.to(device) for item in labels]
             # Forward propagation
-            pred = model(X)
-
+            pred = model(x)
             # Compute batch test loss
-            cur_loos    =   loss_fn(pred, y).item()
-            cur_acy     =   loss_fn.accuracy.item()
+            cur_loos = loss_fn(pred, y).item()
+            cur_acy = loss_fn.accuracy.item()
 
             # Epoch data
-            n_current   +=  len(X)
-            test_loss   +=  cur_loos * len(X)
-            accuracy    +=  cur_acy * len(X)
-            if (batch+1) % 5 == 0:
+            n_current += len(x)
+            test_loss += cur_loos * len(x)
+            accuracy += cur_acy * len(x)
+            if (batch + 1) % 5 == 0:
                 print(f"loss: {cur_loos:>7f}  accuracy: {cur_acy:>5f}  [{n_current:>5d}/{size:>5d}]")
 
     test_loss /= size
@@ -183,29 +136,29 @@ def valid_loop(dataloader, model, loss_fn, device):
 
 
 class Trainer:
-    def __init__(self, hyp, train_loader=None, valid_loader=None):
+    def __init__(self, hyp, train_loader=None, valid_loader=None, **kwargs):
         if isinstance(hyp, str) and hyp.endswith(".yaml"):
             with open(hyp, "r") as hyp_file:
-                hyp = yaml.load(hyp_file, yaml.FullLoader)
+                hyp_dict = yaml.load(hyp_file, yaml.FullLoader)
+        self.hyp = ChainMap(kwargs, hyp_dict)
 
-        params_names        =   ("n_box", "n_cls", "grid_size", "anchors", "attention_layer", "lr")
-        n_box, n_cls, grid_sz, anchors, attention, lr = [hyp.get(item) for item in params_names]
-        self.hyp            =   hyp
-        self.stop_epoch     =   0
-        self.callbacks      =   {}
-        self.train_break    =   False
-        self.device         =   hyp.get("device", DEVICE)
+        params_names = ("n_box", "n_cls", "input_channel", "grid_size", "anchors", "attention_layer", "lr")
+        n_box, n_cls, input_channel, grid_sz, anchors, attention, lr = [self.hyp.get(item) for item in params_names]
+        self.device = self.hyp.get("device", DEVICE)
+        self.input_shape = (input_channel, 320, 320)
+        self.stop_epoch = 0
+        self.callbacks = {}
+        self.train_break = False
+        self.model_filename = None
 
-        self.loss_fn        =   YoloLoss(self.device, anchors, grid_sz, n_cls)
-        self.model          =   YoloV6Model(n_box, n_cls, grid_sz).to(self.device)
-        self.optimizer      =   torch.optim.Adam(self.model.parameters(), lr=lr)
+        self.loss_fn = YoloLoss(self.device, anchors, grid_sz, n_cls)
+        self.model = YoloV6Model(input_channel, n_box=n_box, n_cls=n_cls, grid_size=grid_sz).to(self.device)
+        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
 
-        self.train_tracer   =   Tracer("train")
-        self.valid_tracer   =   _LossTracer("valid")
-        self.acc_tracer     =   _LossTracer("acc")
-        self.train_tracer.register_box("total")
-        self.train_tracer.register_box("model")
-        self.train_tracer.register_box("regula")
+        self.train_tracer = Tracer("train")
+        self.valid_tracer = TracerMini("valid")
+        self.acc_tracer = TracerMini("acc")
+        self.train_tracer.register_boxes(("total", "model", "regula"))
 
         # Register Default Callback
         dft_callback = {"ReduceLR": ReduceLROnPlateau, "EarlyStopping": EarlyStopping}
@@ -213,8 +166,12 @@ class Trainer:
                                 early_stopping=(dft_callback["EarlyStopping"], {"patience": 10}))
         # Load data
         logger.info("Loading data ...")
-        self.train_loader = create_dataloader(**hyp.get("train_loader_params")) if not train_loader else train_loader
-        self.valid_loader = create_dataloader(**hyp.get("valid_loader_params")) if not valid_loader else valid_loader
+        if not train_loader:
+            train_loader = create_dataloader(**self.hyp.get("train_loader_params"))
+        if not valid_loader:
+            valid_loader = create_dataloader(**self.hyp.get("valid_loader_params"))
+        self.train_loader = train_loader
+        self.valid_loader = valid_loader
 
     def register_callbacks(self, **callbacks):
         """ callbacks: {"cb_name": (callback, params_dict)} """
@@ -225,7 +182,7 @@ class Trainer:
 
     def on_train_begin(self, **kwargs):
         # Hyper-params
-        print("\nHyper-parameters:\n"+"="*30)
+        print("\nHyper-parameters:\n" + "=" * 30)
         for k, v in self.hyp.items():
             print(f"\t{k}: {v}")
 
@@ -233,7 +190,7 @@ class Trainer:
         if kwargs.get("model_info", None):
             print("\nModel Info")
             from torchsummary import summary
-            summary(self.model, (4, 320, 320))
+            summary(self.model, self.input_shape)
             print()
 
         logger.info("Training Start\n")
@@ -283,10 +240,11 @@ class Trainer:
             self.valid_tracer.track(val_loss)
             self.acc_tracer.track(accuracy)
 
-            if self.on_epoch_end(valid_loss=val_loss, accuracy=accuracy):    # Epoch end
+            if self.on_epoch_end(valid_loss=val_loss, accuracy=accuracy):  # Epoch end
                 break
 
         self.on_train_end()  # Training end
+        return self.model_filename
 
     def model_save(self, model_path, model_prefix="yolov5"):
         # Saving to model/plan_*/yolov5_mmdd-HHMM.pth
@@ -295,22 +253,24 @@ class Trainer:
             os.mkdir(model_path)
 
         # Model saved with OrderDict using torch
-        model_fp = join(model_path, "%s_%s.pth" % (model_prefix, stamp))
-        torch.save(self.model, model_fp)
+        self.model_filename = join(model_path, "%s_%s.pth" % (model_prefix, stamp))
+        torch.save(self.model, self.model_filename)
 
         # Hyper-params saving using yaml
-        dump_dict = {"hyp":         self.hyp,
-                     "max_epochs":  self.stop_epoch,
-                     "train_loss":  self.train_tracer.boxes["total"].box,
-                     "model_loss":  self.train_tracer.boxes["model"].box,
-                     "regula_loss":  self.train_tracer.boxes["regula"].box,
-                     "valid_loss":  self.valid_tracer.box,
-                     "accuracy":    self.acc_tracer.box}
+        dump_dict = {
+            "hyp": self.hyp,
+            "max_epochs": self.stop_epoch,
+            "accuracy": self.acc_tracer.box,
+            "valid_loss": self.valid_tracer.box,
+            "train_loss": self.train_tracer.boxes["total"].box,
+            "model_loss": self.train_tracer.boxes["model"].box,
+            "regula_loss": self.train_tracer.boxes["regula"].box,
+        }
 
         losses_fpath = join(model_path, "losses_%s.yaml" % stamp)
         with open(losses_fpath, "w") as loss_f:
             yaml.dump(dump_dict, loss_f)
-        print(f"Model weights saved in '{abspath(model_fp)}'\n")
+        print(f"Model weights saved in '{abspath(self.model_filename)}'\n")
 
 
 if __name__ == '__main__':
@@ -323,7 +283,17 @@ if __name__ == '__main__':
 
     # ============================ Model Training ==================================
     try:
-        trainer = Trainer(".\\hypers.yaml")
-        trainer.training(100)
+        modelFpath = join(MODEL_PATH, "plan_8.4")
+        trainer = Trainer(".\\train_hypers.yaml", model_fpath=modelFpath)
+        modelFilename = trainer.training(100)
+
+        # evaluating
+        accSrcFilename = join(modelFpath, "acc_compare_set202109-1.pkl")
+        set2021091 = Set2021091Metadata(source_filename=accSrcFilename, refresh=True)
+
+        predParams = {"image_shape": (DST_IMGSZ, DST_IMGSZ), "grid_size": GRIDSZ,
+                      "anchors": ANCHORS, "n_class": N_CLASSES, "device": "cpu",
+                      "nms_overlapping_thres": .3, "conf_thres": .6}
+        set2021091.auto_verse_dl(modelFilename, predParams)
     except Exception as e:
         logger.exception(e)

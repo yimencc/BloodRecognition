@@ -95,7 +95,7 @@ def image_splitting_test():
     ffov_xml        =   join(source_root, "20210902 BloodSmear01", "BloodSmear20210902_01.xml")
     split_root      =   join(source_root, "20210902 BloodSmear01", "CVAT SourceData-SplitSamples")
 
-    xml_docs        =   StandardXMLContainer.fromXML(ffov_xml)
+    xml_docs        =   StandardXMLContainer.from_xml(ffov_xml)
     xml_docs.sample_slicing(split_root=split_root, n_batch=8)
 
 
