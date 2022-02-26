@@ -2,6 +2,8 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 #
+desktop.ini
+developing notes.txt
 __pycache__/
 caches/
 
