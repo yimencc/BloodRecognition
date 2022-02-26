@@ -1,5 +1,5 @@
-from typing import Union
 from os import listdir
+from typing import Union
 from os.path import splitext, join
 
 import torch.nn
@@ -15,7 +15,55 @@ from skimage.morphology import disk
 from skimage.util import img_as_ubyte
 
 nx = np.newaxis
-DATA_ROOT = "D:\\Workspace\\RBC Recognition\\datasets"
+DATA_ROOT = "D:\\Workspace\\Blood Recognition\\datasets"
+
+
+def iou_assembling(coordinates):
+    na = 0
+    assemble_indexes = []
+    residual_indexes = list(range(len(coordinates)))
+    while len(residual_indexes) > 0:  # Still some coordinate didn't decided
+        k = 0  # Iterating times for this assemble
+        assemble_indexes.append([residual_indexes[0]])
+        residual_indexes.pop(0)
+        while len(assemble_indexes[na]) > k:
+            for idx in residual_indexes:
+                tgt_coord = coordinates[idx]
+                src_coord = coordinates[assemble_indexes[na][k]]
+                # Compute IoUs
+                xmin1, xmax1 = tgt_coord[0]-tgt_coord[2]/2, tgt_coord[0]+tgt_coord[2]/2
+                ymin1, ymax1 = tgt_coord[1]-tgt_coord[3]/2, tgt_coord[1]+tgt_coord[3]/2
+                xmin2, xmax2 = src_coord[0]-src_coord[2]/2, src_coord[0]+src_coord[2]/2
+                ymin2, ymax2 = src_coord[1]-src_coord[3]/2, src_coord[1]+src_coord[3]/2
+                interw = np.minimum(xmax1, xmax2) - np.maximum(xmin1, xmin2)
+                interh = np.minimum(ymax1, ymax2) - np.maximum(ymin1, ymin2)
+                inter = np.clip(interw, 0, None) * np.clip(interh, 0, None)
+                if inter > 0:
+                    print(f"platelet[{idx}] in assamble[{na}], "
+                          f"ecoord:[{xmin1:.1f}, {xmax1:.1f}, {ymin1:.1f}, {ymax1:.1f}], "
+                          f"pcoord:[{xmin2:.1f}, {xmax2:.1f}, {ymin2:.1f}, {ymax2:.1f}], "
+                          f"w:{interw:.1f},h:{interh:.1f},s:{inter:.1f}")
+                    assemble_indexes[na].append(idx)
+                    residual_indexes.remove(idx)
+            k += 1
+        # print(f"Assemble[{na}]:", assemble_indexes[na])
+        na += 1
+    # print("\nTotal assembles: ", assemble_indexes)
+    assembles = []
+    for index in assemble_indexes:
+        assembles.append(coordinates[index])
+    return assembles
+
+
+def boxes_area_merge(boxes: np.ndarray):
+    # boxes: (nboxes, x-y-w-h-l)
+    x, y, w, h, lbl = np.transpose(boxes)
+    assert len({*lbl}) == 1
+    x_min, x_max = np.min(x-w/2), np.max(x+w/2)
+    y_min, y_max = np.min(y-h/2), np.max(y+h/2)
+    x1, y1 = (x_min+x_max)/2, (y_min+y_max)/2
+    w1, h1 = (x_max-x_min), (y_max-y_min)
+    return x1, y1, w1, h1, lbl[0]
 
 
 def anchors_compile(anchors: Union[list, tuple]) -> np.ndarray:
@@ -93,11 +141,6 @@ def axis_rectangle_labeling(axes: Axes, coordinates, colors, lw=None, fill=False
     return axes
 
 
-def softmax(arr):
-    arr -= np.max(arr, axis=-1)[..., nx]
-    return np.exp(arr) / np.sum(np.exp(arr), axis=-1)[..., nx]
-
-
 def parse_sample_id(sample_id):
     sample_id = splitext(sample_id)[0]
     dataset_date, sample_id = sample_id.split("-")
@@ -106,7 +149,7 @@ def parse_sample_id(sample_id):
     return dataset_date, int(subset_id), int(image_id)
 
 
-def find_source_from_sample_id(sample_id, returns="phase", dst_size=(320, 320), root=DATA_ROOT):
+def source_from_sample_id(sample_id, returns="phase", dst_size=(320, 320), root=DATA_ROOT):
     """ Parsing the filename and return the original position fpath of corresponding sample.
      e.g. 20210902-10000.bmp
      """
@@ -123,11 +166,25 @@ def find_source_from_sample_id(sample_id, returns="phase", dst_size=(320, 320), 
     else:
         raise Exception
 
-    image_chunks = image_split(data, (340, 340))
+    h_image, w_image = data.shape
+    h_chunk, w_chunk = (340, 340)
+    centroid_x_arrange = w_image - w_chunk
+    centroid_y_arrange = h_image - h_chunk
+    centroid_x_interval = centroid_x_arrange // (3 - 1)
+    centroid_y_interval = centroid_y_arrange // (3 - 1)
+
+    image_chunks = []
+    for i in range(3):  # ROW split
+        for k in range(3):  # COLUMN split
+            x_centroid = w_chunk // 2 + k * centroid_x_interval
+            y_centroid = h_chunk // 2 + i * centroid_y_interval
+            x0, y0 = x_centroid - w_chunk // 2, y_centroid - h_chunk // 2
+            x1, y1 = x_centroid + w_chunk // 2, y_centroid + h_chunk // 2
+            image_chunks.append(data[y0:y1, x0:x1])
     return resize(image_chunks[pthid], dst_size)
 
 
-def shape2fourPoints(coord_in: torch.Tensor, image_shape):
+def shape2fourpoints(coord_in: torch.Tensor, image_shape):
     # four point to location size coord_in (n_cred, x-y-w-h) -> coord_out (n_cred, x1-y1-x2-y2)
     x, y, w, h = coord_in.permute(1, 0)  # (n_cred,)
     x_max, y_max = image_shape
@@ -138,39 +195,12 @@ def shape2fourPoints(coord_in: torch.Tensor, image_shape):
     return torch.stack([x1, y1, x2, y2], dim=-1)
 
 
-def fourPoints2shape(coords):
+def fourpoints2shape(coords):
     # PointPoint to PointSize, coords: (n_cred, x1-y1-x2-y2)
     x1, y1, x2, y2 = coords.permute(1, 0)  # (n_cred,)
     x, y = (x1 + x2) / 2, (y1 + y2) / 2
     w, h = x2 - x1, y2 - y1
     return torch.stack([x, y, w, h], dim=-1)
-
-
-def image_split(image, chunk_size, n_split=3):
-    h_image, w_image = image.shape
-    h_chunk, w_chunk = chunk_size
-    centroid_x_arrange = w_image - w_chunk
-    centroid_y_arrange = h_image - h_chunk
-    centroid_x_interval = centroid_x_arrange // (n_split - 1)
-    centroid_y_interval = centroid_y_arrange // (n_split - 1)
-
-    chunks = []
-    for i in range(n_split):  # ROW split
-        for k in range(n_split):  # COLUMN split
-            x_centroid = w_chunk // 2 + k * centroid_x_interval
-            y_centroid = h_chunk // 2 + i * centroid_y_interval
-            x0, y0 = x_centroid - w_chunk // 2, y_centroid - h_chunk // 2
-            x1, y1 = x_centroid + w_chunk // 2, y_centroid + h_chunk // 2
-            chunks.append(image[y0:y1, x0:x1])
-    return chunks
-
-
-def histograph(inputs, bins=256):
-    hist, edges = np.histogram(inputs, bins=bins)
-    centers = [(ef + eb) / 2 for ef, eb in zip(edges[:-1], edges[1:])]
-    plt.subplots(figsize=(6, 6), constrained_layout=True)
-    plt.plot(centers, hist)
-    plt.show()
 
 
 def bboxes_visulization(bboxes, image_shape):
@@ -184,7 +214,7 @@ def bboxes_visulization(bboxes, image_shape):
     plt.show()
 
 
-def single_sample_visualization(modality, labels, scale=8):
+def single_sample_visualization(modality, boxes, scale=8):
     fig, axes = plt.subplots(2, 2, constrained_layout=True, figsize=(6, 6))
     for i, arr in enumerate(modality):
         row, col = i // 2, i % 2
@@ -195,61 +225,11 @@ def single_sample_visualization(modality, labels, scale=8):
         for sp in ["top", "bottom", "left", "right"]:
             ax.spines[sp].set_visible(False)
         if i == 1:
-            for x, y, w, h, cls in labels:
+            for x, y, w, h, cls in boxes:
                 # (x, y, w, h) is the coordinates on the y label plane, sizeof (40, 40)
                 if scale:
                     x, y, w, h = [elm * scale for elm in (x, y, w, h)]
                 color = ("green", "blue", "yellow", "red", "pink")[int(cls)]
                 rect = plt.Rectangle((x - w // 2, y - h // 2), w, h, color=color, fill=False)
                 ax.add_patch(rect)
-    plt.show()
-
-
-def model_inspect(model: torch.nn.Module):
-    # to cpu numpy
-    md_parameters = [(param.to("cpu") if param.device.type == "cuda" else param).detach().numpy().reshape(-1)
-                     for param in model.parameters()]
-
-    # inspect
-    for i, param in enumerate(md_parameters):
-        assert isinstance(param, np.ndarray)
-        print(f"{i}, mean: {np.mean(param)}, std: {np.std(param)}")
-
-    fig, ax = plt.subplots(figsize=(8, 4), constrained_layout=True)
-    fig.suptitle("Model parameters")
-    ax.violinplot(md_parameters, showmeans=True, showmedians=False, showextrema=True)
-    plt.show()
-
-
-def model_grads_inspect(model: torch.nn.Module):
-    gradients = []
-    for param in model.parameters():
-        gradients.append(param.grad.to("cpu").detach().numpy().reshape(-1))
-
-    fig, ax = plt.subplots(figsize=(8, 4), constrained_layout=True)
-    fig.suptitle("Model parameters")
-    ax.violinplot(gradients, showmeans=True, showmedians=False, showextrema=True)
-    plt.show()
-
-
-def yolov5_prediction_inspect(predict: torch.Tensor):
-    # predict shape: torch.Size([8, 40, 40, 4, 8)
-    # Notice: isinstance(torch.Size, tuple) -> True
-    assert len(predict.shape) == 5  # (b, gs, gs, n_anc, 4+1+n_cls)
-    n_anchors, len_box = predict.shape[-2:]
-
-    if predict.device.type == "cuda":
-        predict = predict.to("cpu")
-
-    inspected_data = predict.detach().numpy().reshape(-1, len_box)
-
-    # Decomposition
-    xy = inspected_data[:, 2].reshape(-1)
-    wh = inspected_data[:, :2].reshape(-1)
-    confidence = inspected_data[:, 4]
-    cls_preds = inspected_data[:, 5:].reshape(-1)
-
-    fig, ax = plt.subplots(figsize=(8, 4), constrained_layout=True)
-    fig.suptitle("Predictions xy-wh-conf-cls")
-    ax.violinplot((xy, wh, confidence, cls_preds), showmeans=True, showmedians=False, showextrema=True)
     plt.show()

@@ -1,11 +1,8 @@
-import os
-from collections import namedtuple
-
 import torch
 import numpy as np
-import matplotlib.pyplot as plt
+from collections import ChainMap
 
-from .functions import anchors_compile
+from ..util.functions import anchors_compile
 
 
 def compute_iou(x1, y1, w1, h1, x2, y2, w2, h2):
@@ -43,83 +40,24 @@ def cartesian_coordinate(batch_size, grid_size):
     return xy_grid
 
 
-class TracerMini:
-    def __init__(self, name: str):
-        self.name = name
-        self.box = []
-        self.counter = 0
-
-    def track(self, value, c=None):
-        self.box.append(value)
-        if c is not None:
-            self.counter += c
-
-    def sum(self):
-        return sum(self.box)
-
-    def mean(self):
-        if self.counter != 0:
-            return np.mean(self.box)
-        else:
-            return self.sum() / self.counter
-
-    def update_state(self):
-        self.box = []
-
-    def __getitem__(self, item):
-        return self.box[item]
-
-
-class Tracer:
-    def __init__(self, name):
-        self.name = name
-        self.boxes = {}
-
-    def register_boxes(self, names=None):
-        self.boxes.update({name: TracerMini(name) for name in names})
-
-    def track(self, value, name, c=None):
-        self.boxes[name].track(value, c)
-
-    def update_state(self, name):
-        self.boxes[name].update_state()
-
-    def get(self, name, idx):
-        return self.boxes[name][idx]
-
-
 class FeatureTranslator:
     """ Comprehend the output of the model in the forward propagation.
     Notice: All the operation here is based on torch module. """
-    def __init__(self, outputs: torch.Tensor, grid_size, anchors, n_class, device):
-        self.device = device
+    def __init__(self, outputs: torch.Tensor, anchors, device, grid_size, batch=True):
         self.data = outputs
-        self.n_class = n_class
-        self.grid_size = grid_size
-
-        self.xy = None
-        self.wh = None
-        self.conf = None
-        self.scores = None
+        self.device = device
+        self.gdsz = grid_size
         self.anchors = torch.from_numpy(anchors_compile(anchors)).to(device)
         self.n_anchor = len(self.anchors)
+        self.xy, self.wh, self.conf, self.scores = None, None, None, None
+        self.interpret(batch)
 
-        self.assertion()
-        self._properties_translate()
-
-    def assertion(self):
-        # Dimension assertions: (Batch, Grid_size, Grid_size, N_anchors, 4+1+n_classes)
-        # in last dimension: (x_bias, y_bias, w_bias, h_bias, conf, cls_0, ..., cls_n)
-        assert self.data.ndim == 5
-        assert self.data.shape[1:3] == (self.grid_size, self.grid_size)
-        assert self.data.shape[3] == self.anchors.shape[0]
-        assert self.data.shape[4] == 4 + 1 + self.n_class
-
-    def _properties_translate(self):
+    def interpret(self, batch):
         # xy: (Batch, Grid_size, Grid_size, N_anchors, x-y)
-        x_g, y_g = np.meshgrid(np.arange(self.data.shape[1]), np.arange(self.data.shape[2]))
-        # (Grid_size, Grid_size) + (Grid_size, Grid_size) -> (1, Grid_size, Grid_size, 1, 2)
-        xy_grid = torch.from_numpy(np.r_["4,5,1", x_g, y_g]).to(self.device)
+        x, y = np.meshgrid(np.arange(self.gdsz), np.arange(self.gdsz))
+        # (b, Grid_size, Grid_size) + (b, Grid_size, Grid_size) -> (b, Grid_size, Grid_size, 1, 2)
+        flag = "4,5,1" if batch else "3,4,0"
+        xy_grid = torch.from_numpy(np.r_[flag, x, y]).to(self.device)
 
         # (b, gdsz, gdsz, N_anchors, x-y) + (1, gdsz, gdsz, 1, 2) -> (b, gdsz, gdsz, N_anchors, x-y)
         self.xy = xy_grid + torch.sigmoid(self.data[..., :2])
@@ -132,8 +70,6 @@ class FeatureTranslator:
 
 
 class YoloLoss:
-    # TODO: Check the child loss terms.
-
     def __init__(self, device, anchors, grid_size, n_classes):
         self.device = device
         self.accuracy = 0
@@ -162,7 +98,8 @@ class YoloLoss:
         # the input of CrossEntropyLoss should be (N, C, d1, d2, ...) vs (N, d1, d2, ...)
         pred_scores = pred_scores.permute((0, 4, 1, 2, 3))
 
-        loss = torch.nn.CrossEntropyLoss(reduction="none", weight=torch.tensor([.8, 4., 1.]).to(self.device))
+        # Define loss compute object
+        loss = torch.nn.CrossEntropyLoss(reduction="none", weight=torch.tensor([1., 2., 1.]).to(self.device))
         # Compute loss: [b,n_classes, Grid_size,Grid_size,N_anchors] vs [b,GRID_SIZE,GRID_SIZE,N_anchor]
         class_loss = loss(pred_scores, true_scores)
         # [b,GRIDSZ,GRIDSZ,N_anchors] => [b,GRIDSZ,GRIDSZ,N_anchors,1] * [b,GRIDSZ,GRIDSZ,N_anchors,1]
@@ -176,15 +113,15 @@ class YoloLoss:
         x1, y1, w1, h1, _ = gtruth_boxes.permute(4, 0, 1, 2, 3)
         # (Batch, Grid_size, Grid_size, N_anchors, x-y)
         x2, y2, w2, h2 = pred_xy[..., 0], pred_xy[..., 1], pred_wh[..., 0], pred_wh[..., 1]
-
         # [b,GRIDSZ,GRIDSZ,4] -> [b,GRIDSZ,GRIDSZ,4,1]
         ious = compute_iou(x1, y1, w1, h1, x2, y2, w2, h2).unsqueeze(-1)
+
         accuracy = torch.sum(truth_mask * ious) / (truth_nobj + 1e-6)
-        obj_loss = YoloLoss.masked_mse(ious, pred_conf, truth_mask, truth_nobj)
+        obj_loss = -torch.sum(truth_mask * torch.log(pred_conf)) / (truth_nobj + 1e-6)
         return obj_loss, accuracy
 
     @staticmethod
-    def non_object_loss(truth_boxes_grid, truth_mask, pred_xy, pred_wh, pred_conf, nonobj_iou_thres=0.7):
+    def no_object_loss(truth_boxes_grid, truth_mask, pred_xy, pred_wh, pred_conf, noobj_iou_thres=0.5):
         # Predictions
         # [b,GSZ,GSZ,N_anchor,2] => [b,GSZ,GSZ,N_anchor, 1, 2]
         pred_xy = torch.unsqueeze(pred_xy, dim=4)
@@ -224,13 +161,13 @@ class YoloLoss:
         # [b,GSZ,GSZ,N_anchor] => [b,GSZ,GSZ,N_anchor,1]
         best_iou = torch.amax(iou_score, dim=4).unsqueeze(-1)
 
-        nonobj_detection = (best_iou < nonobj_iou_thres).float()
-        nonobj_mask = nonobj_detection * (1 - truth_mask)
+        noobj_detection = (best_iou < noobj_iou_thres).float()
+        noobj_mask = noobj_detection * (1 - truth_mask)
 
-        # nonobj counter
-        n_nonobj = torch.sum((nonobj_mask > 0.).to(torch.float32))
-        nonobj_loss = (torch.sum(nonobj_mask * torch.square(-pred_conf)) / (n_nonobj + 1e-6))
-        return nonobj_loss
+        # noobj counter
+        n_noobj = torch.sum((noobj_mask > 0.).to(torch.float32))
+        noobj_loss = -torch.sum(noobj_mask * torch.log(1 - pred_conf)) / (n_noobj + 1e-6)
+        return noobj_loss
 
     def __call__(self, y_pred, y_truth, w=None, *args, **kwargs):
         """
@@ -250,101 +187,25 @@ class YoloLoss:
             boxes_grid: torch.Tensor
                 [b,N_labels,5] x-y-w-h-l
         """
-        if w is None:
-            w = {"obj": 5, "non_obj": 1, "coord": 1, "cls": 2}
+        # Losses Weight
+        w = ChainMap(w if w else {}, {"object": 1, "no_obj": .1, "coord": 1, "class": 2})
 
-        # Ground Truth
-        #       detect_mask           [[b, GRID_SIZE, GRID_SIZE, N_anchor, 1],
-        #       matching_gTruth_boxes  [b, GRID_SIZE, GRID_SIZE, N_anchor, x-y-w-h-l],
-        #       class_onehot           [b, GRID_SIZE, GRID_SIZE, N_anchor, n_classes],
-        #       gTruth_boxes_grid      [b, N_labels,  x-y-w-h-l]]
-        truth_mask, groundtruth_boxes, truth_classes_oh, truth_boxes_grid = y_truth
-        truth_n_obj = torch.sum(truth_mask)  # int
-        truth_xy = groundtruth_boxes[..., :2]  # [b, gsz, gsz, n_anc, 2]
-        truth_wh = groundtruth_boxes[..., 2:4]  # [b, gsz, gsz, n_anc, 2]
+        # Truth Data
+        truth_mask, truth_box_grids, truth_class_onehot, truth_boxes = y_truth
+        truth_xy = truth_box_grids[..., :2]     # [b, gsz, gsz, n_anc, 2]
+        truth_wh = truth_box_grids[..., 2:4]    # [b, gsz, gsz, n_anc, 2]
+        obj_number = torch.sum(truth_mask)      # int
 
-        # Predictions, y_pred shape: (b, grid_size, grid_size, n_anchors, 5+n_cls)
-        pred = FeatureTranslator(y_pred, self.grid_size, self.anchors, self.n_classes, self.device)
+        # Predictions (b, grid_size, grid_size, n_anchors, 5+n_cls)
+        pred = FeatureTranslator(y_pred, self.anchors, self.device, self.grid_size)
+        pred.conf = pred.conf.unsqueeze(-1)     # (b, gdsz, gdsz, nanc) -> (b, gdsz, gdsz, nanc, 1)
 
-        # Losses
-        coord_loss = self.coordinate_loss(truth_xy=truth_xy, pred_xy=pred.xy, truth_wh=truth_wh,
-                                          pred_wh=pred.wh, truth_mask=truth_mask, truth_nobj=truth_n_obj)
+        # Child Losses
+        coord_loss = w["coord"] * self.coordinate_loss(truth_xy, pred.xy, truth_wh, pred.wh, truth_mask, obj_number)
+        class_loss = w["class"] * self.class_loss(truth_class_onehot, truth_mask, obj_number, pred.scores)
+        object_loss, accuracy = self.object_loss(truth_box_grids, truth_mask, obj_number, pred.xy, pred.wh, pred.conf)
+        noobj_loss = w["no_obj"] * self.no_object_loss(truth_boxes, truth_mask, pred.xy, pred.wh, pred.conf)
+        object_loss *= w["object"]
 
-        class_loss = self.class_loss(truth_classes_oh=truth_classes_oh, truth_mask=truth_mask,
-                                     truth_nobj=truth_n_obj, pred_scores=pred.scores)
-
-        obj_loss, accuracy = self.object_loss(gtruth_boxes=groundtruth_boxes, truth_mask=truth_mask,
-                                              truth_nobj=truth_n_obj, pred_xy=pred.xy, pred_wh=pred.wh,
-                                              pred_conf=pred.conf.unsqueeze(-1))
-
-        non_obj_loss = self.non_object_loss(truth_boxes_grid=truth_boxes_grid, truth_mask=truth_mask,
-                                            pred_xy=pred.xy, pred_wh=pred.wh, pred_conf=pred.conf.unsqueeze(-1))
-
-        self.accuracy = accuracy
-        self.loss = w["coord"] * coord_loss + w["cls"] * class_loss + w["obj"] * obj_loss + w["non_obj"] * non_obj_loss
-        return self.loss
-
-
-def plan_loss_plot(plan_fpath, plt_row, plt_col):
-    if not plt.get_backend() == "tkagg":
-        plt.switch_backend("tkagg")
-    fig, axs = plt.subplots(plt_row, plt_col, constrained_layout=True)
-    mng = plt.get_current_fig_manager()
-    mng.window.state("zoomed")
-    loss_files = [file for file in os.listdir(plan_fpath)
-                  if file.startswith("losses")]
-    for i, loss_name in enumerate(loss_files):
-        row = i // plt_col
-        col = i - row * plt_col
-        ax = axs[row, col]
-        loss_fullname = os.path.join(plan_fpath, loss_name)
-
-        params = {}
-        train_loss = []
-        valid_loss = []
-        accuracy = []
-        with open(loss_fullname, "r") as f:
-            container_label = ""
-            for line in f:
-                if line.startswith(("Train", "Valid", "Acc")):
-                    if line.startswith("Train"):
-                        container_label = "train"
-                    elif line.startswith("Valid"):
-                        container_label = "valid"
-                    else:
-                        container_label = "acc"
-                elif line.startswith(("Initial", "Max", "Decay")):
-                    key, val = line[:-1].split(":")
-                    params.update({key: val})
-                else:
-                    if container_label == "train":
-                        train_loss.append(float(line[:-1]))
-                    elif container_label == "valid":
-                        valid_loss.append(float(line[:-1]))
-                    elif container_label == "acc":
-                        accuracy.append(float(line[:-1]))
-
-        title = loss_name.removeprefix("losses_").removesuffix(".txt")
-        ax.set_title(title, fontsize=10, fontweight="bold")
-        ax.plot(train_loss, label="Train")
-        ax.plot(valid_loss, label="valid")
-        ax.scatter(len(valid_loss) - 1, valid_loss[-1], c="black")
-        ax.annotate("Model loss\n     %.3f" % valid_loss[-1],
-                    xy=(len(valid_loss) - 1, valid_loss[-1]),
-                    xycoords="data", textcoords="offset points",
-                    xytext=(-30, 5), fontsize=8)
-        ax.tick_params(axis="both", labelsize=8)
-        for n, key in enumerate(params.keys()):
-            ax.annotate("%s: %s" % (key, params[key]),
-                        xy=[.2 * len(accuracy), .4 * train_loss[0]],
-                        xycoords="data", textcoords="offset points",
-                        xytext=(10, n * 10), fontsize=8)
-        ax_c = ax.twinx()
-        ax_c.tick_params(axis="y", labelcolor="green", labelsize=8)
-        ax_c.plot(accuracy, label="Acc", c="green")
-        ax_c.scatter(len(accuracy) - 1, accuracy[-1], c="red")
-        ax_c.annotate("Model Accuracy\n     %.3f" % accuracy[-1],
-                      xy=(len(accuracy) - 1, accuracy[-1]),
-                      xycoords="data", textcoords="offset points",
-                      xytext=(-50, -20), fontsize=8)
-    plt.show()
+        self.loss, self.accuracy = coord_loss + class_loss + object_loss + noobj_loss, accuracy
+        return self.loss, (coord_loss, object_loss, noobj_loss, class_loss)

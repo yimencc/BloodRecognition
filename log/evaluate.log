@@ -18672,3 +18672,368 @@ TypeError: 'NoneType' object is not iterable
 [I 2021-11-19 15:23:08,350 evaluate.py 323] Loading Model: ..\models\plan_8.2\yolov5_1109-163812.pth and Proceeding data ...
 [I 2021-11-19 16:20:21,080 evaluate.py 322] Loading Model: ..\models\plan_8.2\yolov5_1109-163812.pth and Proceeding data ...
 [I 2021-11-22 10:15:31,532 evaluate.py 330] Loading Model: ..\models\plan_8.2\yolov5_1109-163812.pth and Proceeding data ...
+[E 2021-12-11 13:21:16,825 evaluate.py 390] [WinError 3] 系统找不到指定的路径。: 'D:\\Workspace\\RBC Recognition\\datasets\\Set-202109-1\\focus\\test'
+Traceback (most recent call last):
+  File "D:\Workspace\Blood Recognition\Deeplearning\evaluate.py", line 387, in <module>
+    model_evaluation_visualize(create_dataloader(SET202109_1_FILENAME, "test", 8), modelName, predParams)
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\dataset.py", line 1078, in create_dataloader
+    return DataLoader(batch_size=batch_size, dataset=dataset_obj(**constructor), **loader_params)
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\dataset.py", line 964, in __init__
+    self.dataset_scan()
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\dataset.py", line 989, in dataset_scan
+    self.modality_dict = {mod: [f for f in listdir(join(self.root, mod, self.training_stage))
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\dataset.py", line 989, in <dictcomp>
+    self.modality_dict = {mod: [f for f in listdir(join(self.root, mod, self.training_stage))
+FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\Workspace\\RBC Recognition\\datasets\\Set-202109-1\\focus\\test'
+[I 2021-12-11 13:22:17,018 evaluate.py 229] Loading Model
+[I 2021-12-11 13:25:08,626 evaluate.py 228] Loading Model
+[I 2021-12-11 13:27:27,109 evaluate.py 228] Loading Model
+[I 2021-12-11 13:28:07,796 evaluate.py 228] Loading Model
+[I 2021-12-11 13:29:36,041 evaluate.py 228] Loading Model
+[I 2021-12-11 14:19:05,087 evaluate.py 228] Loading Model
+[E 2021-12-11 14:19:05,087 evaluate.py 389] [Errno 2] No such file or directory: '..\\models\\plan_8.4\\losses_1211-141810.pth'
+Traceback (most recent call last):
+  File "D:\Workspace\Blood Recognition\Deeplearning\evaluate.py", line 386, in <module>
+    model_evaluation_visualize(create_dataloader(SET202109_1_FILENAME, "test", 8), modelName, predParams)
+  File "D:\Workspace\Blood Recognition\Deeplearning\evaluate.py", line 229, in model_evaluation_visualize
+    yolo_model = torch.load(model_fpath).to("cuda")
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\serialization.py", line 579, in load
+    with _open_file_like(f, 'rb') as opened_file:
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\serialization.py", line 230, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\serialization.py", line 211, in __init__
+    super(_open_file, self).__init__(open(name, mode))
+FileNotFoundError: [Errno 2] No such file or directory: '..\\models\\plan_8.4\\losses_1211-141810.pth'
+[I 2021-12-11 14:19:23,131 evaluate.py 228] Loading Model
+[I 2021-12-11 14:25:52,464 evaluate.py 332] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[E 2021-12-11 14:26:02,625 evaluate.py 386] iteration over a 0-d array
+Traceback (most recent call last):
+  File "D:\Workspace\Blood Recognition\Deeplearning\evaluate.py", line 383, in <module>
+    set2021091.auto_verse_dl(modelName, predParams)
+  File "D:\Workspace\Blood Recognition\Deeplearning\evaluate.py", line 349, in auto_verse_dl
+    in zip(previous["coordinates"], previous["labels"])]
+TypeError: iteration over a 0-d array
+[I 2021-12-11 14:27:33,292 evaluate.py 332] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-11 14:28:30,567 evaluate.py 332] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-11 14:29:29,446 evaluate.py 332] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-11 14:30:33,711 evaluate.py 332] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[E 2021-12-11 14:31:04,168 evaluate.py 386] [WinError 3] 系统找不到指定的路径。: 'D:\\Workspace\\RBC Recognition\\datasets\\20210902 BloodSmear01\\phase_matrix'
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 383, in <module>
+    set2021091.auto_verse_dl(modelName, predParams)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 354, in auto_verse_dl
+    phase = source_from_sample_id(basename(fname), "phase_matrix")
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\functions.py", line 117, in source_from_sample_id
+    dst_filename = join(dst_fullpath, listdir(dst_fullpath)[imgid])
+FileNotFoundError: [WinError 3] 系统找不到指定的路径。: 'D:\\Workspace\\RBC Recognition\\datasets\\20210902 BloodSmear01\\phase_matrix'
+[I 2021-12-11 14:32:11,605 evaluate.py 332] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-11 15:03:57,353 evaluate.py 228] Loading Model
+[I 2021-12-13 10:34:38,675 evaluate.py 230] Loading Model
+[I 2021-12-13 11:10:38,630 evaluate.py 314] Loading Model
+[E 2021-12-13 11:11:04,431 evaluate.py 472] __init__() got an unexpected keyword argument 'nms_overlapping_thres'
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 468, in <module>
+    model_evaluation_visualize(create_dataloader(SET202109_1_FILENAME, "test", 8), modelName, predParams)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 320, in model_evaluation_visualize
+    Predictions(sample, **pred_params)
+TypeError: __init__() got an unexpected keyword argument 'nms_overlapping_thres'
+[I 2021-12-13 11:12:06,333 evaluate.py 314] Loading Model
+[I 2021-12-13 11:19:07,926 evaluate.py 314] Loading Model
+[E 2021-12-13 11:19:20,578 evaluate.py 472] The size of tensor a (80) must match the size of tensor b (2) at non-singleton dimension 3
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 468, in <module>
+    model_evaluation_visualize(create_dataloader(SET202109_1_FILENAME, "test", 8), modelName, predParams)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 320, in model_evaluation_visualize
+    Predictions(sample, **pred_params)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 93, in __init__
+    self.batch_predictions = FeatureTranslator(data, anchors, device, grid_size)
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\losses.py", line 100, in __init__
+    self.properties_translate(batched)
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\losses.py", line 122, in properties_translate
+    self.data[..., :2] = xy_grid + torch.sigmoid(self.data[..., :2])
+RuntimeError: The size of tensor a (80) must match the size of tensor b (2) at non-singleton dimension 3
+[I 2021-12-13 11:20:34,644 evaluate.py 313] Loading Model
+[I 2021-12-13 11:22:01,348 evaluate.py 313] Loading Model
+[I 2021-12-13 11:30:11,485 evaluate.py 313] Loading Model
+[I 2021-12-13 11:39:49,110 evaluate.py 315] Loading Model
+[I 2021-12-13 11:46:56,208 evaluate.py 316] Loading Model
+[I 2021-12-13 11:47:30,739 evaluate.py 316] Loading Model
+[I 2021-12-13 11:53:12,047 evaluate.py 317] Loading Model
+[I 2021-12-13 12:02:19,711 evaluate.py 305] Loading Model
+[I 2021-12-13 12:05:42,439 evaluate.py 306] Loading Model
+[I 2021-12-13 12:17:53,730 evaluate.py 325] Loading Model
+[E 2021-12-13 12:17:57,292 evaluate.py 483] not enough values to unpack (expected 3, got 2)
+Traceback (most recent call last):
+  File "D:\Workspace\Blood Recognition\Deeplearning\evaluate.py", line 479, in <module>
+    model_evaluation_visualize(create_dataloader(SET202109_1_FILENAME, "test", 8), modelName, predParams)
+  File "D:\Workspace\Blood Recognition\Deeplearning\evaluate.py", line 331, in model_evaluation_visualize
+    render_batch_sample_predictions(predictions, modalities)
+  File "D:\Workspace\Blood Recognition\Deeplearning\evaluate.py", line 146, in render_batch_sample_predictions
+    for i, mods, pred in enumerate(zip(images, predictions)):
+ValueError: not enough values to unpack (expected 3, got 2)
+[I 2021-12-13 12:18:13,342 evaluate.py 325] Loading Model
+[I 2021-12-13 12:18:41,882 evaluate.py 325] Loading Model
+[I 2021-12-16 15:50:09,228 evaluate.py 321] Loading Model
+[E 2021-12-16 15:50:09,229 evaluate.py 469] [Errno 2] No such file or directory: '.\\models\\plan_8.4\\yolov5_1211-141810.pth'
+Traceback (most recent call last):
+  File "D:\Workspace\Blood Recognition\Deeplearning\evaluate.py", line 463, in <module>
+    model_evaluation_visualize(create_dataloader(SET202109_FILENAME, "test", 8), modelName, predParams)
+  File "D:\Workspace\Blood Recognition\Deeplearning\evaluate.py", line 322, in model_evaluation_visualize
+    yolo_model = torch.load(model_fpath).to("cuda")
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\serialization.py", line 579, in load
+    with _open_file_like(f, 'rb') as opened_file:
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\serialization.py", line 230, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\serialization.py", line 211, in __init__
+    super(_open_file, self).__init__(open(name, mode))
+FileNotFoundError: [Errno 2] No such file or directory: '.\\models\\plan_8.4\\yolov5_1211-141810.pth'
+[I 2021-12-16 15:50:34,557 evaluate.py 321] Loading Model
+[I 2021-12-16 15:51:17,117 evaluate.py 419] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[E 2021-12-16 15:51:24,448 evaluate.py 469] __init__() got an unexpected keyword argument 'nms_threshold'
+Traceback (most recent call last):
+  File "D:\Workspace\Blood Recognition\Deeplearning\evaluate.py", line 466, in <module>
+    analyzer.auto_verse_dl(modelName, predParams)
+  File "D:\Workspace\Blood Recognition\Deeplearning\evaluate.py", line 429, in auto_verse_dl
+    previous = self.dataset_predict(model_fpath, pred_params)
+  File "D:\Workspace\Blood Recognition\Deeplearning\evaluate.py", line 422, in dataset_predict
+    predictions = PredHandle.iterate_dataset(yolo_model, dataloader, **pred_params)
+  File "D:\Workspace\Blood Recognition\Deeplearning\evaluate.py", line 306, in iterate_dataset
+    phand = cls(model_output, **pred_params)
+TypeError: __init__() got an unexpected keyword argument 'nms_threshold'
+[I 2021-12-16 15:52:26,156 evaluate.py 419] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-16 15:53:47,308 evaluate.py 419] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-16 16:21:35,789 evaluate.py 455] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[E 2021-12-16 16:22:38,072 evaluate.py 498] __init__() missing 7 required positional arguments: 'image_shape', 'grid_size', 'anchors', 'n_class', 'device', 'conf_threshold', and 'nms_threshold'
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 495, in <module>
+    analyzer.auto_verse_dl(modelName, predParams)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 458, in auto_verse_dl
+    previous = dataset_prediction(dataloader, yolo_model)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 162, in dataset_prediction
+    batch_positives = Prediction.batch_iter(model_output, **prediction_params)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 136, in batch_iter
+    prediction = cls(data, **kwargs)
+TypeError: __init__() missing 7 required positional arguments: 'image_shape', 'grid_size', 'anchors', 'n_class', 'device', 'conf_threshold', and 'nms_threshold'
+[I 2021-12-16 16:23:28,726 evaluate.py 455] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-16 16:24:15,289 evaluate.py 455] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-16 16:29:51,037 evaluate.py 455] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-16 16:41:53,546 evaluate.py 459] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-16 16:43:25,799 evaluate.py 459] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-16 16:44:54,466 evaluate.py 459] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-16 16:45:43,400 evaluate.py 459] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-17 15:35:06,702 evaluate.py 512] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-17 15:36:38,037 evaluate.py 514] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[E 2021-12-17 15:38:29,429 evaluate.py 557] all the input arrays must have same number of dimensions, but the array at index 0 has 1 dimension(s) and the array at index 1 has 0 dimension(s)
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 554, in <module>
+    analyzer.auto_verse_dl(modelName, predParams)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 517, in auto_verse_dl
+    previous = dataset_prediction(dataloader, yolo_model, **pred_params)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 217, in dataset_prediction
+    batch_positives = Prediction.batch_iter(model_output, **prediction_params)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 110, in batch_iter
+    prediction = cls(data, **kwargs)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 73, in __init__
+    self.anchors_filtering(conf_threshold)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 88, in anchors_filtering
+    boxes.append(np.concatenate([coord, label]))
+  File "<__array_function__ internals>", line 5, in concatenate
+ValueError: all the input arrays must have same number of dimensions, but the array at index 0 has 1 dimension(s) and the array at index 1 has 0 dimension(s)
+[I 2021-12-17 15:40:34,165 evaluate.py 514] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-17 15:41:59,036 evaluate.py 514] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-17 15:43:38,410 evaluate.py 514] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-17 15:46:13,026 evaluate.py 514] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-17 15:50:07,289 evaluate.py 515] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[E 2021-12-17 15:50:17,974 evaluate.py 558] only one element tensors can be converted to Python scalars
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 555, in <module>
+    analyzer.auto_verse_dl(modelName, predParams)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 518, in auto_verse_dl
+    previous = dataset_prediction(dataloader, yolo_model, **pred_params)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 218, in dataset_prediction
+    batch_positives = Prediction.batch_iter(model_output, **prediction_params)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 111, in batch_iter
+    prediction = cls(data, **kwargs)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 74, in __init__
+    self.anchors_filtering(conf_threshold)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 91, in anchors_filtering
+    self.positive = torch.tensor(boxes)
+ValueError: only one element tensors can be converted to Python scalars
+[I 2021-12-17 15:50:58,057 evaluate.py 515] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-17 15:52:18,642 evaluate.py 515] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-17 15:54:23,820 evaluate.py 513] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-17 16:04:28,061 evaluate.py 512] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-17 16:06:06,376 evaluate.py 513] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[E 2021-12-17 16:06:23,685 evaluate.py 556] The size of tensor a (248) must match the size of tensor b (2) at non-singleton dimension 0
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 553, in <module>
+    analyzer.auto_verse_dl(modelName, predParams)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 516, in auto_verse_dl
+    previous = dataset_prediction(dataloader, yolo_model, **pred_params)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 216, in dataset_prediction
+    batch_positives = Prediction.batch_iter(model_output, **prediction_params)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 109, in batch_iter
+    prediction = cls(data, **kwargs)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 74, in __init__
+    self.match_real_shape(image_shape)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 103, in match_real_shape
+    self.positive[:, 4] = self.positive[:, 4]*scales
+RuntimeError: The size of tensor a (248) must match the size of tensor b (2) at non-singleton dimension 0
+[I 2021-12-17 16:08:41,595 evaluate.py 514] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[E 2021-12-17 16:09:42,385 evaluate.py 557] too many indices for tensor of dimension 2
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 554, in <module>
+    analyzer.auto_verse_dl(modelName, predParams)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 517, in auto_verse_dl
+    previous = dataset_prediction(dataloader, yolo_model, **pred_params)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 224, in dataset_prediction
+    pred_labels += [pos["labels"].numpy() for pos in batch_positives]
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 224, in <listcomp>
+    pred_labels += [pos["labels"].numpy() for pos in batch_positives]
+IndexError: too many indices for tensor of dimension 2
+[I 2021-12-17 16:12:03,896 evaluate.py 512] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[E 2021-12-17 16:13:02,574 evaluate.py 555] too many indices for tensor of dimension 2
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 552, in <module>
+    analyzer.auto_verse_dl(modelName, predParams)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 515, in auto_verse_dl
+    previous = dataset_prediction(dataloader, yolo_model, **pred_params)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 217, in dataset_prediction
+    batch_positives = Prediction.batch_iter(model_output, **prediction_params)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 110, in batch_iter
+    prediction = cls(data, **kwargs)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 73, in __init__
+    self.positive = self.box_non_maximum_suppression(positive, confidence, nms_threshold)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 97, in box_non_maximum_suppression
+    return positive[picks]
+IndexError: too many indices for tensor of dimension 2
+[I 2021-12-17 16:21:29,481 evaluate.py 508] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[E 2021-12-17 16:21:49,421 evaluate.py 551] operands could not be broadcast together with shapes (0,) (8,) 
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 548, in <module>
+    analyzer.auto_verse_dl(modelName, predParams)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 511, in auto_verse_dl
+    previous = dataset_prediction(dataloader, yolo_model, **pred_params)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 220, in dataset_prediction
+    predict_boxes += batch_positives
+ValueError: operands could not be broadcast together with shapes (0,) (8,) 
+[I 2021-12-17 16:22:45,952 evaluate.py 505] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[E 2021-12-17 16:22:54,068 evaluate.py 548] too many indices for tensor of dimension 2
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 545, in <module>
+    analyzer.auto_verse_dl(modelName, predParams)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 508, in auto_verse_dl
+    previous = dataset_prediction(dataloader, yolo_model, **pred_params)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 210, in dataset_prediction
+    prediction = Prediction(data, **prediction_params)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 73, in __init__
+    self.positive = self.box_non_maximum_suppression(positive, confidence, nms_threshold)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 97, in box_non_maximum_suppression
+    return positive[picks]
+IndexError: too many indices for tensor of dimension 2
+[I 2021-12-17 16:42:15,441 evaluate.py 505] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-17 16:42:52,592 evaluate.py 505] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[E 2021-12-17 16:43:00,632 evaluate.py 548] too many indices for tensor of dimension 2
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 545, in <module>
+    analyzer.auto_verse_dl(modelName, predParams)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 508, in auto_verse_dl
+    previous = dataset_prediction(dataloader, yolo_model, **pred_params)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 210, in dataset_prediction
+    prediction = Prediction(data, **prediction_params)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 73, in __init__
+    self.positive = self.box_non_maximum_suppression(positive, confidence, nms_threshold)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 97, in box_non_maximum_suppression
+    return positive[picks]
+IndexError: too many indices for tensor of dimension 2
+[I 2021-12-17 16:45:38,716 evaluate.py 509] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[E 2021-12-17 16:45:43,303 evaluate.py 552] index 270 is out of bounds for dimension 0 with size 248
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 549, in <module>
+    analyzer.auto_verse_dl(modelName, predParams)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 512, in auto_verse_dl
+    previous = dataset_prediction(dataloader, yolo_model, **pred_params)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 214, in dataset_prediction
+    prediction = Prediction(data, **prediction_params)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 73, in __init__
+    self.positive = self.box_non_maximum_suppression(positive, confidence, nms_threshold)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 101, in box_non_maximum_suppression
+    return positive[picks]
+IndexError: index 270 is out of bounds for dimension 0 with size 248
+[I 2021-12-17 16:46:37,996 evaluate.py 509] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[E 2021-12-17 16:46:42,501 evaluate.py 552] index 270 is out of bounds for dimension 0 with size 248
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 549, in <module>
+    analyzer.auto_verse_dl(modelName, predParams)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 512, in auto_verse_dl
+    previous = dataset_prediction(dataloader, yolo_model, **pred_params)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 214, in dataset_prediction
+    prediction = Prediction(data, **prediction_params)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 73, in __init__
+    self.positive = self.box_non_maximum_suppression(positive, confidence, nms_threshold)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 101, in box_non_maximum_suppression
+    return positive[picks]
+IndexError: index 270 is out of bounds for dimension 0 with size 248
+[I 2021-12-18 10:59:50,655 evaluate.py 509] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-18 11:02:18,852 evaluate.py 507] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[E 2021-12-18 11:02:43,241 evaluate.py 550] 'coordinates'
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 547, in <module>
+    analyzer.auto_verse_dl(modelName, predParams)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 517, in auto_verse_dl
+    in zip(previous["coordinates"], previous["labels"])]
+KeyError: 'coordinates'
+[I 2021-12-18 11:04:21,450 evaluate.py 506] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-18 11:06:40,252 evaluate.py 506] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-18 11:09:31,804 evaluate.py 502] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[E 2021-12-18 11:09:50,432 evaluate.py 546] 'list' object has no attribute 'appen'
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 543, in <module>
+    analyzer.auto_verse_dl(modelName, predParams)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 519, in auto_verse_dl
+    self.data["recognitions"].appen(Recognizer.process(phase))
+AttributeError: 'list' object has no attribute 'appen'
+[I 2021-12-18 11:10:03,319 evaluate.py 502] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-18 11:20:32,669 evaluate.py 501] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[E 2021-12-18 11:23:11,543 evaluate.py 548] too many values to unpack (expected 2)
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 545, in <module>
+    analyzer.auto_verse_dl(modelName, predParams)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 520, in auto_verse_dl
+    for key, value in (self.data.get(item) for item in ["phase", "source_fnames", "recognitions"]):
+ValueError: too many values to unpack (expected 2)
+[I 2021-12-18 11:27:15,884 evaluate.py 501] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[E 2021-12-18 11:32:50,743 evaluate.py 549] too many indices for array: array is 1-dimensional, but 3 were indexed
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 546, in <module>
+    analyzer.auto_verse_dl(modelName, predParams)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 524, in auto_verse_dl
+    self.calc_accuracy()
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 479, in calc_accuracy
+    labels = self[col][:, :, 4]
+IndexError: too many indices for array: array is 1-dimensional, but 3 were indexed
+[E 2021-12-18 11:34:20,333 evaluate.py 538] too many indices for array: array is 1-dimensional, but 3 were indexed
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 535, in <module>
+    analyzer.auto_verse_dl(modelName, predParams)
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 513, in auto_verse_dl
+    self.calc_accuracy()
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 468, in calc_accuracy
+    labels = self[col][:, :, 4]
+IndexError: too many indices for array: array is 1-dimensional, but 3 were indexed
+[E 2021-12-18 11:39:48,291 evaluate.py 537] auto_verse_dl() got an unexpected keyword argument 'image_shape'
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/evaluate.py", line 534, in <module>
+    analyzer.auto_verse_dl(modelName, **predParams)
+TypeError: auto_verse_dl() got an unexpected keyword argument 'image_shape'
+[I 2021-12-18 11:42:06,579 evaluate.py 489] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-18 11:53:49,429 evaluate.py 214] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-18 14:15:36,604 evaluate.py 224] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-18 14:20:43,882 evaluate.py 223] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-18 14:30:31,066 evaluate.py 223] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-18 14:33:16,248 evaluate.py 223] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-18 14:35:56,032 evaluate.py 223] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2021-12-18 14:37:19,208 evaluate.py 223] Loading Model: ..\models\plan_8.4\yolov5_1211-141810.pth and Proceeding data ...
+[I 2022-01-06 13:53:07,731 evaluate.py 250] Loading Model: ..\models\plan_8.4\yolov6_1227-171916.pth and Proceeding data ...
+[I 2022-01-06 14:06:26,656 evaluate.py 250] Loading Model: ..\models\plan_8.4\yolov6_1227-171916.pth and Proceeding data ...
+[I 2022-01-06 14:30:21,121 evaluate.py 250] Loading Model: ..\models\plan_8.4\yolov6_1227-171916.pth and Proceeding data ...

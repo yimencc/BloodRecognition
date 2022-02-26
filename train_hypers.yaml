@@ -1,15 +1,17 @@
 # Hyper-parameters for training model
 # Current states: store the basic hyper-parameters as the defaults
 
-lr: 0.0003
+lr: 0.001
 n_box: 4
 n_cls: 3
+grid_size: 40
 input_channel: 4
 decay_rate: 0.00001
-grid_size: 40
 attention_layer: 7
+anchors: [1., 1., 1.125, 1.125, 1.25, 1.25, 1.375, 1.375]
+model_fpath: D:\Workspace\Blood Recognition\models\plan_8.2
 
-train_loader_params:
+train_loader:
   fpath_str: D:\Workspace\Blood Recognition\datasets\Set-202109-1
   training_stage: train
   batch_size: 8
@@ -20,7 +22,7 @@ train_loader_params:
     - minus
     - plus
 
-valid_loader_params:
+valid_loader:
   fpath_str: D:\Workspace\Blood Recognition\datasets\Set-202109-1
   training_stage: valid
   batch_size: 8
@@ -30,7 +32,3 @@ valid_loader_params:
     - phase
     - minus
     - plus
-
-model_fpath: D:\Workspace\Blood Recognition\models\plan_8.2
-
-anchors: [1., 1., 1.125, 1.125, 1.25, 1.25, 1.375, 1.375]

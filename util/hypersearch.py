@@ -3,8 +3,7 @@ from collections import OrderedDict
 
 import torch
 from torch.utils.data import DataLoader
-
-from Deeplearning.util.models import YoloV5Model
+from ..util.models import YoloV6Model
 
 
 class HyperSearchingPlan:
@@ -15,6 +14,7 @@ class HyperSearchingPlan:
     TODO: should be divided into two scores: Plan(For hyperParam searching) and Training(For training implementing)
     TODO: For every group of parameters, save the trained model and parameters
     """
+
     def __init__(self, name, epochs, batch_size, train_set, valid_set, device,
                  model_path, model_fname=None, store_mode="dict", loss_tracer=None):
 
@@ -22,36 +22,36 @@ class HyperSearchingPlan:
         if not os.path.exists(self.model_path):
             os.mkdir(self.model_path)
 
-        self.logs           =   {}
-        self.model          =   None
-        self.epochs         =   epochs
-        self.max_epochs     =   0
-        self.device         =   device
+        self.logs = {}
+        self.model = None
+        self.epochs = epochs
+        self.max_epochs = 0
+        self.device = device
 
         # TODO: Achieve 'callbacks' and 'cb_params' through registering_callbacks
-        self.callbacks      =   OrderedDict()
-        self.cb_params      =   OrderedDict()
+        self.callbacks = OrderedDict()
+        self.cb_params = OrderedDict()
 
-        self.batch_size     =   batch_size
-        self.model_fname    =   model_fname
-        self.store_mode     =   store_mode
+        self.batch_size = batch_size
+        self.model_fname = model_fname
+        self.store_mode = store_mode
 
         # TODO: get dataloader through create_dataloader from dataset module
-        self.train_loader   =   DataLoader(train_set, batch_size, True)
-        self.valid_loader   =   DataLoader(valid_set, batch_size, True)
+        self.train_loader = DataLoader(train_set, batch_size, True)
+        self.valid_loader = DataLoader(valid_set, batch_size, True)
 
-        self.accuracy_tracer    =   loss_tracer("acc")
-        self.train_ls_tracer    =   loss_tracer("train")
-        self.valid_ls_tracer    =   loss_tracer("valid")
+        self.accuracy_tracer = loss_tracer("acc")
+        self.train_ls_tracer = loss_tracer("train")
+        self.valid_ls_tracer = loss_tracer("valid")
 
     def search(self, learning_rates, decay_rates, patience):
         """ Execute the given plans """
 
-        self.logs = {"epochs":          self.epochs,
-                     "batch_size":      self.batch_size,
-                     "learning_rates":  learning_rates,
-                     "decay_rates":     decay_rates,
-                     "patience":        patience}
+        self.logs = {"epochs": self.epochs,
+                     "batch_size": self.batch_size,
+                     "learning_rates": learning_rates,
+                     "decay_rates": decay_rates,
+                     "patience": patience}
 
         best_params = {}
         best_performance = 0
@@ -59,10 +59,10 @@ class HyperSearchingPlan:
             for k, decay_rate in enumerate(decay_rates):
                 cur_stage = i * len(decay_rates) + k + 1
                 print("stage {:d} lr: {:.5f} dc_rate: {:.4f}, patience: {:d}\n{:s}"
-                      .format(cur_stage, lr, decay_rate, patience, "="*50))
+                      .format(cur_stage, lr, decay_rate, patience, "=" * 50))
 
                 # Model initialization
-                self.model = YoloV5Model(attention_layer=7)
+                self.model = YoloV6Model()
                 self.model = self.model.to(self.device)
                 # self.model.initialize_weights()
 
@@ -94,20 +94,3 @@ class HyperSearchingPlan:
             f.write("Best Performance:\n")
             for key, val in best_params.items():
                 f.write("%s: %s\n" % (key, str(val)))
-
-
-if __name__ == '__main__':
-    # ====================== Hyper-parameters Searching ============================
-    try:
-        train_plan = HyperSearchingPlan(name="plan_8.0",
-                                        epochs=2,
-                                        batch_size=8,
-                                        store_mode="dict",
-                                        model_path=MODEL_PATH,
-                                        train_set=BloodSmearDataset.from_xml_cache(**TRAIN_DS_CACHES),
-                                        valid_set=BloodSmearDataset.from_xml_cache(**TRAIN_DS_CACHES))
-
-        train_plan.search(learning_rates=[3e-4], decay_rates=[0.03], patience=7)
-
-    except Exception as e:
-        logger.exception(e)     # Error logging

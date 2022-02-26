@@ -21,17 +21,17 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from cv2 import resize
-from matplotlib import figure
+from scipy.io import savemat
 from numpy import quantile
+from matplotlib import figure
 from skimage.filters import gaussian
 from skimage.io import imread, imsave
 from torch.utils.data import Dataset, DataLoader
 from skimage.util import dtype_limits, img_as_ubyte, img_as_float32, crop, invert
-from scipy.io import savemat
 
-from Deeplearning.util.functions import image_baseline, load_txt_list
+from ..util.functions import image_baseline, load_txt_list
 from cccode.tie_tech import tie_solution, energy_match, tie_solve_differential, MatlabRegister
-from cccode.image import (LowFrequencyFilter, phasermic_imsplit, defocus_background_estimate, ck)
+from cccode.image import LowFrequencyFilter, phasermic_imsplit, defocus_background_estimate, ck
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 
 DST_IMGSZ = 320
@@ -41,14 +41,13 @@ N_CLASSES = 3
 IMG_PLUGIN = "simpleitk"
 F32 = torch.float32
 ANCHORS = [1., 1., 1.125, 1.125, 1.25, 1.25, 1.375, 1.375]
-DATA_ROOT = "D:\\Workspace\\RBC Recognition\\datasets"
-SOURCE_DATASETS = ['20210902 BloodSmear01', '20210902 BloodSmear02', '20210914 BloodSmear01', '20210914 BloodSmear02']
+DATA_ROOT = "D:\\Workspace\\Blood Recognition\\datasets"
+SOURCE_DATASETS = ['20210902 BloodSmear01', '20210902 BloodSmear02',
+                   '20210914 BloodSmear01', '20210914 BloodSmear02']
 
 # Pytorch format Dataset Constructor, using in the initialing of 'BloodSmearDataset'
-XML_CACHE_FILENAME = ".\\caches\\cache-20210105-blood_smear.pkl"
+SET202109_FILENAME = join(DATA_ROOT, "Set-202109-1")
 SINGLE_SAMPLE_SET = join(DATA_ROOT, "SingleBatchSet")
-SET202109_FILENAME = join(DATA_ROOT, "Set-202109")
-SET202109_1_FILENAME = join(DATA_ROOT, "Set-202109-1")
 XML_DATASET_FILENAME = join(DATA_ROOT, "20210105 BloodSmear\\fov_annotations.xml")
 
 
@@ -546,11 +545,8 @@ class DatasetStructure:
 
     def scan_tree(self, root, interest_filter, exclude_names):
         interest_names = list(filter(interest_filter, listdir(root)))
-
         def path_filter(x): return x not in exclude_names
-
-        data = UserDict({"name": basename(root),
-                         "fullpath": root,
+        data = UserDict({"name": basename(root), "fullpath": root,
                          "children": [self.scan_directory(join(root, fn), path_filter)
                                       if isdir(join(root, fn)) else join(root, fn) for fn in interest_names]})
         data.get_child = types.MethodType(self._get_child, data)
@@ -558,8 +554,7 @@ class DatasetStructure:
 
     def scan_directory(self, fullpath: str, path_filter=tuple):
         interest_names = list(filter(path_filter, listdir(fullpath)))
-        data = UserDict({"name": basename(fullpath),
-                         "fullpath": fullpath,
+        data = UserDict({"name": basename(fullpath), "fullpath": fullpath,
                          "children": [self.scan_directory(join(fullpath, fn), path_filter)
                                       if isdir(join(fullpath, fn)) else join(fullpath, fn) for fn in interest_names]})
         data.getChild = types.MethodType(self._get_child, data)
@@ -572,7 +567,6 @@ class DatasetStructure:
                 if isinstance(child, UserDict) and len(child):
                     str_body += _presents(child, indent + 1)
             return str_body
-
         return "." + _presents(self.root)
 
     def subset_phase_replacing(self, subset_name):
@@ -620,7 +614,6 @@ class DatasetStructure:
             new_set:        $NEW_SET$/$SUBSET_TYPE$/$MOD_NAME$/$FILE_NAME$
         Date: 2021-11-08
         """
-
         # load labels
         def _parse_label_batch_name(batch_name, subset_pattern="%s BloodSmear%02d"):
             """ Sample demo: 20210902-1_batch0 """
@@ -647,11 +640,6 @@ class DatasetStructure:
                                             "lbl_fullname": lbl_fullname})
 
         source_images_container = {subset_name: {} for subset_name in source_subset_names}
-
-        # source_images_container: {"img_id":  {"focus": focus_img
-        #                                       "phase": phase_img
-        #                                       "minus": minus_img
-        #                                       "plus":  plus_img}}
 
         def _modality_chunks_from_imid(images_container, _subset, _imid, _impt, _mod_fullnames):
             _mod_names, _ = list(zip(*_mod_fullnames))
@@ -729,17 +717,14 @@ class BloodSmearImageHandel:
         self.jointed_defocus = imread(filename, as_gray=True, plugin="simpleitk")
         if fn_preprocess:
             self.jointed_defocus = fn_preprocess(self.jointed_defocus)
-
         self.phase = None
         self.minus, self.plus = phasermic_imsplit(self.jointed_defocus)
 
     @property
-    def difference(self):
-        return self.plus - self.minus
+    def difference(self): return self.plus - self.minus
 
     @property
-    def focus(self):
-        return (self.plus + self.minus) / 2
+    def focus(self): return (self.plus + self.minus) / 2
 
     def solve_phase(self, **tie_params):
         delta_d = tie_params.pop("delta_d")
@@ -775,8 +760,8 @@ class BloodSmearImageHandel:
         self.minus = MatlabRegister.align(self.minus, self.plus, cache_fname=error_fname, process_fn=process_fn,
                                           reproduce=regenerate, r_radia=r_radia, n_iter=n_iter)
         # remove redundancy edges
-        self.minus = np.array(crop(self.minus, crop_width))
-        self.plus = np.array(crop(self.plus, crop_width))
+        self.minus = np.array(crop(self.minus, crop_width).array)
+        self.plus = np.array(crop(self.plus, crop_width).array)
 
     @classmethod
     def processing(cls, raw_filename, background_fpath, error_fname=None, otsu_radii=50,
@@ -806,7 +791,6 @@ class BloodSmearImageHandel:
     def data_save(self, focus_fname, phase_fname, minus_fname, plus_fname, modality_fname):
         multimodal_pairs = [(focus_fname, self.focus), (phase_fname, self.phase),
                             (minus_fname, self.minus), (plus_fname, self.plus)]
-
         for fname, arr in multimodal_pairs:
             i_min, i_max = np.min(arr), np.max(arr)
             if not (0. <= i_min <= 1. and 0. <= i_max <= 1.):
@@ -858,14 +842,14 @@ class Transform:
 
         # mask for object, for each grid, four boxes, one mask (box exist) value for each box
         detect_mask = np.zeros([grid_size, grid_size, n_anchors, 1])
-        matching_gTruth_boxes = np.zeros([grid_size, grid_size, n_anchors, 4 + 1])
-        gTruth_boxes_grid = np.zeros_like(ground_truth_boxes)  # [N_labels, 5] => x1-y1-w1-h1-l
+        matching_ground_truth_boxes = np.zeros([grid_size, grid_size, n_anchors, 4 + 1])
+        ground_truth_boxes_y = np.zeros_like(ground_truth_boxes)  # [N_labels, 5] => x1-y1-w1-h1-l
 
         for i, box in enumerate(ground_truth_boxes):  # [N_labels, l-x0-y0-w0-h0]
             # DB: tensor => numpy
             cls, coordinates = (box[0], box[1:]) if cls_location == 0 else (box[4], box[:4])
             x0, y0, w0, h0 = [elm / scale for elm in coordinates]
-            gTruth_boxes_grid[i] = [x0, y0, w0, h0, cls]  # [N_labels,5] x0-y0-w0-h0-l
+            ground_truth_boxes_y[i] = [x0, y0, w0, h0, cls]  # [N_labels,5] x0-y0-w0-h0-l
 
             if w0 * h0 > 0:  # valid box with object in it
                 # Searching for best anchor according to IoU
@@ -887,16 +871,16 @@ class Transform:
 
                     detect_mask[y1, x1, best_anchor] = 1  # [b,h0,w0,4,1]
                     # [b, GRID_SIZE, GRID_SIZE, N_anchor, x0-y0-w0-h0-l]
-                    matching_gTruth_boxes[y1, x1, best_anchor] = np.array([x0, y0, w0, h0, cls])
+                    matching_ground_truth_boxes[y1, x1, best_anchor] = np.array([x0, y0, w0, h0, cls])
 
         # Produce one-hot  (GRID_SIZE, GRID_SIZE, N_anchor, n_classes)
-        onehot_base = np.expand_dims(matching_gTruth_boxes[..., 4], axis=-1)
+        onehot_base = np.expand_dims(matching_ground_truth_boxes[..., 4], axis=-1)
         class_onehot = np.concatenate([(onehot_base == j).astype(np.int8) for j in range(n_classes)], axis=-1)
         #  detect_mask           [[GRID_SIZE, GRID_SIZE, N_anchor, 1],
         #  matching_gTruth_boxes  [GRID_SIZE, GRID_SIZE, N_anchor, x-y-w-h-l],
         #  class_onehot           [GRID_SIZE, GRID_SIZE, N_anchor, n_classes],
         #  gTruth_boxes_grid      [N_labels,  x-y-w-h-l]]
-        return detect_mask, matching_gTruth_boxes, class_onehot, gTruth_boxes_grid
+        return detect_mask, matching_ground_truth_boxes, class_onehot, ground_truth_boxes_y
 
     @staticmethod
     def image_transform(image):
@@ -921,17 +905,13 @@ class Transform:
             where is the class parameter is
         Returns
         -------
-        detect_mask, gt_boxes, class_oh, box_grid
-        """
-
+        detect_mask, gt_boxes, class_oh, box_grid """
         def to_tensor32(inputs): return [torch.from_numpy(x).to(F32) for x in inputs]
-
         return to_tensor32(Transform.process_truth_boxes(label, ANCHORS, DST_IMGSZ, GRIDSZ, N_CLASSES, cls_loc))
 
 
 class BloodSmearDataset(Dataset):
     """ Loading the given files, produce a Dataset object. """
-
     def __init__(self, filepath="", training_stage="train", image_transform=None, target_transform=None,
                  load_modalities=("focus", "phase", "minus", "plus"), labels_folder="label",
                  ignores=None, dst_imgsz=DST_IMGSZ):
@@ -949,7 +929,6 @@ class BloodSmearDataset(Dataset):
 
         if exists(igfile := join(self.root, "ignored_filenames.txt")):
             ignores = igfile
-
         if ignores is not None:
             self.ignore_filenames = []
             if isinstance(ignores, str):
@@ -960,7 +939,6 @@ class BloodSmearDataset(Dataset):
                 self.ignore_filenames = ignores
         else:
             self.ignore_filenames = []
-
         self.dataset_scan()
 
     @staticmethod
@@ -1000,12 +978,12 @@ class BloodSmearDataset(Dataset):
 
     def labels_loader(self, filename):
         boxes = []
-        H, W = self.destined_shape
+        dh, dw = self.destined_shape
         with open(filename, "r") as _f:
             for line in _f:
                 # processing one line to a box data, the x-y-w-h in here is normalized to 0~1
                 cls, x, y, w, h = [float(elm) for elm in line.rstrip("\n").split(" ")]
-                boxes.append((cls, x * W, y * H, w * W, h * H))
+                boxes.append((cls, x * dw, y * dh, w * dw, h * dh))
 
         # Packaging the labels using uniform size array: [N_samples, n_label_per_sample, 5]
         boxes_array = np.zeros((self.max_boxes, 5))
@@ -1084,7 +1062,7 @@ if __name__ == "__main__":
     logger = logging.getLogger(__name__)
     # Logging Config Ended -----------------------------------------------------------
     try:
-        temp_train_load = create_dataloader(SET202109_1_FILENAME, "train", 4)
+        temp_train_load = create_dataloader(SET202109_FILENAME, "train", 4)
         pass
     except Exception as err:
         logger.exception(err)

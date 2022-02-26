@@ -704,3 +704,233 @@ RuntimeError: Expected all tensors to be on the same device, but found at least 
 [I 2021-12-09 21:27:44,567 train.py 168] Loading data ...
 [I 2021-12-09 21:27:47,555 train.py 196] Training Start
 
+[I 2021-12-10 15:10:30,226 train.py 153] Loading data ...
+[I 2021-12-10 15:10:33,616 train.py 175] Training Start
+
+[I 2021-12-10 15:13:37,162 train.py 153] Loading data ...
+[I 2021-12-10 15:13:38,312 train.py 175] Training Start
+[I 2021-12-10 15:15:16,424 train.py 153] Loading data ...
+[I 2021-12-10 15:15:17,506 train.py 175] Training Start
+[I 2021-12-10 16:26:01,078 train.py 202] Early stopped at Accuracy 0.8015
+[E 2021-12-10 16:26:01,126 train.py 269] name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 267, in <module>
+    set2021091.auto_verse_dl(modelFilename, predParams)
+  File "D:\Workspace\Blood Recognition\Deeplearning\evaluate.py", line 343, in auto_verse_dl
+    previous = self.dataset_predict(model_fpath, pred_params)
+  File "D:\Workspace\Blood Recognition\Deeplearning\evaluate.py", line 333, in dataset_predict
+    logger.info(f"Loading Model: {model_fpath} and Proceeding data ...")
+NameError: name 'logger' is not defined
+[I 2021-12-10 16:26:55,718 train.py 154] Loading data ...
+[I 2021-12-10 16:26:56,902 train.py 176] Training Start
+[I 2021-12-10 16:28:40,960 train.py 155] Loading data ...
+[I 2021-12-10 16:28:42,048 train.py 177] Training Start
+[E 2021-12-10 16:29:35,900 train.py 262] 'tuple' object has no attribute 'item'
+Traceback (most recent call last):
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 260, in <module>
+    modelFilename = trainer.training(100)
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 213, in training
+    val_loss, accuracy = valid_loop(self.valid_loader, self.model, self.loss_fn, self.device)
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 111, in valid_loop
+    cur_loos, _ = loss_fn(pred, y).item()
+AttributeError: 'tuple' object has no attribute 'item'
+[I 2021-12-10 16:30:44,970 train.py 154] Loading data ...
+[I 2021-12-10 16:30:46,052 train.py 176] Training Start
+[I 2021-12-10 16:32:32,672 train.py 154] Loading data ...
+[I 2021-12-10 16:32:33,756 train.py 176] Training Start
+[I 2021-12-10 16:36:50,044 train.py 153] Loading data ...
+[I 2021-12-10 16:36:51,178 train.py 175] Training Start
+[I 2021-12-10 17:21:07,498 train.py 202] Early stopped at Accuracy 0.8010
+[I 2021-12-11 11:32:06,601 train.py 152] Loading data ...
+[I 2021-12-11 11:32:09,999 train.py 174] Training Start
+[I 2021-12-11 11:33:01,018 train.py 152] Loading data ...
+[I 2021-12-11 11:33:02,795 train.py 174] Training Start
+[I 2021-12-11 12:03:44,363 train.py 152] Loading data ...
+[I 2021-12-11 12:03:45,495 train.py 174] Training Start
+[I 2021-12-11 12:04:57,577 train.py 152] Loading data ...
+[I 2021-12-11 12:04:58,690 train.py 174] Training Start
+[I 2021-12-11 12:06:54,928 train.py 152] Loading data ...
+[I 2021-12-11 12:06:56,006 train.py 174] Training Start
+[E 2021-12-11 12:06:57,188 train.py 259] CUDA out of memory. Tried to allocate 498.00 MiB (GPU 0; 4.00 GiB total capacity; 2.30 GiB already allocated; 30.20 MiB free; 2.41 GiB reserved in total by PyTorch)
+Traceback (most recent call last):
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 257, in <module>
+    modelFilename = trainer.training(100)
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 209, in training
+    tra_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer, self.device)
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 80, in train_loop
+    loss, (lcoord, lobj, lnonobj, lcls) = loss_fn(pred, y)
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\losses.py", line 281, in __call__
+    non_obj_loss = w["non_obj"] * self.non_object_loss(truth_boxes_grid=truth_boxes_grid, truth_mask=truth_mask,
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\losses.py", line 214, in non_object_loss
+    intersect_wh = torch.maximum(intersectxymax - intersectxymin, torch.zeros_like(intersectxymax))
+RuntimeError: CUDA out of memory. Tried to allocate 498.00 MiB (GPU 0; 4.00 GiB total capacity; 2.30 GiB already allocated; 30.20 MiB free; 2.41 GiB reserved in total by PyTorch)
+[I 2021-12-11 12:07:23,019 train.py 152] Loading data ...
+[I 2021-12-11 12:07:24,111 train.py 174] Training Start
+[I 2021-12-11 12:40:25,185 train.py 201] Early stopped at Accuracy 0.8085
+[E 2021-12-11 12:46:07,842 train.py 259] __init__() missing 1 required positional argument: 'optimizer'
+Traceback (most recent call last):
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 256, in <module>
+    trainer = Trainer(".\\train_hypers.yaml", model_fpath=modelFpath)
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 149, in __init__
+    self.register_callbacks(schedule=(MultiStepLR, {"milestones": [20, 50], "gamma": 0.1}),
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 161, in register_callbacks
+    self.callbacks.update({cb_name: callback(**param_dict)})
+TypeError: __init__() missing 1 required positional argument: 'optimizer'
+[I 2021-12-11 12:48:01,621 train.py 154] Loading data ...
+[I 2021-12-11 12:48:02,743 train.py 176] Training Start
+[E 2021-12-11 12:48:02,743 train.py 261] 'NoneType' object has no attribute 'get_lr'
+Traceback (most recent call last):
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 259, in <module>
+    modelFilename = trainer.training(100)
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 209, in training
+    self.on_epoch_begin(epoch=t + 1)
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 186, in on_epoch_begin
+    lr = self.hyp.get("schedule", None).get_lr()
+AttributeError: 'NoneType' object has no attribute 'get_lr'
+[I 2021-12-11 12:48:31,023 train.py 154] Loading data ...
+[I 2021-12-11 12:48:32,139 train.py 176] Training Start
+[I 2021-12-11 12:48:55,625 train.py 154] Loading data ...
+[I 2021-12-11 12:48:56,739 train.py 176] Training Start
+[I 2021-12-11 12:49:28,570 train.py 154] Loading data ...
+[I 2021-12-11 12:49:36,743 train.py 154] Loading data ...
+[I 2021-12-11 12:49:37,823 train.py 176] Training Start
+[I 2021-12-11 12:50:49,710 train.py 154] Loading data ...
+[I 2021-12-11 12:50:50,864 train.py 176] Training Start
+[I 2021-12-11 13:15:58,426 train.py 202] Early stopped at Accuracy 0.8125
+[I 2021-12-11 13:20:47,891 train.py 154] Loading data ...
+[I 2021-12-11 13:33:45,885 train.py 154] Loading data ...
+[I 2021-12-11 13:33:47,137 train.py 176] Training Start
+[E 2021-12-11 13:33:47,833 train.py 260] Expected object of scalar type Float but got scalar type Long for argument #3 'weight' in call to _thnn_nll_loss2d_forward
+Traceback (most recent call last):
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 258, in <module>
+    modelFilename = trainer.training(100)
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 210, in training
+    tra_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer, self.device)
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 80, in train_loop
+    loss, (lcoord, lobj, lnonobj, lcls) = loss_fn(pred, y)
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\losses.py", line 273, in __call__
+    class_loss = w["cls"] * self.class_loss(truth_classes_oh=truth_classes_oh, truth_mask=truth_mask,
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\losses.py", line 167, in class_loss
+    class_loss = loss(pred_scores, true_scores)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\loss.py", line 1047, in forward
+    return F.cross_entropy(input, target, weight=self.weight,
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\functional.py", line 2693, in cross_entropy
+    return nll_loss(log_softmax(input, 1), target, weight, None, ignore_index, None, reduction)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\functional.py", line 2413, in nll_loss
+    out = torch._C._nn.nll_loss2d(input, target, weight, reduction_enum, ignore_index)
+RuntimeError: Expected object of scalar type Float but got scalar type Long for argument #3 'weight' in call to _thnn_nll_loss2d_forward
+[I 2021-12-11 13:35:31,868 train.py 154] Loading data ...
+[I 2021-12-11 13:35:33,000 train.py 176] Training Start
+[I 2021-12-11 13:36:03,595 train.py 154] Loading data ...
+[I 2021-12-11 13:36:04,683 train.py 176] Training Start
+[I 2021-12-11 14:18:10,796 train.py 202] Early stopped at Accuracy 0.8125
+[E 2021-12-27 14:09:24,488 train.py 275] CUDA out of memory. Tried to allocate 126.00 MiB (GPU 0; 4.00 GiB total capacity; 806.75 MiB already allocated; 0 bytes free; 904.00 MiB reserved in total by PyTorch)
+Traceback (most recent call last):
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 273, in <module>
+    modelFilename = trainer.training(100)
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 225, in training
+    tra_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer, self.device)
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 95, in train_loop
+    loss, (lcoord, lobj, lnonobj, lcls) = loss_fn(pred, y)
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\losses.py", line 230, in __call__
+    non_obj_loss = w["non_obj"] * self.non_object_loss(truth_boxes_grid=truth_boxes_grid, truth_mask=truth_mask,
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\losses.py", line 165, in non_object_loss
+    intersect_wh = torch.maximum(intersectxymax - intersectxymin, torch.zeros_like(intersectxymax))
+RuntimeError: CUDA out of memory. Tried to allocate 126.00 MiB (GPU 0; 4.00 GiB total capacity; 806.75 MiB already allocated; 0 bytes free; 904.00 MiB reserved in total by PyTorch)
+[E 2021-12-27 14:15:49,508 train.py 275] one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [8, 40, 40, 4, 3]], which is output 0 of SliceBackward, is at version 4; expected version 3 instead. Hint: enable anomaly detection to find the operation that failed to compute its gradient, with torch.autograd.set_detect_anomaly(True).
+Traceback (most recent call last):
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 273, in <module>
+    modelFilename = trainer.training(100)
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 225, in training
+    tra_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer, self.device)
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 98, in train_loop
+    loss.backward()
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\tensor.py", line 245, in backward
+    torch.autograd.backward(self, gradient, retain_graph, create_graph, inputs=inputs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\autograd\__init__.py", line 145, in backward
+    Variable._execution_engine.run_backward(
+RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [8, 40, 40, 4, 3]], which is output 0 of SliceBackward, is at version 4; expected version 3 instead. Hint: enable anomaly detection to find the operation that failed to compute its gradient, with torch.autograd.set_detect_anomaly(True).
+[E 2021-12-27 14:21:13,117 train.py 275] one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [8, 40, 40, 4, 3]], which is output 0 of SliceBackward, is at version 4; expected version 3 instead. Hint: enable anomaly detection to find the operation that failed to compute its gradient, with torch.autograd.set_detect_anomaly(True).
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 273, in <module>
+    modelFilename = trainer.training(100)
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 225, in training
+    tra_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer, self.device)
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 98, in train_loop
+    loss.backward()
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\tensor.py", line 245, in backward
+    torch.autograd.backward(self, gradient, retain_graph, create_graph, inputs=inputs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\autograd\__init__.py", line 145, in backward
+    Variable._execution_engine.run_backward(
+RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [8, 40, 40, 4, 3]], which is output 0 of SliceBackward, is at version 4; expected version 3 instead. Hint: enable anomaly detection to find the operation that failed to compute its gradient, with torch.autograd.set_detect_anomaly(True).
+[E 2021-12-27 14:22:20,637 train.py 276] one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [8, 40, 40, 4, 3]], which is output 0 of SliceBackward, is at version 4; expected version 3 instead. Hint: the backtrace further above shows the operation that failed to compute its gradient. The variable in question was changed in there or anywhere later. Good luck!
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 274, in <module>
+    modelFilename = trainer.training(100)
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 226, in training
+    tra_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer, self.device)
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 99, in train_loop
+    loss.backward()
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\tensor.py", line 245, in backward
+    torch.autograd.backward(self, gradient, retain_graph, create_graph, inputs=inputs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\autograd\__init__.py", line 145, in backward
+    Variable._execution_engine.run_backward(
+RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [8, 40, 40, 4, 3]], which is output 0 of SliceBackward, is at version 4; expected version 3 instead. Hint: the backtrace further above shows the operation that failed to compute its gradient. The variable in question was changed in there or anywhere later. Good luck!
+[E 2021-12-27 14:25:07,626 train.py 276] forward() takes 2 positional arguments but 3 were given
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 274, in <module>
+    modelFilename = trainer.training(100)
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 226, in training
+    tra_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer, self.device)
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 96, in train_loop
+    loss, (lcoord, lobj, lnonobj, lcls) = loss_fn(pred, y)
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\losses.py", line 217, in __call__
+    pred = FeatureTranslator(y_pred, self.anchors, self.device, self.grid_size, batched=True)
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\losses.py", line 55, in __init__
+    self.properties_translate(batched)
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\losses.py", line 83, in properties_translate
+    self.data[..., 5:] = torch.nn.LogSoftmax()(self.data[..., 5:], -1)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\nn\modules\module.py", line 889, in _call_impl
+    result = self.forward(*input, **kwargs)
+TypeError: forward() takes 2 positional arguments but 3 were given
+[E 2021-12-27 14:26:09,976 train.py 276] one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [8, 40, 40, 4, 3]], which is output 0 of SliceBackward, is at version 4; expected version 3 instead. Hint: the backtrace further above shows the operation that failed to compute its gradient. The variable in question was changed in there or anywhere later. Good luck!
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 274, in <module>
+    modelFilename = trainer.training(100)
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 226, in training
+    tra_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer, self.device)
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 99, in train_loop
+    loss.backward()
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\tensor.py", line 245, in backward
+    torch.autograd.backward(self, gradient, retain_graph, create_graph, inputs=inputs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\autograd\__init__.py", line 145, in backward
+    Variable._execution_engine.run_backward(
+RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [8, 40, 40, 4, 3]], which is output 0 of SliceBackward, is at version 4; expected version 3 instead. Hint: the backtrace further above shows the operation that failed to compute its gradient. The variable in question was changed in there or anywhere later. Good luck!
+[E 2021-12-27 14:26:47,434 train.py 276] one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [8, 40, 40, 4, 3]], which is output 0 of SliceBackward, is at version 4; expected version 3 instead. Hint: the backtrace further above shows the operation that failed to compute its gradient. The variable in question was changed in there or anywhere later. Good luck!
+Traceback (most recent call last):
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 274, in <module>
+    modelFilename = trainer.training(100)
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 226, in training
+    tra_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer, self.device)
+  File "D:/Workspace/Blood Recognition/Deeplearning/train.py", line 99, in train_loop
+    loss.backward()
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\tensor.py", line 245, in backward
+    torch.autograd.backward(self, gradient, retain_graph, create_graph, inputs=inputs)
+  File "C:\Users\chenchao\Anaconda3\envs\torch18\lib\site-packages\torch\autograd\__init__.py", line 145, in backward
+    Variable._execution_engine.run_backward(
+RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation: [torch.cuda.FloatTensor [8, 40, 40, 4, 3]], which is output 0 of SliceBackward, is at version 4; expected version 3 instead. Hint: the backtrace further above shows the operation that failed to compute its gradient. The variable in question was changed in there or anywhere later. Good luck!
+[E 2021-12-28 15:05:58,902 train.py 276] CUDA out of memory. Tried to allocate 250.00 MiB (GPU 0; 4.00 GiB total capacity; 935.66 MiB already allocated; 171.08 MiB free; 1.01 GiB reserved in total by PyTorch)
+Traceback (most recent call last):
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 274, in <module>
+    modelFilename = trainer.training(2)
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 226, in training
+    tra_loss = train_loop(self.train_loader, self.model, self.loss_fn, self.optimizer, self.device)
+  File "D:\Workspace\Blood Recognition\Deeplearning\train.py", line 96, in train_loop
+    loss, (lcoord, lobj, lnonobj, lcls) = loss_fn(pred, y)
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\losses.py", line 207, in __call__
+    noobj_loss = w["no_obj"] * self.no_object_loss(truth_boxes_grid, truth_mask, pred.xy, pred.wh, pred.conf)
+  File "D:\Workspace\Blood Recognition\Deeplearning\util\losses.py", line 150, in no_object_loss
+    intersect_wh = torch.maximum(intersectxymax - intersectxymin, torch.zeros_like(intersectxymax))
+RuntimeError: CUDA out of memory. Tried to allocate 250.00 MiB (GPU 0; 4.00 GiB total capacity; 935.66 MiB already allocated; 171.08 MiB free; 1.01 GiB reserved in total by PyTorch)
