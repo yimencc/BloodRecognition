@@ -4,6 +4,7 @@ from skimage.segmentation import expand_labels
 from skimage.measure import regionprops_table, perimeter
 from skimage.filters import threshold_otsu, threshold_multiotsu
 
+from scipy.io import savemat
 from .util.functions import figure_preproduction
 
 WAVELENGTH = 632.8e-9

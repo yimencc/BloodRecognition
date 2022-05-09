@@ -188,6 +188,8 @@ class RecognitionAnalyzer:
             return self.data.get(item)
         elif isinstance(item, int):
             return {k: v[item] for k, v in self.data.items()}
+        else:
+            raise Exception()
 
     def dump_data(self):
         with open(self.src_filename, "wb") as f:
